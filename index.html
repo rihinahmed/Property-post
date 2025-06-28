@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RoomFinder</title>
+    <link rel="stylesheet" href="/stylings/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+<body>
+    
+    <header class="header">
+        <div class="logo">RoomFinder</div>
+        <nav class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">Browse</a>
+            <a href="#">Post Room</a>
+            <a href="#">Login</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+
+    <section class="hero">
+        <div class="hero-content">
+      
+          <!-- Left: Text + Search -->
+          <div class="hero-left"> 
+            <h1>
+              Find the <span class="highlight1">perfect room</span><br>
+              near your <span id="dynamic-word" class="highlight typing"></span>
+            </h1>
+            <p>RoomFinder helps students and families discover rooms, hostels, and sublets across your city.</p>
+      
+            <div class="search-bar">
+              <input type="text" placeholder="Search by area (e.g. Dhanmondi)">
+              <button>Search</button>
+            </div>
+          </div>
+      
+          <!-- Right: Image Carousel -->
+          <div class="hero-right">
+            <div class="carousel-wrapper">
+              <div class="carousel-images">
+                <img src="https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Room 1">
+                <img src="https://images.unsplash.com/photo-1484101403633-562f891dc89a?q=80&w=1174&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Room 2">
+                <img src="https://images.unsplash.com/photo-1489171078254-c3365d6e359f?q=80&w=1331&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Room 3">
+              </div>
+            </div>
+          </div>
+      
+        </div>
+    </section>
+
+    <!-- category section -->
+
+    <section class="categories">
+        <div class="category-list">
+          <button class="category-btn active"><i class="fas fa-house-user"></i> Family</button>
+          <button class="category-btn"><i class="fas fa-user-friends"></i> Bachelor</button>
+          <button class="category-btn"><i class="fas fa-briefcase"></i> Office</button>
+          <button class="category-btn"><i class="fas fa-door-open"></i> Sublet</button>
+          <button class="category-btn"><i class="fas fa-bed"></i> Hostel</button>
+        </div>
+    </section>
+
+    <!-- Featured Section -->
+    <section class="featured">
+        <div class="container">
+          <h2>Featured Rooms</h2>
+      
+          <div class="featured-carousel">
+            <div class="carousel-track">
+      
+              <!-- Card 1 -->
+              <a href="room-details.html" class="card-link">
+                <div class="featured-card">
+                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600" alt="Room 1">
+                    <div class="featured-info">
+                    <h3>Cozy Family Room</h3>
+                    <p>📍 Dhanmondi</p>
+                    <span class="price">৳12,000/month</span>
+                    </div>
+                </div>
+              </a>
+      
+              <!-- Card 2 -->
+              <a href="room-details.html" class="card-link">
+                <div class="featured-card">
+                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600" alt="Room 2">
+                    <div class="featured-info">
+                    <h3>Bachelor Studio</h3>
+                    <p>📍 Mirpur</p>
+                    <span class="price">৳7,500/month</span>
+                    </div>
+                </div>
+              </a>
+      
+              <!-- Card 3 -->
+              <a href="room-details.html" class="card-link">
+                <div class="featured-card">
+                    <img src="https://images.unsplash.com/photo-1615873968403-89e068629265?w=600" alt="Room 3">
+                    <div class="featured-info">
+                    <h3>Office Space</h3>
+                    <p>📍 Banani</p>
+                    <span class="price">৳25,000/month</span>
+                    </div>
+                </div>
+              </a>
+      
+              <!-- Card 4 -->
+              <a href="room-details.html" class="card-link">
+                <div class="featured-card">
+                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600" alt="Room 4">
+                    <div class="featured-info">
+                    <h3>Sublet Room</h3>
+                    <p>📍 Uttara</p>
+                    <span class="price">৳10,000/month</span>
+                    </div>
+                </div>
+              </a>
+
+              <!-- Card 5 -->
+              <a href="room-details.html" class="card-link">
+                <div class="featured-card">
+                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600" alt="Room 4">
+                    <div class="featured-info">
+                    <h3>Sublet Room</h3>
+                    <p>📍 Uttara</p>
+                    <span class="price">৳10,000/month</span>
+                    </div>
+                </div>
+              </a>
+      
+            </div>
+      
+            <!-- Navigation Arrows -->
+            <button class="carousel-btn prev">&#10094;</button>
+            <button class="carousel-btn next">&#10095;</button>
+          </div>
+        </div>
+    </section>
+
+    <!-- Recent post section -->
+    <section class="recent-section">
+      <!-- Heading and Category Titles inside container -->
+      <div class="container">
+        <div class="recent-header">
+          <h2>Recently Published Properties</h2>
+          <p>Explore latest listings by type</p>
+        </div>
+    
+        <div class="category-top">
+          <h3>Family</h3>
+          <a href="#">See more →</a>
+        </div>
+      </div>
+    
+      <!-- Cards Full Width Outside Container -->
+      <div class="recent-list">
+        <div class="recent-card">
+          <img src="https://i.ibb.co/2M5pKJz/family1.jpg" alt="Family Room">
+          <div class="card-body">
+            <h4>Family Apartment</h4>
+            <p class="location">Bashundhara R/A</p>
+            <p class="info">2 Bed · 2 Bath · July</p>
+            <p class="rent">৳50,000/month</p>
+          </div>
+        </div>
+        <div class="recent-card">
+          <img src="https://i.ibb.co/2M5pKJz/family1.jpg" alt="Family Room">
+          <div class="card-body">
+            <h4>Family Apartment</h4>
+            <p class="location">Bashundhara R/A</p>
+            <p class="info">2 Bed · 2 Bath · July</p>
+            <p class="rent">৳50,000/month</p>
+          </div>
+        </div>
+        <div class="recent-card">
+          <img src="https://i.ibb.co/2M5pKJz/family1.jpg" alt="Family Room">
+          <div class="card-body">
+            <h4>Family Apartment</h4>
+            <p class="location">Bashundhara R/A</p>
+            <p class="info">2 Bed · 2 Bath · July</p>
+            <p class="rent">৳50,000/month</p>
+          </div>
+        </div>
+        <div class="recent-card">
+          <img src="https://i.ibb.co/2M5pKJz/family1.jpg" alt="Family Room">
+          <div class="card-body">
+            <h4>Family Apartment</h4>
+            <p class="location">Bashundhara R/A</p>
+            <p class="info">2 Bed · 2 Bath · July</p>
+            <p class="rent">৳50,000/month</p>
+          </div>
+        </div>
+        <div class="recent-card">
+          <img src="https://i.ibb.co/2M5pKJz/family1.jpg" alt="Family Room">
+          <div class="card-body">
+            <h4>Family Apartment</h4>
+            <p class="location">Bashundhara R/A</p>
+            <p class="info">2 Bed · 2 Bath · July</p>
+            <p class="rent">৳50,000/month</p>
+          </div>
+        </div>
+        <div class="recent-card">
+          <img src="https://i.ibb.co/2M5pKJz/family1.jpg" alt="Family Room">
+          <div class="card-body">
+            <h4>Family Apartment</h4>
+            <p class="location">Bashundhara R/A</p>
+            <p class="info">2 Bed · 2 Bath · July</p>
+            <p class="rent">৳50,000/month</p>
+          </div>
+        </div>
+        <div class="recent-card">
+          <img src="https://i.ibb.co/2M5pKJz/family1.jpg" alt="Family Room">
+          <div class="card-body">
+            <h4>Family Apartment</h4>
+            <p class="location">Bashundhara R/A</p>
+            <p class="info">2 Bed · 2 Bath · July</p>
+            <p class="rent">৳50,000/month</p>
+          </div>
+        </div>
+        <div class="recent-card">
+          <img src="https://i.ibb.co/2M5pKJz/family1.jpg" alt="Family Room">
+          <div class="card-body">
+            <h4>Family Apartment</h4>
+            <p class="location">Bashundhara R/A</p>
+            <p class="info">2 Bed · 2 Bath · July</p>
+            <p class="rent">৳50,000/month</p>
+          </div>
+        </div>
+        <div class="recent-card">
+          <img src="https://i.ibb.co/2M5pKJz/family1.jpg" alt="Family Room">
+          <div class="card-body">
+            <h4>Family Apartment</h4>
+            <p class="location">Bashundhara R/A</p>
+            <p class="info">2 Bed · 2 Bath · July</p>
+            <p class="rent">৳50,000/month</p>
+          </div>
+        </div>
+        <div class="recent-card">
+          <img src="https://i.ibb.co/2M5pKJz/family1.jpg" alt="Family Room">
+          <div class="card-body">
+            <h4>Family Apartment</h4>
+            <p class="location">Bashundhara R/A</p>
+            <p class="info">2 Bed · 2 Bath · July</p>
+            <p class="rent">৳50,000/month</p>
+          </div>
+        </div>
+        <!-- More cards... -->
+      </div>
+      <!-- Bachelor Section -->
+      <div class="container">
+        <div class="category-top">
+          <h3>Bachelor</h3>
+          <a href="#">See more →</a>
+        </div>
+      </div>
+      <div class="recent-list">
+        <div class="recent-card">
+          <img src="https://i.ibb.co/yRzyzwB/bachelor1.jpg" alt="Bachelor Room">
+          <div class="card-body">
+            <h4>Bachelor Studio</h4>
+            <p class="location">Mohakhali DOHS</p>
+            <p class="info">1 Bed · Shared Bath · Aug</p>
+            <p class="rent">৳6,000/month</p>
+          </div>
+        </div>
+        <div class="recent-card">
+          <img src="https://i.ibb.co/yRzyzwB/bachelor1.jpg" alt="Bachelor Room">
+          <div class="card-body">
+            <h4>Single Room</h4>
+            <p class="location">Kallyanpur</p>
+            <p class="info">1 Bed · Common Washroom · Aug</p>
+            <p class="rent">৳4,500/month</p>
+          </div>
+        </div>
+        <div class="recent-card">
+          <img src="https://i.ibb.co/yRzyzwB/bachelor1.jpg" alt="Bachelor Room">
+          <div class="card-body">
+            <h4>Single Room</h4>
+            <p class="location">Kallyanpur</p>
+            <p class="info">1 Bed · Common Washroom · Aug</p>
+            <p class="rent">৳4,500/month</p>
+          </div>
+        </div>
+        <div class="recent-card">
+          <img src="https://i.ibb.co/yRzyzwB/bachelor1.jpg" alt="Bachelor Room">
+          <div class="card-body">
+            <h4>Single Room</h4>
+            <p class="location">Kallyanpur</p>
+            <p class="info">1 Bed · Common Washroom · Aug</p>
+            <p class="rent">৳4,500/month</p>
+          </div>
+        </div>
+        <div class="recent-card">
+          <img src="https://i.ibb.co/yRzyzwB/bachelor1.jpg" alt="Bachelor Room">
+          <div class="card-body">
+            <h4>Single Room</h4>
+            <p class="location">Kallyanpur</p>
+            <p class="info">1 Bed · Common Washroom · Aug</p>
+            <p class="rent">৳4,500/month</p>
+          </div>
+        </div>
+        <div class="recent-card">
+          <img src="https://i.ibb.co/yRzyzwB/bachelor1.jpg" alt="Bachelor Room">
+          <div class="card-body">
+            <h4>Single Room</h4>
+            <p class="location">Kallyanpur</p>
+            <p class="info">1 Bed · Common Washroom · Aug</p>
+            <p class="rent">৳4,500/month</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hostel Section -->
+      <div class="container">
+        <div class="category-top">
+          <h3>Hostel</h3>
+          <a href="#">See more →</a>
+        </div>
+      </div>
+      <div class="recent-list">
+        <div class="recent-card">
+          <img src="https://i.ibb.co/yRzyzwB/bachelor1.jpg" alt="Bachelor Room">
+          <div class="card-body">
+            <h4>Bachelor Studio</h4>
+            <p class="location">Mohakhali DOHS</p>
+            <p class="info">1 Bed · Shared Bath · Aug</p>
+            <p class="rent">৳6,000/month</p>
+          </div>
+        </div>
+        <div class="recent-card">
+          <img src="https://i.ibb.co/yRzyzwB/bachelor1.jpg" alt="Bachelor Room">
+          <div class="card-body">
+            <h4>Single Room</h4>
+            <p class="location">Kallyanpur</p>
+            <p class="info">1 Bed · Common Washroom · Aug</p>
+            <p class="rent">৳4,500/month</p>
+          </div>
+        </div>
+        <div class="recent-card">
+          <img src="https://i.ibb.co/yRzyzwB/bachelor1.jpg" alt="Bachelor Room">
+          <div class="card-body">
+            <h4>Single Room</h4>
+            <p class="location">Kallyanpur</p>
+            <p class="info">1 Bed · Common Washroom · Aug</p>
+            <p class="rent">৳4,500/month</p>
+          </div>
+        </div>
+        <div class="recent-card">
+          <img src="https://i.ibb.co/yRzyzwB/bachelor1.jpg" alt="Bachelor Room">
+          <div class="card-body">
+            <h4>Single Room</h4>
+            <p class="location">Kallyanpur</p>
+            <p class="info">1 Bed · Common Washroom · Aug</p>
+            <p class="rent">৳4,500/month</p>
+          </div>
+        </div>
+        <div class="recent-card">
+          <img src="https://i.ibb.co/yRzyzwB/bachelor1.jpg" alt="Bachelor Room">
+          <div class="card-body">
+            <h4>Single Room</h4>
+            <p class="location">Kallyanpur</p>
+            <p class="info">1 Bed · Common Washroom · Aug</p>
+            <p class="rent">৳4,500/month</p>
+          </div>
+        </div>
+        <div class="recent-card">
+          <img src="https://i.ibb.co/yRzyzwB/bachelor1.jpg" alt="Bachelor Room">
+          <div class="card-body">
+            <h4>Single Room</h4>
+            <p class="location">Kallyanpur</p>
+            <p class="info">1 Bed · Common Washroom · Aug</p>
+            <p class="rent">৳4,500/month</p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Most Popular Places Section -->
+    <section class="most-popular">
+      <div class="container">
+        <h2>Most Popular Places</h2>
+        <p>Discover rooms and rentals in these top locations.</p>
+
+        <div class="places-list">
+          <div class="place-card">
+            <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600" alt="Dhanmondi">
+            <h3>Dhanmondi</h3>
+            <p>Known for its vibrant community and central location.</p>
+          </div>
+          <div class="place-card">
+            <img src="https://images.unsplash.com/photo-1549924231-f129b911e442?w=600" alt="Banani">
+            <h3>Banani</h3>
+            <p>A popular area with many offices and entertainment spots.</p>
+          </div>
+          <div class="place-card">
+            <img src="https://images.unsplash.com/photo-1494526585095-c41746248156?w=600" alt="Uttara">
+            <h3>Uttara</h3>
+            <p>Well-planned residential area with excellent amenities.</p>
+          </div>
+          <div class="place-card">
+            <img src="https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=600" alt="Mirpur">
+            <h3>Mirpur</h3>
+            <p>Affordable housing with great connectivity.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Feedback Section -->
+
+    <section class="feedback-section-2col">
+      <!-- Box-shaped Dynamic Background -->
+      <div class="box-background"></div>
+  
+      <div class="container">
+          <h2>Share Your Thoughts 💬</h2>
+          <p>We value your opinion! Here's what others are saying.</p>
+  
+          <div class="feedback-grid">
+              <!-- Left Column (Message) -->
+              <div class="feedback-left">
+                  <div class="dynamic-message">
+                      <h3 class="typing-text">Your feedback shapes our future...</h3>
+                      <p>We’re constantly working to improve RoomFinder based on your experience.</p>
+                  </div>
+              </div>
+  
+              <!-- Right Column (Comments) -->
+              <div class="feedback-right">
+                  <div class="feedback-comment">
+                      <p>“Super helpful platform for students looking for hostels. Highly recommended!”</p>
+                      <span>- Arif Hossain</span>
+                  </div>
+                  <div class="feedback-comment">
+                      <p>“Love the clean design and search feature. Found a family room in just 1 day!”</p>
+                      <span>- Nadia Rahman</span>
+                  </div>
+                  <div class="feedback-comment">
+                      <p>“Posting a sublet was so easy. Got calls within hours!”</p>
+                      <span>- Tanveer Alam</span>
+                  </div>
+                  <!-- Hidden Comments -->
+                  <div class="extra-feedback-comments">
+                      <div class="feedback-comment">
+                          <p>“Great service! The search filter is intuitive and fast.”</p>
+                          <span>- Shuvra Das</span>
+                      </div>
+                      <div class="feedback-comment">
+                          <p>“RoomFinder made it so much easier to find a place. Totally worth it!”</p>
+                          <span>- Rashed Khan</span>
+                      </div>
+                  </div>
+                  <!-- See More Button -->
+                  <button class="see-more-btn">See More</button>
+              </div>
+          </div>
+      </div>
+    </section>
+
+    <!--Developer Section-->
+    <section class="developer-section">
+      <div class="container">
+          <h2>Meet the Developers</h2>
+          <div class="carousel-container">
+              <!-- Carousel Navigation (Buttons on both sides) -->
+              <button class="prev-btn">
+                  <i class="fas fa-chevron-left"></i> <!-- Left arrow icon -->
+              </button>
+  
+              <!-- Developer Carousel -->
+              <div class="carousel">
+                  <!-- Developer Card 1 -->
+                  <div class="developer-card active" id="dev1">
+                      <img src="/images/ajmain.jpg" alt="Developer 1" class="developer-photo">
+                      <h3>Ajmain Taki</h3>
+                      <span>Backend Specialist</span>
+                      <p>A passionate backend developer, working on scaling up web solutions.</p>
+                  </div>
+                  <!-- Developer Card 2 -->
+                  <div class="developer-card active" id="dev1">
+                      <img src="/images/ajmain.jpg" alt="Developer 1" class="developer-photo">
+                      <h3>Ajmain Taki</h3>
+                      <span>Backend Specialist</span>
+                      <p>A passionate backend developer, working on scaling up web solutions.</p>
+                  </div>
+  
+                  <!-- Developer Card 3 -->
+                  <div class="developer-card" id="dev2">
+                      <img src="/images/rihin.jpg" alt="Developer 2" class="developer-photo">
+                      <h3>Md. Mahfuz Ahmed Rihin</h3>
+                      <span>Frontend & Backend Developer</span>
+                      <p>Frontend and backend expert focused on delivering seamless user experiences.</p>
+                  </div>
+  
+                  <!-- Developer Card 4 -->
+                  <div class="developer-card" id="dev3">
+                      <img src="/images/ajmain.jpg" alt="Developer 3" class="developer-photo">
+                      <h3>John Doe</h3>
+                      <span>Frontend Developer</span>
+                      <p>Expert in crafting beautiful and user-friendly UI/UX designs.</p>
+                  </div>
+  
+                  <!-- Developer Card 5 -->
+                  <div class="developer-card" id="dev4">
+                      <img src="/images/ajmain.jpg" alt="Developer 4" class="developer-photo">
+                      <h3>Jane Smith</h3>
+                      <span>UI/UX Designer</span>
+                      <p>Passionate about creating intuitive designs that users love.</p>
+                  </div>
+              </div>
+  
+              <button class="next-btn">
+                  <i class="fas fa-chevron-right"></i> <!-- Right arrow icon -->
+              </button>
+          </div>
+      </div>
+    </section>
+
+
+    <!-- Footer Section -->
+    <footer class="footer">
+      <div class="footer-content">
+          <!-- Column 1: Quick Links -->
+          <div class="footer-column">
+              <h4>Quick Links</h4>
+              <div class="footer-links">
+                  <a href="#">Home</a>
+                  <a href="#">Browse</a>
+                  <a href="#">Post Room</a>
+                  <a href="#">Login</a>
+              </div>
+          </div>
+
+          <!-- Column 2: Contact Information -->
+          <div class="footer-column">
+              <h4>Contact Us</h4>
+              <p>Email: <a href="mailto:info@roomfinder.com">info@roomfinder.com</a></p>
+              <p>Phone: +123 456 7890</p>
+              <p>Address: 123, Street Name, City, Country</p>
+          </div>
+
+          <!-- Column 3: Follow Us (Social Media) -->
+          <div class="footer-column">
+              <h4>Follow Us</h4>
+              <div class="social-icons">
+                  <a href="#" target="_blank" class="fab fa-facebook"></a>
+                  <a href="#" target="_blank" class="fab fa-twitter"></a>
+                  <a href="#" target="_blank" class="fab fa-linkedin"></a>
+                  <a href="#" target="_blank" class="fab fa-instagram"></a>
+              </div>
+          </div>
+
+          <!-- Column 4: About Us -->
+          <div class="footer-column">
+              <h4>About RoomFinder</h4>
+              <p>RoomFinder helps students and families find the perfect rooms, hostels, and sublets in your city.</p>
+              <p>We provide reliable listings with up-to-date information for a seamless experience.</p>
+          </div>
+      </div>
+
+      <!-- Footer Bottom Text -->
+      <div class="footer-bottom">
+          <p>&copy; 2025 RoomFinder. All Rights Reserved.</p>
+      </div>
+    </footer>
+
+
+
+
+  
+  
+  
+    
+
+
+
+
+    
+</body>
+<!--For on scroll animation the featured cards-->
+
+<script src="/js/developer.js"></script>
+<script src="/js/featured_carousel.js"></script>
+<script src="/js/carousal.js"></script>
+<script src="https://unpkg.com/typeit@8.7.1/dist/index.umd.js"></script>
+<script src="/js/script.js"></script>
+<script src="/js/category_animation.js"></script>
+<script src="/js/feedback_animation.js"></script>
+<!--Amimation for on scrolling recent post and featured post-->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    // Helper function for observing elements
+    function animateOnScroll(selector, threshold = 0.1, delayStep = 80) {
+      const elements = document.querySelectorAll(selector);
+
+      const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const index = [...elements].indexOf(entry.target);
+            entry.target.style.transitionDelay = `${delayStep}ms`;
+            entry.target.classList.add("animate");
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold });
+
+      elements.forEach(el => observer.observe(el));
+    }
+
+    // Animate recent cards
+    animateOnScroll(".recent-card", 0.1, 80);
+
+    // Animate featured cards
+    animateOnScroll(".featured-card", 0.2, 80);
+
+    // Animate most popular place cards
+    animateOnScroll(".place-card", 0.1, 100);
+
+    // Animate developer section cards
+    animateOnScroll(".developer-section", 0.1, 100);
+  });
+</script>
+<!--See more option for comments-->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const seeMoreBtn = document.querySelector('.see-more-btn');
+    const feedbackRight = document.querySelector('.feedback-right');
+
+    if (seeMoreBtn) {
+      seeMoreBtn.addEventListener('click', () => {
+        feedbackRight.classList.toggle('show-more');
+        seeMoreBtn.textContent = feedbackRight.classList.contains('show-more') ? 'See Less' : 'See More';
+      });
+    }
+  });
+</script>
+
+  
+
+
+
+
+</html>
