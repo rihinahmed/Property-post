@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>See More - Family Rooms | RoomFinder</title>
+  <link rel="stylesheet" href="/stylings/see_more_family.css" />
+  <link rel="stylesheet" href="/stylings/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+
+<body class="see-more-family">
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">RoomFinder</div>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="#">Browse</a>
+      <a href="#">Post Room</a>
+      <a href="login.html">Login</a>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="page-title" style="padding: 120px 20px 40px; text-align: center; background: #f0f4ff;">
+    <h1 style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 10px;">See More Family Rooms</h1>
+    <p style="font-size: 1rem; color: #444;">All family room listings available on our platform.</p>
+  </section>
+
+  <!-- Price Filter Section -->
+  <section class="price-filter">
+    <div class="container">
+        <h2>Filter Rooms by Price</h2>
+        <div class="slider-container">
+            <label for="price-range">Price Range:</label>
+            
+            <!-- Range Slider for Min Price -->
+            <input type="range" id="min-price" class="price-slider" min="0" max="100000" value="0" step="500">
+            <input type="range" id="max-price" class="price-slider" min="0" max="100000" value="100000" step="500">
+            
+            <!-- Input Fields for Manual Price Entry -->
+            <div class="price-inputs">
+                <label for="min-price-input">From:</label>
+                <input type="number" id="min-price-input" value="0" min="0" max="100000">
+                <label for="max-price-input">To:</label>
+                <input type="number" id="max-price-input" value="100000" min="0" max="100000">
+            </div>
+
+            <!-- Display Selected Price Range -->
+            <div class="price-values">
+                <span id="min-price-label">৳0</span> - <span id="max-price-label">৳100,000</span>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div style="text-align: center; margin-top: 20px;">
+            <button id="submit-btn" onclick="applyPriceFilter()">Apply Price Filter</button>
+        </div>
+    </div>
+  </section>
+
+  <!-- Available Rooms Section -->
+  <section class="recent-section">
+    <div class="category-top">
+      <h3>Available Family Accommodations</h3>
+    </div>     
+    <div class="recent-list" id="room-cards">
+      <!-- Room Cards with data-price attribute for price -->
+      <div class="recent-card" data-price="22000">
+        <img src="https://i.ibb.co/2M5pKJz/family1.jpg" alt="Family Room">
+        <div class="card-body">
+          <h4>Modern Apartment</h4>
+          <p class="location">Mirpur DOHS</p>
+          <p class="info">2 Bed · 2 Bath · Balcony</p>
+          <p class="rent">৳22,000/month</p>
+        </div>
+      </div>
+
+      <div class="recent-card" data-price="28000">
+        <img src="https://i.ibb.co/GJkrjGv/family2.jpg" alt="Family Room">
+        <div class="card-body">
+          <h4>Corner Flat</h4>
+          <p class="location">Mohammadpur</p>
+          <p class="info">3 Bed · 2 Bath · 1100 sqft</p>
+          <p class="rent">৳28,000/month</p>
+        </div>
+      </div>
+
+      <div class="recent-card" data-price="40000">
+        <img src="https://i.ibb.co/sqGbzqv/family3.jpg" alt="Family Room">
+        <div class="card-body">
+          <h4>Full Family Floor</h4>
+          <p class="location">Uttara Sector 11</p>
+          <p class="info">4 Bed · 3 Bath · Parking</p>
+          <p class="rent">৳40,000/month</p>
+        </div>
+      </div>
+
+      <div class="recent-card" data-price="55000">
+        <img src="https://i.ibb.co/zV8WtxP/family4.jpg" alt="Family Room">
+        <div class="card-body">
+          <h4>Elegant Flat</h4>
+          <p class="location">Dhanmondi 32</p>
+          <p class="info">3 Bed · 3 Bath · Lift · Generator</p>
+          <p class="rent">৳55,000/month</p>
+        </div>
+      </div>
+
+      <div class="recent-card" data-price="35000">
+        <img src="https://i.ibb.co/fYDzzfk/family5.jpg" alt="Family Room">
+        <div class="card-body">
+          <h4>Family Living</h4>
+          <p class="location">Bashundhara Block C</p>
+          <p class="info">2 Bed · 2 Bath · Furnished</p>
+          <p class="rent">৳35,000/month</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-column">
+        <h4>RoomFinder</h4>
+        <p>Find your perfect space with us.</p>
+      </div>
+      <div class="footer-column">
+        <h4>Quick Links</h4>
+        <div class="footer-links">
+          <a href="#">Home</a>
+          <a href="#">Family</a>
+          <a href="#">Hostel</a>
+          <a href="#">Bachelor</a>
+        </div>
+      </div>
+      <div class="footer-column">
+        <h4>Contact</h4>
+        <div class="footer-links">
+          <a href="#">support@roomfinder.com</a>
+          <a href="#">+880 1700 000000</a>
+        </div>
+      </div>
+      <div class="footer-column">
+        <h4>Follow Us</h4>
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-linkedin"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">&copy; 2025 RoomFinder. All rights reserved.</div>
+  </footer>
+
+  <script>
+    // Function to update the price display when the slider is moved or input is changed
+function updatePrice() {
+    var minPrice = parseInt(document.getElementById('min-price').value);
+    var maxPrice = parseInt(document.getElementById('max-price').value);
+
+    // Ensure minPrice is always less than maxPrice
+    if (minPrice > maxPrice) {
+        minPrice = maxPrice;
+        document.getElementById('min-price').value = minPrice;
+    }
+
+    // Update the input fields to show the current slider values
+    document.getElementById('min-price-input').value = minPrice;
+    document.getElementById('max-price-input').value = maxPrice;
+
+    // Update the labels with the current values
+    document.getElementById('min-price-label').textContent = '৳' + minPrice;
+    document.getElementById('max-price-label').textContent = '৳' + maxPrice;
+}
+
+// Function to update the slider values when the user manually inputs the price
+function updatePriceFromInput() {
+    var minPriceInput = document.getElementById('min-price-input').value;
+    var maxPriceInput = document.getElementById('max-price-input').value;
+
+    // Ensure the "min" input value is less than the "max" input value
+    if (parseInt(minPriceInput) > parseInt(maxPriceInput)) {
+        document.getElementById('min-price-input').value = maxPriceInput;
+        minPriceInput = maxPriceInput;
+    }
+
+    // Update the sliders based on the input values
+    document.getElementById('min-price').value = minPriceInput;
+    document.getElementById('max-price').value = maxPriceInput;
+
+    // Update the labels
+    document.getElementById('min-price-label').textContent = '৳' + minPriceInput;
+    document.getElementById('max-price-label').textContent = '৳' + maxPriceInput;
+}
+
+// Set event listeners for both the range sliders and manual input fields
+document.getElementById('min-price').addEventListener('input', updatePrice);
+document.getElementById('max-price').addEventListener('input', updatePrice);
+document.getElementById('min-price-input').addEventListener('input', updatePriceFromInput);
+document.getElementById('max-price-input').addEventListener('input', updatePriceFromInput);
+
+// Function to apply the price filter based on slider values and input values
+function applyPriceFilter() {
+    var minPrice = parseInt(document.getElementById('min-price').value);
+    var maxPrice = parseInt(document.getElementById('max-price').value);
+
+    // Call the filtering function
+    filterRoomsByPrice(minPrice, maxPrice);
+}
+
+// Function to filter rooms based on the selected price range
+function filterRoomsByPrice(minPrice, maxPrice) {
+    var roomCards = document.querySelectorAll('.recent-card');
+
+    // If no card is in the selected range, show a message or leave all visible
+    let cardsVisible = false;
+
+    roomCards.forEach(function(card) {
+        var roomPrice = parseInt(card.getAttribute('data-price')); // Get the price from data-price attribute
+
+        // Check if the card's price is within the selected range
+        if (roomPrice >= minPrice && roomPrice <= maxPrice) {
+            card.style.display = 'block'; // Show the room card
+            cardsVisible = true;
+        } else {
+            card.style.display = 'none'; // Hide the room card
+        }
+    });
+
+    // If no cards are visible after filtering, show a no result message
+    if (!cardsVisible) {
+        document.getElementById('no-results-message').style.display = 'block';
+    } else {
+        document.getElementById('no-results-message').style.display = 'none';
+    }
+}
+
+    // Initialize the filtering when the page loads
+    window.onload = function() {
+    var minPrice = parseInt(document.getElementById('min-price').value);
+    var maxPrice = parseInt(document.getElementById('max-price').value);
+
+    // Apply the filter based on default slider values
+    filterRoomsByPrice(minPrice, maxPrice);
+}
+  </script>
+  <script>
+    // Function to update the price display when the slider is moved or input is changed
+function updatePrice() {
+    var minPrice = parseInt(document.getElementById('min-price').value);
+    var maxPrice = parseInt(document.getElementById('max-price').value);
+
+    // Update the input fields to show the current slider values
+    document.getElementById('min-price-input').value = minPrice;
+    document.getElementById('max-price-input').value = maxPrice;
+
+    // Update the labels with the current values
+    document.getElementById('min-price-label').textContent = '৳' + minPrice;
+    document.getElementById('max-price-label').textContent = '৳' + maxPrice;
+}
+
+// Function to update the slider values when the user manually inputs the price
+function updatePriceFromInput() {
+    var minPriceInput = document.getElementById('min-price-input').value;
+    var maxPriceInput = document.getElementById('max-price-input').value;
+
+    // Ensure the "min" input value is less than the "max" input value
+    if (parseInt(minPriceInput) > parseInt(maxPriceInput)) {
+        document.getElementById('min-price-input').value = maxPriceInput;
+        minPriceInput = maxPriceInput;
+    }
+
+    // Update the sliders based on the input values
+    document.getElementById('min-price').value = minPriceInput;
+    document.getElementById('max-price').value = maxPriceInput;
+
+    // Update the labels
+    document.getElementById('min-price-label').textContent = '৳' + minPriceInput;
+    document.getElementById('max-price-label').textContent = '৳' + maxPriceInput;
+}
+
+// Set event listeners for both the range sliders and manual input fields
+document.getElementById('min-price').addEventListener('input', updatePrice);
+document.getElementById('max-price').addEventListener('input', updatePrice);
+document.getElementById('min-price-input').addEventListener('input', updatePriceFromInput);
+document.getElementById('max-price-input').addEventListener('input', updatePriceFromInput);
+
+// Function to apply the price filter based on slider or input values
+function applyPriceFilter() {
+    var minPrice = parseInt(document.getElementById('min-price').value);
+    var maxPrice = parseInt(document.getElementById('max-price').value);
+
+    filterRoomsByPrice(minPrice, maxPrice); // Apply the filter to the rooms
+}
+
+// Function to filter rooms based on the selected price range
+function filterRoomsByPrice(minPrice, maxPrice) {
+    var roomCards = document.querySelectorAll('.recent-card');
+
+    roomCards.forEach(function(card) {
+        var roomPrice = parseInt(card.getAttribute('data-price')); // Get the room price from data-price attribute
+
+        if (roomPrice >= minPrice && roomPrice <= maxPrice) {
+            card.style.display = 'block'; // Show the room
+        } else {
+            card.style.display = 'none'; // Hide the room
+        }
+    });
+}
+
+  </script>
+</body>
+</html>

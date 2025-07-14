@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10,15 +11,48 @@
 </head>
 <body>
     
-    <header class="header">
-        <div class="logo">RoomFinder</div>
-        <nav class="nav-links">
-            <a href="#">Home</a>
-            <a href="#">Browse</a>
-            <a href="#">Post Room</a>
-            <a href="/login.html"> Login / Sign Up</a>
-        </nav>
-    </header>
+  <header class="header">
+    <div class="logo">RoomFinder</div>
+    <nav class="nav-links">
+      <a href="#">Home</a>
+      <a href="#">Browse</a>
+      <a href="/post_room.html">Post Room</a>
+      <a href="/blog.html">Blog</a>
+      <a href="/login.html">Login / Sign Up</a>
+      
+    </nav>
+  
+    <!-- Menu toggle icon -->
+    <i class="fas fa-bars menu-icon" onclick="toggleSideMenu()"></i>
+  </header>
+  
+  <!-- Sliding Sidebar for extra nav items -->
+  <div class="side-menu" id="sideMenu">
+    <span class="close-btn" onclick="toggleSideMenu()">&times;</span>
+
+    <!-- Main nav items repeated here for mobile menu -->
+    <div class="ondesktopandmobile">
+      <a href="#">Home</a>
+      <a href="#">Browse</a>
+      <a href="/post_room.html">Post Room</a>
+      <a href="/blog.html">Blog</a>
+      <a href="/login.html">Login / Sign Up</a>
+    </div>
+    
+
+    <!-- Extra nav items -->
+    <a href="/pickup.html">Pickup Service</a>
+    <a href="/saved.html">Saved Rooms</a>
+    <a href="/announcements.html">Announcements</a>
+    <a href="/dashboard.html">My Dashboard</a>
+    <a href="/contact.html">Contact</a>
+    <div class="language-toggle" id="langToggle">
+      <div class="toggle-bg"></div>
+      <div class="toggle-option" data-lang="en">🌐 English</div>
+      <div class="toggle-option" data-lang="bn">🇧🇩 বাংলা</div>
+    </div>
+  </div>
+
 
     <!-- Hero Section -->
 
@@ -153,7 +187,7 @@
     
         <div class="category-top">
           <h3>Family</h3>
-          <a href="#">See more →</a>
+          <a href="/see_more_family.html">See more →</a>
         </div>
       </div>
     
@@ -585,6 +619,54 @@
 </body>
 <!--For on scroll animation the featured cards-->
 
+<!--For click spark animation-->
+<script>
+  document.addEventListener('click', function (e) {
+    const count = 10;
+    const sparkColor = '#6366f2'; // Matches your theme
+    const size = 6;
+    const radius = 40;
+    const duration = 600;
+
+    for (let i = 0; i < count; i++) {
+      const spark = document.createElement('div');
+      spark.style.position = 'absolute';
+      spark.style.width = 4 + 'px';
+      spark.style.height = 4 + 'px';
+      spark.style.borderRadius = '50%';
+      spark.style.backgroundColor = sparkColor;
+      spark.style.pointerEvents = 'none';
+      spark.style.zIndex = '9999';
+
+      // Correct position on the full page
+      const pageX = e.pageX;
+      const pageY = e.pageY;
+
+      const angle = (2 * Math.PI * i) / count;
+      const x = Math.cos(angle) * radius;
+      const y = Math.sin(angle) * radius;
+
+      spark.style.left = pageX + 'px';
+      spark.style.top = pageY + 'px';
+
+      document.body.appendChild(spark);
+
+      spark.animate(
+        [
+          { transform: 'translate(0, 0)', opacity: 1 },
+          { transform: `translate(${x}px, ${y}px)`, opacity: 0 }
+        ],
+        {
+          duration: duration,
+          easing: 'ease-out'
+        }
+      );
+
+      setTimeout(() => spark.remove(), duration);
+    }
+  });
+</script>
+
 <script src="/js/developer.js"></script>
 <script src="/js/featured_carousel.js"></script>
 <script src="/js/carousal.js"></script>
@@ -640,6 +722,48 @@
     }
   });
 </script>
+
+<!--Side bar-->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+  const menu = document.querySelector('.side-menu');
+  const toggleBtn = document.querySelector('.menu-icon');
+
+  document.addEventListener('click', (e) => {
+    const isClickInsideMenu = menu.contains(e.target);
+    const isToggleClick = toggleBtn.contains(e.target);
+
+    if (!isClickInsideMenu && !isToggleClick) {
+      menu.classList.remove('active'); // close the sidebar
+    }
+  });
+});
+  function toggleSideMenu() {
+  const sideMenu = document.getElementById('sideMenu');
+  sideMenu.classList.toggle('active');
+}
+</script>
+
+<!--Language button-->
+<script>
+  const toggle = document.getElementById('langToggle');
+const bg = toggle.querySelector('.toggle-bg');
+const options = toggle.querySelectorAll('.toggle-option');
+
+toggle.addEventListener('click', () => {
+  toggle.classList.toggle('toggled');
+  if (toggle.classList.contains('toggled')) {
+    bg.style.left = '50%'; // move to BN
+  } else {
+    bg.style.left = '2px'; // move to EN
+  }
+});
+
+</script>
+
+
+
+
 
   
 
