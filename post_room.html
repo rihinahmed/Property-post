@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Post a Room | RoomFinder</title>
+  <link rel="stylesheet" href="/stylings/post-room.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <header class="header">
+    <div class="logo">RoomFinder</div>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="#rooms">Rooms</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-left">
+        <h1>Post Your Room</h1>
+        <p>Let others discover your perfect space. List your room for rent in just a few steps!</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="post-room-section">
+    <div class="container">
+      <h2>Room Details</h2>
+      <form class="post-room-form">
+        <div class="form-group">
+          <label for="title"><i class="fas fa-heading"></i> Room Title</label>
+          <input type="text" id="title" placeholder="Cozy Studio Apartment in Dhanmondi" required>
+        </div>
+
+        <div class="form-group">
+          <label for="location"><i class="fas fa-map-marker-alt"></i> Location</label>
+          <input type="text" id="location" placeholder="Dhanmondi, Dhaka" required>
+        </div>
+
+        <div class="form-group">
+          <label for="price"><i class="fas fa-money-bill-wave"></i> Monthly Rent</label>
+          <input type="number" id="price" placeholder="e.g. 8000" required>
+        </div>
+
+        <div class="form-group">
+          <label for="type"><i class="fas fa-door-open"></i> Room Type</label>
+          <select id="type" required>
+            <option value="">Select</option>
+            <option value="single">Single</option>
+            <option value="shared">Shared</option>
+            <option value="apartment">Apartment</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="amenities"><i class="fas fa-concierge-bell"></i> Amenities</label>
+          <input type="text" id="amenities" placeholder="WiFi, Kitchen, AC..." required>
+        </div>
+
+        <div class="form-group">
+          <label for="description"><i class="fas fa-align-left"></i> Description</label>
+          <textarea id="description" rows="5" placeholder="Write a detailed description..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="images"><i class="fas fa-image"></i> Upload Images</label>
+          <input type="file" id="room-photos" name="room-photos[]" accept="image/*" multiple>
+        </div>
+
+        <button type="submit" class="submit-btn">Submit Room</button>
+      </form>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-column">
+        <h4>About</h4>
+        <p>RoomFinder helps you find and post rooms in your city.</p>
+      </div>
+      <div class="footer-column">
+        <h4>Quick Links</h4>
+        <div class="footer-links">
+          <a href="#">Home</a>
+          <a href="#">Post Room</a>
+          <a href="#">Search</a>
+        </div>
+      </div>
+      <div class="footer-column">
+        <h4>Follow Us</h4>
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-facebook"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">&copy; 2025 RoomFinder. All rights reserved.</div>
+  </footer>
+</body>
+</html>

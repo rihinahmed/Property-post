@@ -20,5 +20,5 @@ const track = document.querySelector('.carousel-track');
     }
   });
   document.querySelectorAll('.featured-card').forEach((card, index) => {
-    card.style.animationDelay = `${index * 0.2}s`;
+    card.style.animationDelay = `${ 0.2}s`;
   });

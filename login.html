@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Login - RoomFinder</title>
+    <link rel="stylesheet" href="/stylings/login_style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <header class="header">
+        <div class="logo">RoomFinder</div>
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="browse.html">Browse</a>
+            <a href="post-room.html">Post Room</a>
+            <a href="login.html" class="active">Login</a>
+        </nav>
+    </header>
+
+    <!-- Login Section -->
+    <section class="login-section">
+        <div class="login-container" id="main">
+            <div class="sign-up">
+                <form action="#">
+                    <h1>Create Account</h1>
+                    <div class="social-container">
+                        <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+                        <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                    <p>Or use your email for registration</p>
+                    <input type="text" name="text" placeholder="Name" required>
+                    <input type="email" name="email" placeholder="Email" required>
+                    <input type="password" name="password" placeholder="Password" required>
+                    <button>Sign Up</button>
+                </form>
+            </div>
+            <div class="sign-in">
+                <form action="#">
+                    <h1>Welcome Back</h1>
+                    <div class="social-container">
+                        <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+                        <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                    <p>Or use your account</p>
+                    <input type="email" name="email" placeholder="Email" required>
+                    <input type="password" name="password" placeholder="Password" required>
+                    <a href="forget_password.html">Forgot password?</a>
+                    <button>Sign In</button>
+                </form>
+            </div>
+            <div class="overlay-container">
+                <div class="overlay">
+                    <div class="overlay-left">
+                        <h1>Welcome Back!</h1>
+                        <p>To keep connected with us please login with your personal info</p>
+                        <button id="sign-in">Sign In</button>
+                    </div>
+                    <div class="overlay-right">
+                        <h1>Hey There!</h1>
+                        <p>Please share your personal details and start a journey with us</p>
+                        <button id="sign-up">Sign Up</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 RoomFinder. All rights reserved.</p>
+    </footer>
+
+
+
+    <!-- JavaScript for Toggle Menu -->
+    <script>
+        // Function to toggle the navigation menu on small screens
+        function toggleMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('active');
+        }
+    </script>
+    <script type="text/javaScript">
+        const signUpButton = document.getElementById('sign-up');
+        const signInButton = document.getElementById('sign-in');
+        const main = document.getElementById('main');
+
+        signUpButton.addEventListener('click',()=>{
+            main.classList.add("right-panel-active");
+        })
+        signInButton.addEventListener('click',()=>{
+            main.classList.remove("right-panel-active");
+        })
+    </script>
+</body>
+</html>
