@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RoomFinder Dashboard</title>
+  <link rel="stylesheet" href="/stylings/style.css" />
+  <link rel="stylesheet" href="/stylings/dashboard.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <div class="dashboard" role="main" aria-label="Dashboard main content">
+    <aside class="sidebar" role="navigation" aria-label="Main navigation">
+      <div class="logo" tabindex="0">RoomFinder</div>
+      <nav>
+        <a href="index.html"><i class="fas fa-door-open"></i> Home</a>
+        <a href="/dashboard" class="active" aria-current="page"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        <a href="/rooms"><i class="fas fa-door-open"></i> Rooms</a>
+        <a href="/blog"><i class="fas fa-blog"></i> Blog</a>
+        <a href="/contact"><i class="fas fa-envelope"></i> Contact</a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="main-header">
+        <div class="search-box" role="search">
+          <input type="search" placeholder="Search..." aria-label="Search dashboard content" />
+          <i class="fas fa-search" aria-hidden="true"></i>
+        </div>
+        <div class="user-info" tabindex="0" aria-label="User profile">
+          <span>Hello, Rihin</span>
+          <img src="images/rihin.jpg" alt="User Avatar" />
+        </div>
+      </header>
+
+      <section class="content">
+        <div class="summary-cards" aria-label="Summary of stats">
+          <div class="card" tabindex="0">
+            <h3>Total Rooms</h3>
+            <p>128</p>
+          </div>
+          <div class="card" tabindex="0">
+            <h3>New Listings</h3>
+            <p>12</p>
+          </div>
+          <div class="card" tabindex="0">
+            <h3>Blog Posts</h3>
+            <p>45</p>
+          </div>
+          <div class="card" tabindex="0">
+            <h3>Messages</h3>
+            <p>8</p>
+          </div>
+        </div>
+
+        <section class="recent-section" aria-label="Recent activity">
+          <h2>Recent Activity</h2>
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Activity</th>
+                <th scope="col">Status</th>
+                <th scope="col">Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr tabindex="0">
+                <td>2025-07-18</td>
+                <td>New room listed</td>
+                <td><span class="status success">Approved</span></td>
+                <td>Family apartment in Banani</td>
+              </tr>
+              <tr tabindex="0">
+                <td>2025-07-17</td>
+                <td>Blog post published</td>
+                <td><span class="status success">Live</span></td>
+                <td>How to choose a safe apartment</td>
+              </tr>
+              <tr tabindex="0">
+                <td>2025-07-16</td>
+                <td>New message received</td>
+                <td><span class="status warning">Pending</span></td>
+                <td>Inquiry about hostel facilities</td>
+              </tr>
+              <tr tabindex="0">
+                <td>2025-07-15</td>
+                <td>Room removed</td>
+                <td><span class="status error">Removed</span></td>
+                <td>Bachelor room in Mirpur</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Simple avatar hover animation with JS for fun (optional)
+    const userAvatar = document.querySelector('.user-info img');
+    userAvatar.addEventListener('mouseenter', () => {
+      userAvatar.style.transform = 'scale(1.1)';
+      userAvatar.style.transition = 'transform 0.3s ease';
+    });
+    userAvatar.addEventListener('mouseleave', () => {
+      userAvatar.style.transform = 'scale(1)';
+    });
+  </script>
+
+  <!--spark animation-->
+  <script>
+    document.addEventListener('click', function (e) {
+      const count = 10;
+      const sparkColor = '#6366f2'; // Matches your theme
+      const size = 6;
+      const radius = 40;
+      const duration = 600;
+  
+      for (let i = 0; i < count; i++) {
+        const spark = document.createElement('div');
+        spark.style.position = 'absolute';
+        spark.style.width = 4 + 'px';
+        spark.style.height = 4 + 'px';
+        spark.style.borderRadius = '50%';
+        spark.style.backgroundColor = sparkColor;
+        spark.style.pointerEvents = 'none';
+        spark.style.zIndex = '9999';
+  
+        // Correct position on the full page
+        const pageX = e.pageX;
+        const pageY = e.pageY;
+  
+        const angle = (2 * Math.PI * i) / count;
+        const x = Math.cos(angle) * radius;
+        const y = Math.sin(angle) * radius;
+  
+        spark.style.left = pageX + 'px';
+        spark.style.top = pageY + 'px';
+  
+        document.body.appendChild(spark);
+  
+        spark.animate(
+          [
+            { transform: 'translate(0, 0)', opacity: 1 },
+            { transform: `translate(${x}px, ${y}px)`, opacity: 0 }
+          ],
+          {
+            duration: duration,
+            easing: 'ease-out'
+          }
+        );
+  
+        setTimeout(() => spark.remove(), duration);
+      }
+    });
+  </script>
+
+</body>
+</html>

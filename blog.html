@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RoomFinder Blog</title>
+  <link rel="stylesheet" href="/stylings/style.css">
+  <link rel="stylesheet" href="/stylings/blog.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">RoomFinder</div>
+    <nav class="nav-links">
+      <a href="/">Home</a>
+      <a href="/rooms">Rooms</a>
+      <a href="/blog" class="active">Blog</a>
+      <a href="/contact">Contact</a>
+    </nav>
+  </header>
+
+  <!-- Blog Hero -->
+  <section class="hero blog-hero">
+    <div class="hero-content">
+      <div class="hero-left">
+        <h1>RoomFinder Blog</h1>
+        <p>Articles, tips, and insights to make your rental journey easier.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Blog -->
+  <section class="featured blog-featured">
+    <h2>Featured Article</h2>
+    <div class="blog-featured-card">
+      <img src="/images/article.jpg" alt="Featured Blog">
+      <div class="blog-featured-content">
+        <h3>5 Mistakes First-Time Renters Make</h3>
+        <p>Discover the common traps and how to avoid them while renting your first place in Dhaka.</p>
+        <div class="blog-meta">
+          <span>🏷️ Renting Tips</span>
+          <span>🕓 3 min read</span>
+        </div>
+        <a href="#" class="read-more">Read More</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Post a Blog -->
+  <section class="post-blog-toggle">
+    <button id="togglePostForm">➕ Post a Blog</button>
+  </section>
+
+  <section class="post-blog-section" id="postBlogSection"">
+    <h2>✍️ Write a Blog</h2>
+    <form id="blogForm">
+      <input type="text" id="title" placeholder="Blog Title" required />
+      <textarea id="content" placeholder="Write your blog content here..." required></textarea>
+      <input type="text" id="tag" placeholder="Tag (e.g., Safety, Tips)" />
+      <input type="text" id="image" placeholder="Image URL (optional)" />
+      <button type="submit">Post Blog</button>
+    </form>
+  </section>
+
+  <!-- Blog Grid -->
+  <section class="recent-section">
+    <div class="recent-header">
+      <h2>Latest Articles</h2>
+      <p>Stay informed with our newest blog posts.</p>
+    </div>
+    <div class="blog-grid">
+      <!--card 1-->
+      <div class="blog-card">
+        <img src="/images/article.jpg" alt="Room">
+        <div class="blog-card-body">
+          <h4>Affordable Hostels in Uttara</h4>
+          <div class="blog-card-meta">
+            <span>🏷️ Hostel</span> <span>🕓 2 min read</span>
+          </div>
+          <p>Hostel hunting made easier with this list of budget-friendly options in Uttara.</p>
+          <a href="#" class="read-more">Read More</a>
+        </div>
+      </div>
+      <!--card 2-->
+      <div class="blog-card">
+        <img src="/images/article.jpg" alt="Room">
+        <div class="blog-card-body">
+          <h4>Affordable Hostels in Uttara</h4>
+          <div class="blog-card-meta">
+            <span>🏷️ Hostel</span> <span>🕓 2 min read</span>
+          </div>
+          <p>Hostel hunting made easier with this list of budget-friendly options in Uttara.</p>
+          <a href="#" class="read-more">Read More</a>
+        </div>
+      </div>
+      <!--card 3-->
+      <div class="blog-card">
+        <img src="/images/article.jpg" alt="Room">
+        <div class="blog-card-body">
+          <h4>Affordable Hostels in Uttara</h4>
+          <div class="blog-card-meta">
+            <span>🏷️ Hostel</span> <span>🕓 2 min read</span>
+          </div>
+          <p>Hostel hunting made easier with this list of budget-friendly options in Uttara.</p>
+          <a href="#" class="read-more">Read More</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <!-- footer content -->
+  </footer>
+
+  <script>
+    const toggleButton = document.getElementById('togglePostForm');
+    const postForm = document.getElementById('postBlogSection');
+  
+    toggleButton.addEventListener('click', () => {
+      const isShown = postForm.classList.toggle('show');
+      toggleButton.textContent = isShown ? '➖ Hide Form' : '➕ Post a Blog';
+    });
+  
+    const form = document.getElementById('blogForm');
+    const grid = document.querySelector('.blog-grid');
+  
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+  
+      const title = document.getElementById('title').value;
+      const content = document.getElementById('content').value;
+      const tag = document.getElementById('tag').value || "General";
+      const image = document.getElementById('image').value || "https://source.unsplash.com/260x160/?apartment";
+  
+      const newCard = document.createElement('div');
+      newCard.classList.add('blog-card');
+      newCard.innerHTML = `
+        <img src="${image}" alt="User Blog">
+        <div class="blog-card-body">
+          <h4>${title}</h4>
+          <div class="blog-card-meta">
+            <span>🏷️ ${tag}</span> <span>🕓 Just now</span>
+          </div>
+          <p>${content}</p>
+          <a href="#" class="read-more">Read More</a>
+        </div>
+      `;
+  
+      grid.prepend(newCard);
+      form.reset();
+      postForm.classList.remove('show');
+      toggleButton.textContent = '➕ Post a Blog';
+      alert("✅ Blog posted (temporary demo)");
+    });
+  </script>
+
+  <!--spark animation-->
+  <script>
+    document.addEventListener('click', function (e) {
+      const count = 10;
+      const sparkColor = '#6366f2'; // Matches your theme
+      const size = 6;
+      const radius = 40;
+      const duration = 600;
+  
+      for (let i = 0; i < count; i++) {
+        const spark = document.createElement('div');
+        spark.style.position = 'absolute';
+        spark.style.width = 4 + 'px';
+        spark.style.height = 4 + 'px';
+        spark.style.borderRadius = '50%';
+        spark.style.backgroundColor = sparkColor;
+        spark.style.pointerEvents = 'none';
+        spark.style.zIndex = '9999';
+  
+        // Correct position on the full page
+        const pageX = e.pageX;
+        const pageY = e.pageY;
+  
+        const angle = (2 * Math.PI * i) / count;
+        const x = Math.cos(angle) * radius;
+        const y = Math.sin(angle) * radius;
+  
+        spark.style.left = pageX + 'px';
+        spark.style.top = pageY + 'px';
+  
+        document.body.appendChild(spark);
+  
+        spark.animate(
+          [
+            { transform: 'translate(0, 0)', opacity: 1 },
+            { transform: `translate(${x}px, ${y}px)`, opacity: 0 }
+          ],
+          {
+            duration: duration,
+            easing: 'ease-out'
+          }
+        );
+  
+        setTimeout(() => spark.remove(), duration);
+      }
+    });
+  </script>
+  
+
+</body>
+</html>
