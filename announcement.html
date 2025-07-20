@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Announcements | RoomFinder</title>
+  <link rel="stylesheet" href="/stylings/style.css" />
+  <link rel="stylesheet" href="/stylings/announcement.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">RoomFinder</div>
+    <nav class="nav-links">
+      <a href="/">Home</a>
+      <a href="/rooms">Rooms</a>
+      <a href="/blog">Blog</a>
+      <a href="/announcement" class="active">Announcement</a>
+      <a href="/contact">Contact</a>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section class="announcement-hero">
+    <h1>📢 Latest Announcements</h1>
+    <p>Stay up to date with important updates from RoomFinder</p>
+  </section>
+
+  <!-- Announcements -->
+  <section class="announcement-section">
+    <div class="announcement-card" data-anim="left">
+      <h3>🚀 New Feature: Post Your Own Room</h3>
+      <p>We just launched a feature that allows users to list their rooms directly! Check it out on the dashboard.</p>
+      <span class="date">20 July 2025</span>
+    </div>
+
+    <div class="announcement-card" data-anim="right">
+      <h3>⚙️ Scheduled Maintenance</h3>
+      <p>Our site will be down for maintenance on 22 July from 2AM–4AM. We appreciate your patience.</p>
+      <span class="date">18 July 2025</span>
+    </div>
+
+    <div class="announcement-card" data-anim="left">
+      <h3>🎉 Reached 10,000 Listings</h3>
+      <p>We now have over 10,000 active room listings across Dhaka. Thank you for your support!</p>
+      <span class="date">15 July 2025</span>
+    </div>
+
+    <div class="announcement-card" data-anim="left">
+        <h3>🎉 Reached 10,000 Listings</h3>
+        <p>We now have over 10,000 active room listings across Dhaka. Thank you for your support!</p>
+        <span class="date">15 July 2025</span>
+    </div>
+
+    <div class="announcement-card" data-anim="left">
+        <h3>🎉 Reached 10,000 Listings</h3>
+        <p>We now have over 10,000 active room listings across Dhaka. Thank you for your support!</p>
+        <span class="date">15 July 2025</span>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer different-footer">
+    <div class="footer-content">
+      <div class="footer-column">
+        <h4>RoomFinder</h4>
+        <p>Find your perfect stay in Dhaka — from family homes to hostels.</p>
+      </div>
+      <div class="footer-column">
+        <h4>Explore</h4>
+        <a href="#">Rooms</a>
+        <a href="#">Blog</a>
+        <a href="#">Login</a>
+      </div>
+      <div class="footer-column">
+        <h4>Support</h4>
+        <a href="#">Contact</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2025 RoomFinder. All rights reserved.
+    </div>
+  </footer>
+
+  <script>
+    const cards = document.querySelectorAll('.announcement-card');
+  
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const card = entry.target;
+          const animType = card.dataset.anim;
+  
+          card.classList.add('show');
+          card.classList.add(animType === 'left' ? 'from-left' : 'from-right');
+  
+          setTimeout(() => {
+            card.classList.add(animType === 'left' ? 'reveal-left' : 'reveal-right');
+          }, 100);
+  
+          observer.unobserve(card);
+        }
+      });
+    }, { threshold: 0.2 });
+  
+    cards.forEach(card => observer.observe(card));
+  </script>
+
+  <!--For click spark animation-->
+    <script>
+        document.addEventListener('click', function (e) {
+        const count = 10;
+        const sparkColor = '#6366f2'; // Matches your theme
+        const size = 6;
+        const radius = 40;
+        const duration = 600;
+    
+        for (let i = 0; i < count; i++) {
+            const spark = document.createElement('div');
+            spark.style.position = 'absolute';
+            spark.style.width = 4 + 'px';
+            spark.style.height = 4 + 'px';
+            spark.style.borderRadius = '50%';
+            spark.style.backgroundColor = sparkColor;
+            spark.style.pointerEvents = 'none';
+            spark.style.zIndex = '9999';
+    
+            // Correct position on the full page
+            const pageX = e.pageX;
+            const pageY = e.pageY;
+    
+            const angle = (2 * Math.PI * i) / count;
+            const x = Math.cos(angle) * radius;
+            const y = Math.sin(angle) * radius;
+    
+            spark.style.left = pageX + 'px';
+            spark.style.top = pageY + 'px';
+    
+            document.body.appendChild(spark);
+    
+            spark.animate(
+            [
+                { transform: 'translate(0, 0)', opacity: 1 },
+                { transform: `translate(${x}px, ${y}px)`, opacity: 0 }
+            ],
+            {
+                duration: duration,
+                easing: 'ease-out'
+            }
+            );
+    
+            setTimeout(() => spark.remove(), duration);
+        }
+        });
+    </script>
+  
+
+</body>
+</html>
