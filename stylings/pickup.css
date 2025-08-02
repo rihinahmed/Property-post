@@ -1,0 +1,208 @@
+/* Fade-in for body */
+body {
+    opacity: 0;
+    transition: opacity 0.8s ease;
+  }
+  body.animate-body {
+    opacity: 1;
+  }
+  
+  /* Hero Section */
+  .pickup-hero {
+    text-align: center;
+    padding: 80px 20px 40px;
+    background: linear-gradient(to right, #0a2540, #003e80);
+    color: #fff;
+  }
+  .pickup-hero h1 {
+    font-size: 2.8rem;
+    margin-bottom: 10px;
+  }
+  .pickup-hero p {
+    font-size: 1.1rem;
+    opacity: 0.85;
+  }
+  
+  /* Steps */
+  .pickup-steps {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 25px;
+    padding: 50px 20px;
+    background: #0a2540;
+  }
+  .step-card {
+    width: 300px;
+    background: rgba(255, 255, 255, 0.07);
+    border-radius: 15px;
+    padding: 25px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 20px rgba(0, 170, 255, 0.2);
+    color: #e0f3ff;
+    transform: translateX(60px);
+    opacity: 0;
+    transition: all 0.6s ease;
+    transition-delay: 0.5s;
+  }
+  .step-card.animate-left { transform: translateX(-60px); }
+  .step-card.visible {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  
+  /* Request Section */
+  .pickup-request-section {
+    background: linear-gradient(270deg,
+    #0a2540,   
+    #002040,
+    #011627,
+    #09203f,
+    #0d2c50,
+    #001c33
+  );
+    background-size: 800% 800%;
+    animation: animatedGradient 12s ease infinite;
+    padding: 80px 20px;
+    color: #e0f3ff;
+    text-align: center;
+  }
+  @keyframes animatedGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .pickup-request-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+  }
+  .pickup-request-section p {
+    font-size: 1rem;
+    opacity: 0.8;
+    margin-bottom: 40px;
+  }
+  .pickup-request-card {
+    max-width: 500px;
+    margin: auto;
+    padding: 30px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 4px 25px rgba(0, 170, 255, 0.15);
+  }
+  .pickup-request-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .pickup-request-form input,
+  .pickup-request-form textarea {
+    padding: 14px 16px;
+    border: none;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #e0f3ff;
+    font-size: 1rem;
+    outline: none;
+    transition: background 0.3s ease;
+  }
+  .pickup-request-form input::placeholder,
+  .pickup-request-form textarea::placeholder {
+    color: #aad8ff;
+  }
+  .pickup-request-form input:focus,
+  .pickup-request-form textarea:focus {
+    background: rgba(255, 255, 255, 0.15);
+  }
+  .pickup-request-form textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+  .pickup-request-form button {
+    background: #00c3ff;
+    border: none;
+    padding: 14px;
+    border-radius: 30px;
+    font-weight: bold;
+    color: #fff;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+  }
+  .pickup-request-form button:hover {
+    background: #009cd3;
+    box-shadow: 0 4px 15px rgba(0, 195, 255, 0.3);
+  }
+  
+  /* Ripple Popup */
+  .ripple-popup {
+    position: fixed;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 300px;
+    background: rgba(0, 40, 80, 0.9);
+    border-radius: 15px;
+    padding: 20px 30px;
+    color: #00e3ff;
+    font-weight: 700;
+    font-size: 1.3rem;
+    box-shadow: 0 0 30px #00e3ffaa;
+    text-align: center;
+    cursor: pointer;
+    visibility: hidden;
+    opacity: 0;
+    z-index: 9999;
+    overflow: visible;
+  }
+  .ripple-popup.show {
+    visibility: visible;
+    opacity: 1;
+    animation: fadeInUp 0.5s ease forwards;
+  }
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translate(-50%, 30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+  }
+  .ripple-popup::before {
+    content: "";
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%) scale(0);
+    width: 120px;
+    height: 120px;
+    background: rgba(0, 195, 255, 0.3);
+    border-radius: 50%;
+    filter: blur(15px);
+    box-shadow: 0 0 50px 20px rgba(0, 195, 255, 0.4);
+    animation-fill-mode: forwards;
+    animation-name: rippleExpand;
+    animation-duration: 0.6s;
+    animation-timing-function: ease-out;
+    animation-play-state: paused;
+  }
+  .ripple-popup.show::before {
+    animation-play-state: running;
+  }
+  @keyframes rippleExpand {
+    0% {
+      transform: translateX(-50%) scale(0);
+      opacity: 0.6;
+    }
+    50% {
+      transform: translateX(-50%) scale(1.3);
+      opacity: 0.9;
+    }
+    100% {
+      transform: translateX(-50%) scale(1);
+      opacity: 0;
+    }
+  }
+  

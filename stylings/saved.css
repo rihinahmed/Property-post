@@ -1,0 +1,177 @@
+.saved-hero {
+    text-align: center;
+    padding: 80px 20px 40px;
+    background: linear-gradient(to right, #0a2540, #003e80);
+    color: #fff;
+  }
+  
+  .saved-hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+  
+  .saved-hero p {
+    font-size: 1.1rem;
+    opacity: 0.8;
+  }
+  
+  .saved-grid-section {
+    padding: 40px 20px;
+    background: #0a2540;
+  }
+  
+  .saved-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+    gap: 30px;
+  }
+  
+  .saved-card {
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    overflow: hidden;
+    color: #e0f3ff;
+    box-shadow: 0 4px 20px rgba(0, 170, 255, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .saved-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 30px rgba(0, 170, 255, 0.3);
+  }
+  
+  .saved-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+  }
+  
+  .saved-info {
+    padding: 20px;
+  }
+  
+  .saved-info h3 {
+    margin: 0 0 8px;
+    font-size: 1.3rem;
+    color: #00c3ff;
+  }
+  
+  .saved-info p {
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+    opacity: 0.85;
+  }
+  
+  .saved-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+    color: #aad8ff;
+  }
+  
+  .unsave-btn {
+    background: #ff4d4d;
+    border: none;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s ease;
+  }
+  
+  .unsave-btn:hover {
+    background: #ff1a1a;
+  }
+  .toggles {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding-right: 20px;
+  }
+  
+  .toggles button {
+    font-size: 1rem;
+    background: transparent;
+    border: 2px solid #aad8ff;
+    color: #aad8ff;
+    border-radius: 10px;
+    padding: 6px 10px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .toggles button:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .controls {
+    padding: 10px 20px;
+    text-align: right;
+    background: #081f39;
+  }
+  
+  .controls select {
+    background: rgba(255,255,255,0.1);
+    color: #aad8ff;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: none;
+    font-size: 1rem;
+  }
+  
+  .undo-toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #004466;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 8px;
+    display: none;
+    z-index: 999;
+    box-shadow: 0 0 12px rgba(0,0,0,0.3);
+  }
+  
+  .undo-toast button {
+    background: transparent;
+    color: #00c3ff;
+    border: none;
+    font-weight: bold;
+    margin-left: 10px;
+    cursor: pointer;
+  }
+  
+  /* Dark mode */
+  body.dark {
+    background: #000e1a;
+    color: #e0f3ff;
+  }
+  
+  body.dark .saved-card {
+    background: rgba(255, 255, 255, 0.06);
+  }
+  
+  body.dark .unsave-btn {
+    background: #990000;
+  }
+  
+  body.dark .unsave-btn:hover {
+    background: #cc0000;
+  }
+  
+  @media print {
+    header, footer, .toggles, .controls, .unsave-btn {
+      display: none;
+    }
+    .saved-card {
+      page-break-inside: avoid;
+      border: 1px solid #ccc;
+      background: white;
+      color: black;
+    }
+  }
+  

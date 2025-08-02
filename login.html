@@ -1,149 +1,244 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>Login - RoomFinder</title>
-    <link rel="stylesheet" href="/stylings/login_style.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - RoomFinder</title>
+  <link rel="stylesheet" href="/stylings/login_style.css"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
 </head>
 <body>
+  <!-- Navigation Bar -->
+  <header class="header">
+    <div class="logo">RoomFinder</div>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="browse.html">Browse</a>
+      <a href="post-room.html">Post Room</a>
+      <a href="login.html" class="login-link">Login / Sign Up</a>
+    </nav>
+  </header>
 
-    <!-- Navigation Bar -->
-    <header class="header">
-        <div class="logo">RoomFinder</div>
-        <nav class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="browse.html">Browse</a>
-            <a href="post-room.html">Post Room</a>
-            <a href="login.html" class="active">Login</a>
-        </nav>
-    </header>
+  <!-- Login Section -->
+  <section class="login-section">
+    <div class="login-container" id="main">
+      <div class="sign-up">
+        <form id="signupForm">
+          <h1>Create Account</h1>
+          <div class="social-container">
+            <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+            <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+          <p>Or use your email for registration</p>
+          <input type="text" id="signupName" placeholder="Name" required />
+          <input type="email" id="signupEmail" placeholder="Email" required />
+          <input type="password" id="signupPassword" placeholder="Password" required />
+          <select id="signupRole" required>
+            <option value="" disabled selected>Select Role</option>
+            <option value="buyer">Buyer</option>
+            <option value="seller">Seller</option>
+          </select>
+          <button type="submit">Sign Up</button>
+        </form>
+      </div>
 
-    <!-- Login Section -->
-    <section class="login-section">
-        <div class="login-container" id="main">
-            <div class="sign-up">
-                <form action="#">
-                    <h1>Create Account</h1>
-                    <div class="social-container">
-                        <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-                        <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                    <p>Or use your email for registration</p>
-                    <input type="text" name="text" placeholder="Name" required>
-                    <input type="email" name="email" placeholder="Email" required>
-                    <input type="password" name="password" placeholder="Password" required>
-                    <button>Sign Up</button>
-                </form>
-            </div>
-            <div class="sign-in">
-                <form action="#">
-                    <h1>Welcome Back</h1>
-                    <div class="social-container">
-                        <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-                        <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                    <p>Or use your account</p>
-                    <input type="email" name="email" placeholder="Email" required>
-                    <input type="password" name="password" placeholder="Password" required>
-                    <a href="forget_password.html">Forgot password?</a>
-                    <button>Sign In</button>
-                </form>
-            </div>
-            <div class="overlay-container">
-                <div class="overlay">
-                    <div class="overlay-left">
-                        <h1>Welcome Back!</h1>
-                        <p>To keep connected with us please login with your personal info</p>
-                        <button id="sign-in">Sign In</button>
-                    </div>
-                    <div class="overlay-right">
-                        <h1>Hey There!</h1>
-                        <p>Please share your personal details and start a journey with us</p>
-                        <button id="sign-up">Sign Up</button>
-                    </div>
-                </div>
-            </div>
+      <div class="sign-in">
+        <form id="loginForm">
+          <h1>Welcome Back</h1>
+          <div class="social-container">
+            <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+            <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+          <p>Or use your account</p>
+          <input type="email" id="loginEmail" placeholder="Email" required />
+          <input type="password" id="loginPassword" placeholder="Password" required />
+          <select id="loginRole" required>
+            <option value="" disabled selected>Login as...</option>
+            <option value="buyer">Buyer</option>
+            <option value="seller">Seller</option>
+          </select>
+          <a href="forget_password.html">Forgot password?</a>
+          <button type="submit">Sign In</button>
+        </form>
+      </div>
+
+      <div class="overlay-container">
+        <div class="overlay">
+          <div class="overlay-left">
+            <h1>Welcome Back!</h1>
+            <p>To keep connected with us please login with your personal info</p>
+            <button id="sign-in">Sign In</button>
+          </div>
+          <div class="overlay-right">
+            <h1>Hey There!</h1>
+            <p>Please share your personal details and start a journey with us</p>
+            <button id="sign-up">Sign Up</button>
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; 2025 RoomFinder. All rights reserved.</p>
+  </footer>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <p>&copy; 2025 RoomFinder. All rights reserved.</p>
-    </footer>
+  <!-- Panel Switcher -->
+  <script>
+    const signUpButton = document.getElementById('sign-up');
+    const signInButton = document.getElementById('sign-in');
+    const main = document.getElementById('main');
 
+    signUpButton.addEventListener('click', () => {
+      main.classList.add("right-panel-active");
+    });
+    signInButton.addEventListener('click', () => {
+      main.classList.remove("right-panel-active");
+    });
+  </script>
 
-
-    <!-- JavaScript for Toggle Menu -->
-    <script>
-        // Function to toggle the navigation menu on small screens
-        function toggleMenu() {
-            const navLinks = document.querySelector('.nav-links');
-            navLinks.classList.toggle('active');
-        }
-    </script>
-    <script type="text/javaScript">
-        const signUpButton = document.getElementById('sign-up');
-        const signInButton = document.getElementById('sign-in');
-        const main = document.getElementById('main');
-
-        signUpButton.addEventListener('click',()=>{
-            main.classList.add("right-panel-active");
-        })
-        signInButton.addEventListener('click',()=>{
-            main.classList.remove("right-panel-active");
-        })
-    </script>
-
-    <!--spark animation-->
+  <!-- Spark Animation -->
   <script>
     document.addEventListener('click', function (e) {
       const count = 10;
-      const sparkColor = '#6366f2'; // Matches your theme
-      const size = 6;
+      const sparkColor = '#6366f2';
       const radius = 40;
       const duration = 600;
-  
+
       for (let i = 0; i < count; i++) {
         const spark = document.createElement('div');
         spark.style.position = 'absolute';
-        spark.style.width = 4 + 'px';
-        spark.style.height = 4 + 'px';
+        spark.style.width = '4px';
+        spark.style.height = '4px';
         spark.style.borderRadius = '50%';
         spark.style.backgroundColor = sparkColor;
         spark.style.pointerEvents = 'none';
         spark.style.zIndex = '9999';
-  
-        // Correct position on the full page
+
         const pageX = e.pageX;
         const pageY = e.pageY;
-  
         const angle = (2 * Math.PI * i) / count;
         const x = Math.cos(angle) * radius;
         const y = Math.sin(angle) * radius;
-  
+
         spark.style.left = pageX + 'px';
         spark.style.top = pageY + 'px';
-  
+
         document.body.appendChild(spark);
-  
-        spark.animate(
-          [
-            { transform: 'translate(0, 0)', opacity: 1 },
-            { transform: `translate(${x}px, ${y}px)`, opacity: 0 }
-          ],
-          {
-            duration: duration,
-            easing: 'ease-out'
-          }
-        );
-  
+        spark.animate([
+          { transform: 'translate(0, 0)', opacity: 1 },
+          { transform: `translate(${x}px, ${y}px)`, opacity: 0 }
+        ], {
+          duration: duration,
+          easing: 'ease-out'
+        });
+
         setTimeout(() => spark.remove(), duration);
+      }
+    });
+  </script>
+
+  <!-- Main scripts: session check + login/signup handlers -->
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      // ==== Dynamic Navbar Login/Logout ====
+      try {
+        const res = await fetch("http://localhost:5000/api/user/session", {
+          credentials: "include"
+        });
+
+        const data = await res.json();
+        const navLinks = document.querySelector(".nav-links");
+
+        if (data.loggedIn) {
+          const loginLink = navLinks.querySelector("a[href='login.html']");
+          if (loginLink) loginLink.remove();
+
+          const logoutBtn = document.createElement("a");
+          logoutBtn.textContent = "Logout";
+          logoutBtn.href = "#";
+          logoutBtn.classList.add("logout-link");
+          logoutBtn.addEventListener("click", async () => {
+            await fetch("http://localhost:5000/api/user/logout", {
+              method: "POST",
+              credentials: "include"
+            });
+            window.location.reload();
+          });
+          navLinks.appendChild(logoutBtn);
+        }
+      } catch (err) {
+        console.error("❌ Session check failed:", err);
+      }
+
+      // ==== Signup Form Handler ====
+      const signupForm = document.getElementById("signupForm");
+      if (signupForm) {
+        signupForm.addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const name = document.getElementById("signupName").value;
+          const email = document.getElementById("signupEmail").value;
+          const password = document.getElementById("signupPassword").value;
+          const role = document.getElementById("signupRole").value;
+
+          try {
+            const res = await fetch('http://localhost:5000/api/user/signup', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({ name, email, password, role })
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+              alert("✅ Account created successfully!");
+              document.getElementById("sign-in").click(); // Switch to sign-in panel
+            } else {
+              alert("❌ " + data.message);
+            }
+          } catch (err) {
+            console.error("❌ Signup error:", err);
+            alert("⚠️ Server error. Please try again later.");
+          }
+        });
+      }
+
+      // ==== Login Form Handler ====
+      const loginForm = document.getElementById("loginForm");
+      if (loginForm) {
+        loginForm.addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const email = document.getElementById("loginEmail").value;
+          const password = document.getElementById("loginPassword").value;
+          const role = document.getElementById("loginRole").value;
+
+          try {
+            const res = await fetch('http://localhost:5000/api/user/login', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({ email, password, role })
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+              alert("✅ Login successful: " + data.message);
+              window.location.href = "dashboard.html"; // Redirect after login
+            } else {
+              alert("❌ " + data.message);
+            }
+          } catch (err) {
+            console.error("❌ Login error:", err);
+            alert("⚠️ Server error. Please try again later.");
+          }
+        });
       }
     });
   </script>
