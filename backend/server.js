@@ -9,31 +9,37 @@ const PORT = 5000;
 
 // ✅ Oracle DB Config
 const dbConfig = {
-  user: "SYSTEM", // Replace with your actual user
-  password: "Rihin1234", // Replace with your actual password
+  user: "SYSTEM",
+  password: "Rihin1234",
   connectString: "localhost/XEPDB1"
 };
 
-// ✅ CORS Setup (Allow both localhost & 127.0.0.1)
+// ✅ CORS Setup
 const allowedOrigins = ["http://localhost:5500", "http://127.0.0.1:5500"];
+
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
-    return callback(new Error("Not allowed by CORS"), false);
-  },
+  origin: allowedOrigins,
   credentials: true
 }));
 
+
 // ✅ Middleware
 app.use(bodyParser.json());
+
 app.use(session({
   secret: "roomfinder-secret",
   resave: false,
-  saveUninitialized: true,
-  cookie: { secure: false } // Use true in production (HTTPS)
+  saveUninitialized: false,
+  cookie: {
+    secure: false, // HTTPS only in production
+    httpOnly: true,
+    sameSite: 'lax',
+    maxAge: 1000 * 60 * 60
+  }
 }));
 
-// ✅ ROUTES ==========================
+
+// ✅ Routes
 
 // SIGNUP
 app.post("/api/user/signup", async (req, res) => {
@@ -42,18 +48,15 @@ app.post("/api/user/signup", async (req, res) => {
 
   try {
     const conn = await oracledb.getConnection(dbConfig);
-
-    const result = await conn.execute(
+    await conn.execute(
       `INSERT INTO users (name, email, password_hash, role)
        VALUES (:name, :email, :password, :role)`,
       { name, email, password, role },
       { autoCommit: true }
     );
-
     await conn.close();
     console.log("✅ Signup successful");
     res.json({ success: true, message: "User registered successfully!" });
-
   } catch (err) {
     console.error("❌ Signup Error:", err);
     if (err.errorNum === 1) {
@@ -75,7 +78,6 @@ app.post("/api/user/login", async (req, res) => {
       `SELECT id, name, password_hash, role FROM users WHERE email = :email`,
       [email]
     );
-
     await conn.close();
 
     if (result.rows.length === 0) {
@@ -100,7 +102,6 @@ app.post("/api/user/login", async (req, res) => {
       message: "Login successful!",
       user: { name, role }
     });
-
   } catch (err) {
     console.error("❌ Login Error:", err);
     res.status(500).json({ success: false, message: "Login failed: " + err.message });

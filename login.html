@@ -141,21 +141,20 @@
     });
   </script>
 
-  <!-- Main scripts: session check + login/signup handlers -->
+  <!-- Session + Login/Signup Handler -->
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
-      // ==== Dynamic Navbar Login/Logout ====
+      const navLinks = document.querySelector(".nav-links");
+
+      // ==== Session Check for Navbar ====
       try {
         const res = await fetch("http://localhost:5000/api/user/session", {
           credentials: "include"
         });
-
         const data = await res.json();
-        const navLinks = document.querySelector(".nav-links");
 
         if (data.loggedIn) {
-          const loginLink = navLinks.querySelector("a[href='login.html']");
-          if (loginLink) loginLink.remove();
+          navLinks.querySelectorAll("a[href='login.html']").forEach(link => link.remove());
 
           const logoutBtn = document.createElement("a");
           logoutBtn.textContent = "Logout";
@@ -168,78 +167,73 @@
             });
             window.location.reload();
           });
+
           navLinks.appendChild(logoutBtn);
         }
       } catch (err) {
         console.error("❌ Session check failed:", err);
       }
 
-      // ==== Signup Form Handler ====
-      const signupForm = document.getElementById("signupForm");
-      if (signupForm) {
-        signupForm.addEventListener("submit", async function (e) {
-          e.preventDefault();
+      // ==== Signup Handler ====
+      document.getElementById("signupForm")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-          const name = document.getElementById("signupName").value;
-          const email = document.getElementById("signupEmail").value;
-          const password = document.getElementById("signupPassword").value;
-          const role = document.getElementById("signupRole").value;
+        const name = document.getElementById("signupName").value;
+        const email = document.getElementById("signupEmail").value;
+        const password = document.getElementById("signupPassword").value;
+        const role = document.getElementById("signupRole").value;
 
-          try {
-            const res = await fetch('http://localhost:5000/api/user/signup', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              credentials: 'include',
-              body: JSON.stringify({ name, email, password, role })
-            });
+        try {
+          const res = await fetch("http://localhost:5000/api/user/signup", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ name, email, password, role })
+          });
 
-            const data = await res.json();
-
-            if (data.success) {
-              alert("✅ Account created successfully!");
-              document.getElementById("sign-in").click(); // Switch to sign-in panel
-            } else {
-              alert("❌ " + data.message);
-            }
-          } catch (err) {
-            console.error("❌ Signup error:", err);
-            alert("⚠️ Server error. Please try again later.");
+          const data = await res.json();
+          if (data.success) {
+            alert("✅ Account created successfully!");
+            document.getElementById("sign-in").click();
+          } else {
+            alert("❌ " + data.message);
           }
-        });
-      }
+        } catch (err) {
+          console.error("❌ Signup error:", err);
+          alert("⚠️ Server error. Please try again later.");
+        }
+      });
 
-      // ==== Login Form Handler ====
-      const loginForm = document.getElementById("loginForm");
-      if (loginForm) {
-        loginForm.addEventListener("submit", async function (e) {
-          e.preventDefault();
+      // ==== Login Handler ====
+      document.getElementById("loginForm")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-          const email = document.getElementById("loginEmail").value;
-          const password = document.getElementById("loginPassword").value;
-          const role = document.getElementById("loginRole").value;
+        const email = document.getElementById("loginEmail").value;
+        const password = document.getElementById("loginPassword").value;
+        const role = document.getElementById("loginRole").value;
 
-          try {
-            const res = await fetch('http://localhost:5000/api/user/login', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              credentials: 'include',
-              body: JSON.stringify({ email, password, role })
-            });
+        try {
+          const res = await fetch("http://localhost:5000/api/user/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ email, password, role })
+          });
 
-            const data = await res.json();
+          const data = await res.json();
 
-            if (data.success) {
-              alert("✅ Login successful: " + data.message);
-              window.location.href = "dashboard.html"; // Redirect after login
-            } else {
-              alert("❌ " + data.message);
-            }
-          } catch (err) {
-            console.error("❌ Login error:", err);
-            alert("⚠️ Server error. Please try again later.");
+          if (data.success) {
+            alert("✅ Login successful! Redirecting...");
+            window.location.replace("dashboard.html");
+          } else {
+            alert("❌ " + data.message);
           }
-        });
-      }
+
+        } catch (err) {
+          console.error("❌ Login error:", err);
+          alert("⚠️ Server error. Please try again later.");
+        }
+      });
     });
   </script>
 </body>
