@@ -7,7 +7,7 @@ router.post('/login', async (req, res) => {
     console.log("✅ Oracle connected");
 
     const result = await connection.execute(
-      `SELECT id, name, email, password_hash, role FROM users WHERE email = :email`,
+      `SELECT id, name, email, password_hash, role, profile_img FROM users WHERE email = :email`,
       { email },
       { outFormat: oracledb.OUT_FORMAT_OBJECT }
     );
@@ -27,7 +27,8 @@ router.post('/login', async (req, res) => {
           id: user.ID,
           name: user.NAME,
           email: user.EMAIL,
-          role: user.ROLE
+          role: user.ROLE,
+          profile_img: user.PROFILE_IMG
         };
 
         console.log("✅ Session created:", req.session.user);
