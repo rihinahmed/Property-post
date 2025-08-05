@@ -40,10 +40,10 @@
 
       <section class="content">
         <div class="summary-cards">
-          <div class="card"><h3>Total Rooms</h3><p>128</p></div>
-          <div class="card"><h3>New Listings</h3><p>12</p></div>
-          <div class="card"><h3>Blog Posts</h3><p>45</p></div>
-          <div class="card"><h3>Messages</h3><p>8</p></div>
+          <div class="card"><h3>Total Rooms</h3><p>0</p></div>
+          <div class="card"><h3>New Listings</h3><p>0</p></div>
+          <div class="card"><h3>Blog Posts</h3><p>0</p></div>
+          <div class="card"><h3>Messages</h3><p>0</p></div>
         </div>
 
         <section class="recent-section">
@@ -52,12 +52,7 @@
             <thead>
               <tr><th>Date</th><th>Activity</th><th>Status</th><th>Details</th></tr>
             </thead>
-            <tbody>
-              <tr><td>2025-07-18</td><td>New room listed</td><td><span class="status success">Approved</span></td><td>Family apartment in Banani</td></tr>
-              <tr><td>2025-07-17</td><td>Blog post published</td><td><span class="status success">Live</span></td><td>How to choose a safe apartment</td></tr>
-              <tr><td>2025-07-16</td><td>New message received</td><td><span class="status warning">Pending</span></td><td>Inquiry about hostel facilities</td></tr>
-              <tr><td>2025-07-15</td><td>Room removed</td><td><span class="status error">Removed</span></td><td>Bachelor room in Mirpur</td></tr>
-            </tbody>
+            <tbody></tbody> <!-- Dynamic -->
           </table>
         </section>
       </section>
@@ -98,7 +93,7 @@
     </div>
   </div>
 
-  <!-- Session check script -->
+  <!-- ✅ Session Check & Avatar Setup -->
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
       try {
@@ -110,9 +105,7 @@
         if (data.loggedIn && data.user) {
           document.getElementById("welcomeMsg").textContent = `Welcome, ${data.user.name}!`;
           document.getElementById("userRole").textContent = `Role: ${data.user.role}`;
-
           if (data.user.profile_img) {
-            // Add cache buster query param to avoid old image caching
             document.getElementById("userAvatar").src = `http://localhost:5000/uploads/${data.user.profile_img}?t=${Date.now()}`;
           }
         } else {
@@ -123,93 +116,9 @@
         window.location.href = "login.html";
       }
     });
-
-    document.getElementById("userAvatar").addEventListener("click", async () => {
-      try {
-        const res = await fetch("http://localhost:5000/api/user/session", {
-          credentials: "include"
-        });
-        const data = await res.json();
-
-        if (
-          !data.user.profile_img ||
-          !data.user.full_name ||
-          !data.user.phoneNumber ||
-          !data.user.address ||
-          !data.user.occupation
-        ) {
-          // If any field is missing, show the modal
-          document.getElementById("userModal").style.display = "flex";
-        } else {
-          alert("✅ Profile already submitted!");
-        }
-      } catch (err) {
-        console.error("❌ Error checking user profile:", err);
-      }
-    });
-
-    function closeModal() {
-      document.getElementById("userModal").style.display = "none";
-    }
-
-    window.addEventListener("click", (e) => {
-      const modal = document.getElementById("userModal");
-      if (e.target === modal) closeModal();
-    });
-
-    function showPreview(inputId, imgId) {
-      const input = document.getElementById(inputId);
-      const img = document.getElementById(imgId);
-      input.addEventListener("change", () => {
-        const file = input.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            img.src = e.target.result;
-            img.style.display = "block";
-          };
-          reader.readAsDataURL(file);
-        } else {
-          img.style.display = "none";
-        }
-      });
-    }
-
-    showPreview("nidPhoto", "nidPreview");
-    showPreview("profileImg", "profilePreview");
-
-    document.getElementById("userDetailsForm").addEventListener("submit", async function (e) {
-      e.preventDefault();
-
-      const formData = new FormData(this);
-
-      try {
-        const res = await fetch("http://localhost:5000/api/user/profile", {
-          method: "POST",
-          body: formData,
-          credentials: "include"
-        });
-
-        const data = await res.json();
-
-        if (data.success) {
-          alert("✅ Info submitted successfully!");
-          if (data.profile_img) {
-            // Also update avatar src after submit with cache buster
-            document.getElementById("userAvatar").src = `http://localhost:5000/uploads/${data.profile_img}?t=${Date.now()}`;
-          }
-          closeModal();
-        } else {
-          alert("❌ Submission failed: " + data.message);
-        }
-      } catch (err) {
-        console.error("❌ Upload error:", err);
-        alert("❌ An error occurred while uploading.");
-      }
-    });
   </script>
 
-  <!-- Fetching the modals script -->
+  <!-- ✅ Avatar Click - Show Modal or Alert -->
   <script>
     document.getElementById("userAvatar").addEventListener("click", async () => {
       try {
@@ -245,30 +154,136 @@
         alert("Error fetching profile data");
       }
     });
+
+    function closeModal() {
+      document.getElementById("userModal").style.display = "none";
+    }
+
+    window.addEventListener("click", (e) => {
+      if (e.target === document.getElementById("userModal")) {
+        closeModal();
+      }
+    });
+
+    function showPreview(inputId, imgId) {
+      const input = document.getElementById(inputId);
+      const img = document.getElementById(imgId);
+      input.addEventListener("change", () => {
+        const file = input.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            img.src = e.target.result;
+            img.style.display = "block";
+          };
+          reader.readAsDataURL(file);
+        } else {
+          img.style.display = "none";
+        }
+      });
+    }
+
+    showPreview("nidPhoto", "nidPreview");
+    showPreview("profileImg", "profilePreview");
   </script>
 
-  <!-- Dashboard content update script -->
+  <!-- ✅ Form Submit -->
   <script>
-    // 🧠 Load dynamic dashboard stats
+    document.getElementById("userDetailsForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+
+      try {
+        const res = await fetch("http://localhost:5000/api/user/profile", {
+          method: "POST",
+          body: formData,
+          credentials: "include"
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          alert("✅ Info submitted successfully!");
+          if (data.profile_img) {
+            document.getElementById("userAvatar").src = `http://localhost:5000/uploads/${data.profile_img}?t=${Date.now()}`;
+          }
+          closeModal();
+        } else {
+          alert("❌ Submission failed: " + data.message);
+        }
+      } catch (err) {
+        console.error("❌ Upload error:", err);
+        alert("❌ An error occurred while uploading.");
+      }
+    });
+  </script>
+
+  <!-- ✅ Dashboard Summary -->
+  <script>
     async function loadDashboardStats() {
       try {
         const res = await fetch("http://localhost:5000/api/dashboard/summary", {
           credentials: "include"
         });
         const result = await res.json();
-
+  
         if (result.success && result.data) {
           document.querySelector(".card:nth-child(1) p").textContent = result.data.totalRooms;
           document.querySelector(".card:nth-child(2) p").textContent = result.data.newListings;
           document.querySelector(".card:nth-child(3) p").textContent = result.data.blogPosts;
-          document.querySelector(".card:nth-child(4) p").textContent = result.data.messages;
+  
+          // Use announcement count for Messages card
+          document.querySelector(".card:nth-child(4) p").textContent = result.data.announcementCount || 0;
         }
       } catch (err) {
         console.error("❌ Error loading dashboard stats:", err);
       }
     }
-
+  
     loadDashboardStats();
   </script>
+  
+
+  <!-- ✅ Recent Activity (Dynamic with colored status) -->
+  <script>
+    async function loadRecentActivity() {
+      try {
+        const res = await fetch("http://localhost:5000/api/dashboard/activity", {
+          credentials: "include"
+        });
+        const result = await res.json();
+
+        if (result.success && result.data) {
+          const tbody = document.querySelector(".recent-section tbody");
+          tbody.innerHTML = "";
+
+          result.data.forEach((activity) => {
+            const status = activity.STATUS.toLowerCase();
+            const statusClass =
+              status === "approved" || status === "live"
+                ? "success"
+                : status === "pending"
+                ? "warning"
+                : "error";
+
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+              <td>${new Date(activity.ACTIVITY_DATE).toISOString().split("T")[0]}</td>
+              <td>${activity.ACTIVITY_TYPE}</td>
+              <td><span class="status ${statusClass}">${activity.STATUS}</span></td>
+              <td>${activity.DETAILS}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+        }
+      } catch (err) {
+        console.error("❌ Error loading recent activity:", err);
+      }
+    }
+
+    loadRecentActivity();
+    setInterval(loadRecentActivity, 10000);
+  </script>
+
 </body>
 </html>

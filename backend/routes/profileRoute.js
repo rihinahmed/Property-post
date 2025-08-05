@@ -1,10 +1,10 @@
-// backend/routes/profileRoute.js
 const express = require("express");
 const router = express.Router();
 const oracledb = require("oracledb");
 const multer = require("multer");
 const path = require("path");
-const dbConfig = require("../config/db"); // or use your inline dbConfig if not separated
+const dbConfig = require("../config/db");
+const logActivity = require("../utils/logger"); // ✅ Logging utility
 
 // Multer config
 const storage = multer.diskStorage({
@@ -62,8 +62,10 @@ router.post(
 
       await conn.close();
 
-      // ✅ Update session for live reflection
       req.session.user.profile_img = profileImg;
+
+      // ✅ Log profile update activity
+      await logActivity(user.id, "Profile Updated", "Success", "User updated profile information");
 
       res.json({
         success: true,
@@ -91,7 +93,6 @@ router.get("/", async (req, res) => {
       `SELECT full_name, phone, address, occupation, profile_img, nid_photo FROM users WHERE id = :id`,
       [user.id]
     );
-
     await conn.close();
 
     const data = result.rows[0];

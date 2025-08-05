@@ -1,3 +1,4 @@
+const logActivity = require("../utils/logger");
 router.post('/login', async (req, res) => {
   const { email, password, role } = req.body; // Include role if your login form includes it
   let connection;
@@ -28,8 +29,9 @@ router.post('/login', async (req, res) => {
           name: user.NAME,
           email: user.EMAIL,
           role: user.ROLE,
-          profile_img: user.PROFILE_IMG
+          
         };
+        await logActivity(user.ID, "Login", "Success", "User logged in");
 
         console.log("✅ Session created:", req.session.user);
 

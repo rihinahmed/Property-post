@@ -135,6 +135,11 @@ app.use("/api/dashboard", dashboardRoute);
 const sessionRoute = require('./routes/sessionRoute');
 app.use('/api/user/session', sessionRoute);
 
+// Announcement Route
+const announcementRoutes = require('./routes/announcementRoutes');
+app.use('/api/announcements', announcementRoutes);
+
+
 
 // Start Server
 app.listen(PORT, () => {
