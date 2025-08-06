@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Us | RoomFinder</title>
+  <link rel="stylesheet" href="/stylings/style.css">
+  <link rel="stylesheet" href="/stylings/contact.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">RoomFinder</div>
+  <nav class="nav-links">
+    <a href="/">Home</a>
+    <a href="/rooms">Rooms</a>
+    <a href="/blog">Blog</a>
+    <a href="/contact" class="active">Contact</a>
+  </nav>
+</header>
+
+<section class="contact-hero">
+  <h1>Let's Talk</h1>
+  <p>Whether you’re a tenant, owner, or partner — we're here to help.</p>
+</section>
+
+<section class="contact-container">
+  <div class="contact-info glass">
+    <h2>📞 Contact Information</h2>
+    <p><i class="fas fa-map-marker-alt"></i> Dhaka, Bangladesh</p>
+    <p><i class="fas fa-envelope"></i> support@roomfinder.com</p>
+    <p><i class="fas fa-phone"></i> +880 1234 567 890</p>
+    <div class="socials">
+      <a href="#"><i class="fab fa-facebook"></i></a>
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-twitter"></i></a>
+    </div>
+  </div>
+
+  <form class="contact-form glass" id="contactForm">
+    <h2>📬 Send a Message</h2>
+    <input type="text" placeholder="Your Name" required>
+    <input type="email" placeholder="Your Email" required>
+    <input type="text" placeholder="Subject" required>
+    <textarea placeholder="Your Message..." rows="5" required></textarea>
+    <button type="submit">Send Message</button>
+  </form>
+</section>
+
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-column">
+      <h4>RoomFinder</h4>
+      <p>Find your perfect stay in Dhaka — from family homes to hostels.</p>
+    </div>
+    <div class="footer-column">
+      <h4>Explore</h4>
+      <a href="#">Rooms</a>
+      <a href="#">Blog</a>
+      <a href="#">Login</a>
+    </div>
+    <div class="footer-column">
+      <h4>Support</h4>
+      <a href="#">Contact</a>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms</a>
+    </div>
+  </div>
+  <div class="footer-bottom">&copy; 2025 RoomFinder. All rights reserved.</div>
+</footer>
+
+
+
+<!--spark animation-->
+<script>
+    document.addEventListener('click', function (e) {
+      const count = 10;
+      const sparkColor = '#6366f2'; // Matches your theme
+      const size = 6;
+      const radius = 40;
+      const duration = 600;
+  
+      for (let i = 0; i < count; i++) {
+        const spark = document.createElement('div');
+        spark.style.position = 'absolute';
+        spark.style.width = 4 + 'px';
+        spark.style.height = 4 + 'px';
+        spark.style.borderRadius = '50%';
+        spark.style.backgroundColor = sparkColor;
+        spark.style.pointerEvents = 'none';
+        spark.style.zIndex = '9999';
+  
+        // Correct position on the full page
+        const pageX = e.pageX;
+        const pageY = e.pageY;
+  
+        const angle = (2 * Math.PI * i) / count;
+        const x = Math.cos(angle) * radius;
+        const y = Math.sin(angle) * radius;
+  
+        spark.style.left = pageX + 'px';
+        spark.style.top = pageY + 'px';
+  
+        document.body.appendChild(spark);
+  
+        spark.animate(
+          [
+            { transform: 'translate(0, 0)', opacity: 1 },
+            { transform: `translate(${x}px, ${y}px)`, opacity: 0 }
+          ],
+          {
+            duration: duration,
+            easing: 'ease-out'
+          }
+        );
+  
+        setTimeout(() => spark.remove(), duration);
+      }
+    });
+</script>
+</body>
+</html>

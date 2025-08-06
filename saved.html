@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Saved Rooms | RoomFinder</title>
+  <link rel="stylesheet" href="/stylings/style.css" />
+  <link rel="stylesheet" href="/stylings/saved.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">RoomFinder</div>
+    <nav class="nav-links">
+      <a href="/">Home</a>
+      <a href="/rooms">Rooms</a>
+      <a href="/blog">Blog</a>
+      <a href="/announcement">Announcement</a>
+      <a href="/saved" class="active">Saved</a>
+      <a href="/contact">Contact</a>
+    </nav>
+    <div class="toggles">
+      <button id="themeToggle">🌙</button>
+      <button onclick="window.print()">🖨️</button>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="saved-hero">
+    <h1>❤️ Your Saved Rooms</h1>
+    <p>Quick access to all the rooms you've liked</p>
+  </section>
+
+  <!-- Controls -->
+  <div class="controls">
+    <select id="sortOptions">
+      <option value="">Sort by</option>
+      <option value="location">Location</option>
+      <option value="priceLow">Price: Low to High</option>
+      <option value="priceHigh">Price: High to Low</option>
+    </select>
+  </div>
+
+  <!-- Saved Grid -->
+  <section class="saved-grid-section">
+    <div id="savedGrid" class="saved-grid">
+      <!-- Cards will be inserted here -->
+    </div>
+  </section>
+
+  <!-- Undo Toast -->
+  <div id="undoToast" class="undo-toast">
+    Room removed. <button onclick="undoRemove()">Undo</button>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer different-footer">
+    <div class="footer-content">
+      <div class="footer-column">
+        <h4>RoomFinder</h4>
+        <p>Find your perfect stay in Dhaka — from family homes to hostels.</p>
+      </div>
+      <div class="footer-column">
+        <h4>Explore</h4>
+        <a href="#">Rooms</a>
+        <a href="#">Blog</a>
+        <a href="#">Login</a>
+      </div>
+      <div class="footer-column">
+        <h4>Support</h4>
+        <a href="#">Contact</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2025 RoomFinder. All rights reserved.
+    </div>
+  </footer>
+
+  <script src="/js/saved.js"></script>
+</body>
+</html>

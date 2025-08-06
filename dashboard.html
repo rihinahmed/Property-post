@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RoomFinder Dashboard</title>
+  <link rel="stylesheet" href="/stylings/style.css" />
+  <link rel="stylesheet" href="/stylings/dashboard.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <div class="dashboard">
+    <aside class="sidebar">
+      <div class="logo">RoomFinder</div>
+      <nav>
+        <a href="index.html"><i class="fas fa-door-open"></i> Home</a>
+        <a href="/dashboard.html" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        <a href="/rooms"><i class="fas fa-door-open"></i> Rooms</a>
+        <a href="/blog"><i class="fas fa-blog"></i> Blog</a>
+        <a href="/contact"><i class="fas fa-envelope"></i> Contact</a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="main-header">
+        <div class="search-box">
+          <input type="search" placeholder="Search..." />
+          <i class="fas fa-search"></i>
+        </div>
+        <div class="user-info">
+          <div class="dashboard-info">
+            <h3 id="welcomeMsg">Welcome, Guest!</h3>
+            <p id="userRole">You are not logged in.</p>
+          </div>
+          <img id="userAvatar" src="images/rihin.jpg" alt="User Avatar" />
+        </div>
+      </header>
+
+      <section class="content">
+        <div class="summary-cards">
+          <div class="card"><h3>Total Rooms</h3><p>128</p></div>
+          <div class="card"><h3>New Listings</h3><p>12</p></div>
+          <div class="card"><h3>Blog Posts</h3><p>45</p></div>
+          <div class="card"><h3>Messages</h3><p>8</p></div>
+        </div>
+
+        <section class="recent-section">
+          <h2>Recent Activity</h2>
+          <table>
+            <thead>
+              <tr><th>Date</th><th>Activity</th><th>Status</th><th>Details</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>2025-07-18</td><td>New room listed</td><td><span class="status success">Approved</span></td><td>Family apartment in Banani</td></tr>
+              <tr><td>2025-07-17</td><td>Blog post published</td><td><span class="status success">Live</span></td><td>How to choose a safe apartment</td></tr>
+              <tr><td>2025-07-16</td><td>New message received</td><td><span class="status warning">Pending</span></td><td>Inquiry about hostel facilities</td></tr>
+              <tr><td>2025-07-15</td><td>Room removed</td><td><span class="status error">Removed</span></td><td>Bachelor room in Mirpur</td></tr>
+            </tbody>
+          </table>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <!-- ✅ Profile Upload Modal -->
+  <div class="user-modal" id="userModal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeModal()">&times;</span>
+      <h2>Upload Your Details</h2>
+      <form id="userDetailsForm" enctype="multipart/form-data" method="POST">
+        <label for="fullName">Full Name</label>
+        <input type="text" id="fullName" name="fullName" required />
+
+        <label for="phoneNumber">Phone Number</label>
+        <input type="tel" id="phoneNumber" name="phoneNumber" required />
+
+        <label for="address">Address</label>
+        <textarea id="address" name="address" rows="3" required></textarea>
+
+        <label for="occupation">Occupation</label>
+        <input type="text" id="occupation" name="occupation" required />
+
+        <label for="profileImg">Profile Image</label>
+        <input type="file" id="profileImg" name="profile_image" accept="image/*" />
+        <img id="profilePreview" class="preview-img" style="display: none;" />
+
+        <label for="nidPhoto">NID Card Photo</label>
+        <input type="file" id="nidPhoto" name="nid_photo" accept="image/*" />
+        <img id="nidPreview" class="preview-img" style="display: none;" />
+
+        <div class="popup-buttons">
+          <button type="submit">Submit</button>
+          <button type="button" onclick="closeModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Session check script -->
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/user/session", {
+          credentials: "include"
+        });
+        const data = await res.json();
+
+        if (data.loggedIn && data.user) {
+          document.getElementById("welcomeMsg").textContent = `Welcome, ${data.user.name}!`;
+          document.getElementById("userRole").textContent = `Role: ${data.user.role}`;
+
+          if (data.user.profile_img) {
+            // Add cache buster query param to avoid old image caching
+            document.getElementById("userAvatar").src = `http://localhost:5000/uploads/${data.user.profile_img}?t=${Date.now()}`;
+          }
+        } else {
+          window.location.href = "login.html";
+        }
+      } catch (err) {
+        console.error("❌ Session check error:", err);
+        window.location.href = "login.html";
+      }
+    });
+
+    document.getElementById("userAvatar").addEventListener("click", async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/user/session", {
+          credentials: "include"
+        });
+        const data = await res.json();
+
+        if (
+          !data.user.profile_img ||
+          !data.user.full_name ||
+          !data.user.phoneNumber ||
+          !data.user.address ||
+          !data.user.occupation
+        ) {
+          // If any field is missing, show the modal
+          document.getElementById("userModal").style.display = "flex";
+        } else {
+          alert("✅ Profile already submitted!");
+        }
+      } catch (err) {
+        console.error("❌ Error checking user profile:", err);
+      }
+    });
+
+    function closeModal() {
+      document.getElementById("userModal").style.display = "none";
+    }
+
+    window.addEventListener("click", (e) => {
+      const modal = document.getElementById("userModal");
+      if (e.target === modal) closeModal();
+    });
+
+    function showPreview(inputId, imgId) {
+      const input = document.getElementById(inputId);
+      const img = document.getElementById(imgId);
+      input.addEventListener("change", () => {
+        const file = input.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            img.src = e.target.result;
+            img.style.display = "block";
+          };
+          reader.readAsDataURL(file);
+        } else {
+          img.style.display = "none";
+        }
+      });
+    }
+
+    showPreview("nidPhoto", "nidPreview");
+    showPreview("profileImg", "profilePreview");
+
+    document.getElementById("userDetailsForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
+
+      try {
+        const res = await fetch("http://localhost:5000/api/user/profile", {
+          method: "POST",
+          body: formData,
+          credentials: "include"
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          alert("✅ Info submitted successfully!");
+          if (data.profile_img) {
+            // Also update avatar src after submit with cache buster
+            document.getElementById("userAvatar").src = `http://localhost:5000/uploads/${data.profile_img}?t=${Date.now()}`;
+          }
+          closeModal();
+        } else {
+          alert("❌ Submission failed: " + data.message);
+        }
+      } catch (err) {
+        console.error("❌ Upload error:", err);
+        alert("❌ An error occurred while uploading.");
+      }
+    });
+  </script>
+
+  <!-- Fetching the modals script -->
+  <script>
+    document.getElementById("userAvatar").addEventListener("click", async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/user/profile", {
+          credentials: "include"
+        });
+        const result = await res.json();
+
+        if (result.success && result.data) {
+          const d = result.data;
+          document.getElementById("fullName").value = d.fullName || "";
+          document.getElementById("phoneNumber").value = d.phone || "";
+          document.getElementById("address").value = d.address || "";
+          document.getElementById("occupation").value = d.occupation || "";
+
+          if (d.profile_img) {
+            document.getElementById("profilePreview").src = `http://localhost:5000/uploads/${d.profile_img}?t=${Date.now()}`;
+            document.getElementById("profilePreview").style.display = "block";
+          }
+
+          if (d.nid_photo) {
+            document.getElementById("nidPreview").src = `http://localhost:5000/uploads/${d.nid_photo}?t=${Date.now()}`;
+            document.getElementById("nidPreview").style.display = "block";
+          }
+
+          document.getElementById("userModal").style.display = "flex";
+        } else {
+          alert("No user data found. Please submit your details.");
+          document.getElementById("userModal").style.display = "flex";
+        }
+      } catch (err) {
+        console.error("❌ Fetch profile error:", err);
+        alert("Error fetching profile data");
+      }
+    });
+  </script>
+
+  <!-- Dashboard content update script -->
+  <script>
+    // 🧠 Load dynamic dashboard stats
+    async function loadDashboardStats() {
+      try {
+        const res = await fetch("http://localhost:5000/api/dashboard/summary", {
+          credentials: "include"
+        });
+        const result = await res.json();
+
+        if (result.success && result.data) {
+          document.querySelector(".card:nth-child(1) p").textContent = result.data.totalRooms;
+          document.querySelector(".card:nth-child(2) p").textContent = result.data.newListings;
+          document.querySelector(".card:nth-child(3) p").textContent = result.data.blogPosts;
+          document.querySelector(".card:nth-child(4) p").textContent = result.data.messages;
+        }
+      } catch (err) {
+        console.error("❌ Error loading dashboard stats:", err);
+      }
+    }
+
+    loadDashboardStats();
+  </script>
+</body>
+</html>

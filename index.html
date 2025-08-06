@@ -18,7 +18,8 @@
       <a href="#">Browse</a>
       <a href="/post_room.html">Post Room</a>
       <a href="/blog.html">Blog</a>
-      <a href="/login.html">Login / Sign Up</a>
+      <a id="authNav" href="/login.html">Login / Sign Up</a>
+
       
     </nav>
   
@@ -32,19 +33,20 @@
 
     <!-- Main nav items repeated here for mobile menu -->
     <div class="ondesktopandmobile">
-      <a href="#">Home</a>
-      <a href="#">Browse</a>
+      <a id="homeLink" href="#">Home</a>
+      <a id="browseLink" href="#">Browse</a>
       <a href="/post_room.html">Post Room</a>
       <a href="/blog.html">Blog</a>
-      <a href="/login.html">Login / Sign Up</a>
+      <a id="authNav" href="/login.html">Login / Sign Up</a>
+
     </div>
     
 
     <!-- Extra nav items -->
     <a href="/pickup.html">Pickup Service</a>
     <a href="/saved.html">Saved Rooms</a>
-    <a href="/announcements.html">Announcements</a>
-    <a href="/dashboard.html">My Dashboard</a>
+    <a href="/announcement.html">Announcements</a>
+    <a href="dashboard.html">My Dashboard</a>
     <a href="/contact.html">Contact</a>
     <div class="language-toggle" id="langToggle">
       <div class="toggle-bg"></div>
@@ -61,11 +63,11 @@
       
           <!-- Left: Text + Search -->
           <div class="hero-left"> 
-            <h1>
+            <h1 id="heroTitle">
               Find the <span class="highlight1">perfect room</span><br>
               near your <span id="dynamic-word" class="highlight typing"></span>
             </h1>
-            <p>RoomFinder helps students and families discover rooms, hostels, and sublets across your city.</p>
+            <p id="heroSubtitle">RoomFinder helps students and families discover rooms, hostels, and sublets across your city.</p>
       
             <div class="search-bar">
               <input type="text" placeholder="Search by area (e.g. Dhanmondi)">
@@ -102,13 +104,13 @@
     <!-- Featured Section -->
     <section class="featured">
         <div class="container">
-          <h2>Featured Rooms</h2>
+          <h2 id="featuredTitle">Featured Rooms</h2>
       
           <div class="featured-carousel">
             <div class="carousel-track">
       
               <!-- Card 1 -->
-              <a href="room-details.html" class="card-link">
+              <a href="/room-details.html" class="card-link">
                 <div class="featured-card">
                     <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600" alt="Room 1">
                     <div class="featured-info">
@@ -615,8 +617,148 @@
 
 
 
-    
-</body>
+   
+<!--Login session-->
+<script>
+  document.addEventListener("DOMContentLoaded", async () => {
+    console.log("Checking session status...");
+
+    try {
+      const res = await fetch("http://localhost:5000/api/user/session", {
+        credentials: "include"
+      });
+      const data = await res.json();
+      console.log("Session data:", data);
+
+      const navLinks = document.querySelector(".nav-links");
+      const sideAuthLink = document.getElementById("authNav");
+
+      if (data.loggedIn) {
+        console.log("User logged in. Updating navbars...");
+
+        // Main top navbar
+        if (navLinks) {
+          const loginLink = navLinks.querySelector("a[href='login.html']");
+          if (loginLink) loginLink.remove();
+
+          let logoutBtn = navLinks.querySelector(".logout-link");
+          if (!logoutBtn) {
+            logoutBtn = document.createElement("a");
+            logoutBtn.href = "#";
+            logoutBtn.textContent = "Logout";
+            logoutBtn.classList.add("logout-link");
+
+            logoutBtn.addEventListener("click", async () => {
+              await fetch("http://localhost:5000/api/user/logout", {
+                method: "POST",
+                credentials: "include"
+              });
+              window.location.reload();
+            });
+
+            navLinks.appendChild(logoutBtn);
+          }
+        }
+
+        // Sidebar menu
+        if (sideAuthLink) {
+          sideAuthLink.textContent = "Logout";
+          sideAuthLink.href = "#";
+          sideAuthLink.addEventListener("click", async (e) => {
+            e.preventDefault();
+            await fetch("http://localhost:5000/api/user/logout", {
+              method: "POST",
+              credentials: "include"
+            });
+            window.location.reload();
+          });
+        }
+      } else {
+        console.log("User not logged in.");
+      }
+    } catch (err) {
+      console.error("Error during session check:", err);
+    }
+  });
+</script>
+
+
+
+<script>
+  const translations = {
+    en: {
+      home: "Home",
+      browse: "Browse",
+      post: "Post Room",
+      blog: "Blog",
+      login: "Login / Sign Up",
+      pickup: "Pickup Service",
+      saved: "Saved Rooms",
+      announcement: "Announcements",
+      dashboard: "My Dashboard",
+      contact: "Contact",
+  
+      heroTitle: "Find the <span class='highlight1'>perfect room</span><br> near your <span id='dynamic-word' class='highlight typing'></span>",
+      heroSubtitle: "RoomFinder helps students and families discover rooms, hostels, and sublets across your city.",
+      featuredTitle: "Featured Rooms"
+    },
+    bn: {
+      home: "হোম",
+      browse: "ব্রাউজ করুন",
+      post: "রুম পোস্ট করুন",
+      blog: "ব্লগ",
+      login: "লগইন / সাইন আপ",
+      pickup: "পিকআপ সার্ভিস",
+      saved: "সেভ করা রুম",
+      announcement: "ঘোষণা",
+      dashboard: "আমার ড্যাশবোর্ড",
+      contact: "যোগাযোগ",
+  
+      heroTitle: "আপনার <span class='highlight1'>পারফেক্ট রুম</span><br> খুঁজে নিন <span id='dynamic-word' class='highlight typing'></span> এর পাশে",
+      heroSubtitle: "রুমফাইন্ডার ছাত্রছাত্রী ও পরিবারদের জন্য সহজে রুম, হোস্টেল ও সাবলেট খুঁজে দেয়।",
+      featuredTitle: "বৈশিষ্ট্যযুক্ত রুমসমূহ"
+    }
+  };
+  
+  function applyLanguage(lang) {
+    localStorage.setItem('lang', lang);
+  
+    // Nav Links
+    document.getElementById('homeLink').textContent = translations[lang].home;
+    document.getElementById('browseLink').textContent = translations[lang].browse;
+    document.querySelector('a[href="/post_room.html"]').textContent = translations[lang].post;
+    document.querySelector('a[href="/blog.html"]').textContent = translations[lang].blog;
+    document.querySelector('a[href="/login.html"]').textContent = translations[lang].login;
+    document.querySelector('a[href="/pickup.html"]').textContent = translations[lang].pickup;
+    document.querySelector('a[href="/saved.html"]').textContent = translations[lang].saved;
+    document.querySelector('a[href="/announcement.html"]').textContent = translations[lang].announcement;
+    document.querySelector('a[href="/dashboard.html"]').textContent = translations[lang].dashboard;
+    document.querySelector('a[href="/contact.html"]').textContent = translations[lang].contact;
+  
+    // Hero Section
+    document.getElementById('heroTitle').innerHTML = translations[lang].heroTitle;
+    document.getElementById('heroSubtitle').textContent = translations[lang].heroSubtitle;
+  
+    // Featured Title
+    document.getElementById('featuredTitle').textContent = translations[lang].featuredTitle;
+  }
+  
+  // Toggle logic
+  const langOptions = document.querySelectorAll('.toggle-option');
+  langOptions.forEach(option => {
+    option.addEventListener('click', () => {
+      const lang = option.dataset.lang;
+      applyLanguage(lang);
+    });
+  });
+  
+  // On Load
+  document.addEventListener('DOMContentLoaded', () => {
+    const savedLang = localStorage.getItem('lang') || 'en';
+    applyLanguage(savedLang);
+  });
+  </script>
+  
 <!--For on scroll animation the featured cards-->
 
 <!--For click spark animation-->
@@ -761,6 +903,93 @@ toggle.addEventListener('click', () => {
 
 </script>
 
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+  const words = ["campus", "office", "neighborhood", "city"];
+  let currentWordIndex = 0;
+  const dynamicWordEl = document.getElementById("dynamic-word");
+  let charIndex = 0;
+  let deleting = false;
+
+  function type() {
+    const currentWord = words[currentWordIndex];
+    if (!deleting) {
+      dynamicWordEl.textContent = currentWord.slice(0, charIndex + 1);
+      charIndex++;
+      if (charIndex === currentWord.length) {
+        deleting = true;
+        setTimeout(type, 1000); // wait before deleting
+        return;
+      }
+    } else {
+      dynamicWordEl.textContent = currentWord.slice(0, charIndex - 1);
+      charIndex--;
+      if (charIndex === 0) {
+        deleting = false;
+        currentWordIndex = (currentWordIndex + 1) % words.length;
+      }
+    }
+    setTimeout(type, deleting ? 50 : 100);
+  }
+
+  type();
+});
+
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", async () => {
+    console.log("Checking session status...");
+
+    try {
+      const res = await fetch("http://localhost:5000/api/user/session", {
+        credentials: "include"
+      });
+      const data = await res.json();
+      console.log("Session data:", data);
+
+      const navLinks = document.querySelector(".nav-links");
+      if (!navLinks) return;
+
+      if (data.loggedIn) {
+        console.log("User logged in. Updating navbar...");
+
+        const loginLink = navLinks.querySelector("a[href='login.html']");
+        if (loginLink) loginLink.remove();
+
+        let logoutBtn = navLinks.querySelector(".logout-link");
+        if (!logoutBtn) {
+          logoutBtn = document.createElement("a");
+          logoutBtn.href = "#";
+          logoutBtn.textContent = "Logout";
+          logoutBtn.classList.add("logout-link");
+
+          logoutBtn.addEventListener("click", async () => {
+            await fetch("http://localhost:5000/api/user/logout", {
+              method: "POST",
+              credentials: "include"
+            });
+            window.location.reload();
+          });
+
+          navLinks.appendChild(logoutBtn);
+        }
+      } else {
+        console.log("User not logged in.");
+      }
+    } catch (err) {
+      console.error("Error during session check:", err);
+    }
+  });
+</script>
+
+
+
+<a href="seller_login.html">Seller Portal</a>
+
+
+
+
 
 
 
@@ -769,5 +998,5 @@ toggle.addEventListener('click', () => {
 
 
 
-
+</body>
 </html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seller Dashboard | PropertyPost</title>
+  <link rel="stylesheet" href="stylings/seller_dashboard.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="dashboard">
+    <div class="sidebar">
+      <div class="logo">
+        <i class="fas fa-home"></i> PropertyPost
+      </div>
+      <nav>
+        <a href="#dashboard" class="active">
+          <i class="fas fa-tachometer-alt"></i> Dashboard
+        </a>
+        <a href="#properties">
+          <i class="fas fa-building"></i> Properties
+        </a>
+        <a href="#messages">
+          <i class="fas fa-envelope"></i> Messages
+        </a>
+        <a href="#analytics">
+          <i class="fas fa-chart-line"></i> Analytics
+        </a>
+        <a href="#settings">
+          <i class="fas fa-cog"></i> Settings
+        </a>
+        <a href="#logout" class="logout">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+      </nav>
+    </div>
+
+    <div class="main">
+      <header class="main-header">
+        <div class="user-info">
+          <span>Welcome, John Doe</span>
+          <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User Profile">
+        </div>
+      </header>
+
+      <div id="dashboard-content" class="content-section">
+        <div class="summary-cards">
+          <div class="card">
+            <h3>Total Properties</h3>
+            <p id="total-properties">0</p>
+            <i class="fas fa-home"></i>
+          </div>
+          <div class="card">
+            <h3>Active Listings</h3>
+            <p id="active-listings">0</p>
+            <i class="fas fa-clipboard-list"></i>
+          </div>
+          <div class="card">
+            <h3>Unread Messages</h3>
+            <p id="unread-messages">0</p>
+            <i class="fas fa-envelope"></i>
+          </div>
+          <div class="card">
+            <h3>Monthly Views</h3>
+            <p id="monthly-views">0</p>
+            <i class="fas fa-eye"></i>
+          </div>
+        </div>
+      </div>
+
+      <div id="properties-section" class="content-section" style="display:none;">
+        <div class="section-header">
+          <h2><i class="fas fa-building"></i> Your Properties</h2>
+          <button id="add-property-btn" class="add-btn">
+            <i class="fas fa-plus"></i> Add Property
+          </button>
+        </div>
+
+        <div class="property-filters">
+          <select id="property-status">
+            <option value="all">All Statuses</option>
+            <option value="active">Active</option>
+            <option value="pending">Pending</option>
+            <option value="sold">Sold</option>
+          </select>
+        </div>
+
+        <div class="properties-list" id="properties-container">
+          </div>
+      </div>
+
+      <div id="messages-section" class="content-section" style="display:none;">
+        <div class="section-header">
+          <h2><i class="fas fa-envelope"></i> Buyer Messages</h2>
+          <div class="message-filters">
+            <select id="message-filter">
+              <option value="all">All Messages</option>
+              <option value="unread">Unread Only</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="messages-container" id="messages-list">
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="property-modal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <h2 id="modal-title">Add New Property</h2>
+      <form id="property-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="property-title">Property Title*</label>
+            <input type="text" id="property-title" name="property-title" required>
+          </div>
+          <div class="form-group">
+            <label for="property-type">Property Type*</label>
+            <select id="property-type" name="property-type" required>
+              <option value="">Select type</option>
+              <option value="house">House</option>
+              <option value="apartment">Apartment</option>
+              <option value="villa">Villa</option>
+              <option value="land">Land</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="property-location">Location*</label>
+            <input type="text" id="property-location" name="property-location" required>
+          </div>
+          <div class="form-group">
+            <label for="property-price">Price ($)*</label>
+            <input type="number" id="property-price" name="property-price" required>
+          </div>
+          <div class="form-group full-width">
+            <label for="property-description">Description</label>
+            <textarea id="property-description" name="property-description" rows="4"></textarea>
+          </div>
+          <div class="form-group full-width">
+            <label for="property-images">Upload Images (Max 10)*</label>
+            <input type="file" id="property-images" name="property-images" multiple accept="image/*">
+            <div id="property-images-preview" class="images-preview"></div>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="cancel-btn">Cancel</button>
+          <button type="submit" class="submit-btn">Save Property</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/seller_dashboard.js"></script>
+</body>
+</html>
