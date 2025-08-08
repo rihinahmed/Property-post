@@ -5,6 +5,8 @@ const oracledb = require("oracledb");
 const bodyParser = require("body-parser");
 const path = require("path");
 
+
+
 const app = express();
 const PORT = 5000;
 
@@ -26,22 +28,25 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "public")));
 app.use('/uploads', express.static(path.join(__dirname, "uploads")));
+app.use('/selleruploads', express.static(path.join(__dirname, 'selleruploads')));
 
 app.use(session({
   secret: "roomfinder-secret",
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: false,
+    secure: false,       // Set to true if using HTTPS
     httpOnly: true,
     sameSite: 'lax',
-    maxAge: 1000 * 60 * 60
+    maxAge: 1000 * 60 * 60 // 1 hour
   }
 }));
 
-// Routes
 
-// Signup Route
+
+// ===========================
+// User Signup Route
+// ===========================
 app.post("/api/user/signup", async (req, res) => {
   const { name, email, password, role } = req.body;
 
@@ -57,7 +62,7 @@ app.post("/api/user/signup", async (req, res) => {
 
     res.json({ success: true, message: "User registered successfully!" });
   } catch (err) {
-    if (err.errorNum === 1) {
+    if (err.errorNum === 1) { // Unique constraint violation
       res.json({ success: false, message: "Email already exists!" });
     } else {
       res.json({ success: false, message: "Signup failed: " + err.message });
@@ -65,7 +70,9 @@ app.post("/api/user/signup", async (req, res) => {
   }
 });
 
-// Login Route
+// ===========================
+// User Login Route
+// ===========================
 app.post("/api/user/login", async (req, res) => {
   const { email, password, role } = req.body;
 
@@ -91,19 +98,22 @@ app.post("/api/user/login", async (req, res) => {
       return res.json({ success: false, message: "Incorrect role!" });
     }
 
+    // Store full session
     req.session.user = { id, name, email, role };
 
     res.json({
       success: true,
       message: "Login successful!",
-      user: { name, role }
+      user: { id, name, email, role }
     });
   } catch (err) {
     res.status(500).json({ success: false, message: "Login failed: " + err.message });
   }
 });
 
-// Logout Route
+// ===========================
+// User Logout Route
+// ===========================
 app.post("/api/user/logout", (req, res) => {
   req.session.destroy(err => {
     if (err) {
@@ -114,7 +124,9 @@ app.post("/api/user/logout", (req, res) => {
   });
 });
 
+// ===========================
 // Session Check Route
+// ===========================
 app.get("/api/user/session", (req, res) => {
   if (req.session.user) {
     res.json({ loggedIn: true, user: req.session.user });
@@ -123,25 +135,34 @@ app.get("/api/user/session", (req, res) => {
   }
 });
 
-// Profile Upload Route
+// ===========================
+// Other Routes
+// ===========================
+// Import your route modules here
 const profileRoute = require("./routes/profileRoute");
-app.use("/api/user/profile", profileRoute);
-
-// Dashboard update route
 const dashboardRoute = require("./routes/dashboardRoute");
-app.use("/api/dashboard", dashboardRoute);
-
-// Session route register
-const sessionRoute = require('./routes/sessionRoute');
-app.use('/api/user/session', sessionRoute);
-
-// Announcement Route
 const announcementRoutes = require('./routes/announcementRoutes');
+const roomRoutes = require('./routes/roomRoutes');
+const sellerdashboardRoutes = require('./routes/sellerdashboardRoutes');
+const addproperties = require('./routes/addproperties');
+
+app.use('/api/properties', addproperties);
+app.use("/api/user/profile", profileRoute);
+app.use("/api/dashboard", dashboardRoute);
 app.use('/api/announcements', announcementRoutes);
+app.use('/api/rooms', roomRoutes);
+app.use('/api/seller', sellerdashboardRoutes);
 
+// ===========================
+// Optional 404 Handler
+// ===========================
+app.use((req, res) => {
+  res.status(404).json({ success: false, message: "API route not found." });
+});
 
-
+// ===========================
 // Start Server
+// ===========================
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });

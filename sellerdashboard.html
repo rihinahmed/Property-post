@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Seller Dashboard | PropertyPost</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="./stylings/seller_dashboard.css" />
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="dashboard">
+    <aside class="sidebar">
+      <div class="logo">
+        <i class="fas fa-home"></i> PropertyPost
+      </div>
+      <nav>
+        <a href="./sellerdashboard.html" class="active">
+          <i class="fas fa-tachometer-alt"></i> Dashboard
+        </a>
+        <a href="./sellerproperties.html">
+          <i class="fas fa-building"></i> Properties
+        </a>
+        <a href="./sellermessage.html">
+          <i class="fas fa-envelope"></i> Messages
+        </a>
+        <a href="./selleranalytics.html">
+          <i class="fas fa-chart-line"></i> Analytics
+        </a>
+        <a href="./sellersettings.html">
+          <i class="fas fa-cog"></i> Settings
+        </a>
+        <a href="#logout" class="logout">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <header class="main-header">
+        <div class="user-info">
+          <span>Welcome, User</span>
+          <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User Profile" />
+        </div>
+      </header>
+
+      <section class="summary-cards">
+        <div class="card">
+          <h3>Total Properties</h3>
+          <p id="total-properties">0</p>
+          <i class="fas fa-home icon"></i>
+        </div>
+        <div class="card">
+          <h3>Active Listings</h3>
+          <p id="active-listings">0</p>
+          <i class="fas fa-clipboard-list icon"></i>
+        </div>
+        <div class="card">
+          <h3>Unread Messages</h3>
+          <p id="unread-messages">0</p>
+          <i class="fas fa-envelope icon"></i>
+        </div>
+        <div class="card">
+          <h3>Monthly Views</h3>
+          <p id="monthly-views">0</p>
+          <i class="fas fa-eye icon"></i>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Seller session handler -->
+  <script>
+    // Safe logout handler
+    const logoutBtn = document.querySelector(".logout");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", async (e) => {
+        e.preventDefault();
+        try {
+          await fetch("http://localhost:5000/api/user/logout", {
+            method: "POST",
+            credentials: "include"
+          });
+        } catch (err) {
+          console.error("Logout failed:", err);
+        }
+        window.location.href = "login.html";
+      });
+    }
+
+    async function fetchSellerStats(userId) {
+      try {
+        const res = await fetch(`http://localhost:5000/api/dashboard/seller/${userId}`, {
+          credentials: "include"
+        });
+        if (!res.ok) throw new Error("Failed to fetch seller stats");
+
+        const stats = await res.json();
+
+        document.getElementById("total-properties").textContent = stats.totalProperties ?? 0;
+        document.getElementById("active-listings").textContent = stats.activeListings ?? 0;
+        document.getElementById("unread-messages").textContent = stats.unreadMessages ?? 0;
+        document.getElementById("monthly-views").textContent = stats.monthlyViews ?? 0;
+      } catch (err) {
+        console.error("Failed to load seller dashboard data:", err);
+      }
+    }
+
+    // On page load: Check session & role, redirect if needed, fetch data
+    document.addEventListener("DOMContentLoaded", async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/user/session", {
+          credentials: "include"
+        });
+        const data = await res.json();
+
+        if (!data.loggedIn) {
+          window.location.href = "login.html";
+          return;
+        }
+
+        if (data.user.role !== "seller") {
+          window.location.href = "dashboard.html"; // redirect buyer to buyer dashboard
+          return;
+        }
+
+        // Set user info on header
+        document.querySelector(".user-info span").textContent = `Welcome, ${data.user.name}`;
+        if (data.user.profile_img) {
+          document.querySelector(".user-info img").src = data.user.profile_img;
+        }
+
+        // Fetch dashboard stats for this seller
+        fetchSellerStats(data.user.id);
+      } catch (err) {
+        console.error("Session check failed:", err);
+        window.location.href = "login.html";
+      }
+    });
+  </script>
+  
+</body>
+</html>

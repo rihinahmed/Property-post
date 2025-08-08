@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - PropertyPost</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./stylings/sellersettings.css">
+</head>
+<body>
+    <button class="menu-toggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="dashboard">
+        <aside class="sidebar" id="sidebar">
+            <div class="logo">
+                <i class="fas fa-home"></i> PropertyPost
+            </div>
+            <nav>
+                <a href="./sellerdashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                <a href="./sellerproperties.html"><i class="fas fa-building"></i> Properties</a>
+                <a href="./sellermessage.html"><i class="fas fa-envelope"></i> Messages</a>
+                <a href="./selleranalytics.html"><i class="fas fa-chart-line"></i> Analytics</a>
+                <a href="./sellersettings.html" class="active"><i class="fas fa-cog"></i> Settings</a>
+                <a href="#" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <section class="settings-section">
+                <h1>Settings</h1>
+
+                <form class="settings-form" id="settings-form">
+                    <!-- Profile Picture Section -->
+                    <div class="profile-section">
+                        <div class="profile-picture-container">
+                            <div class="profile-picture" id="profile-picture">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                            <label for="profile-upload" class="upload-btn">
+                                <i class="fas fa-camera"></i>
+                            </label>
+                            <input type="file" id="profile-upload" accept="image/*">
+                        </div>
+                        <p class="upload-text">Click the camera icon to upload profile picture</p>
+                    </div>
+
+                    <!-- Personal Information -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="full-name">Full Name</label>
+                            <input type="text" id="full-name" name="fullName" placeholder="John Doe" value="John Doe" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" placeholder="john@example.com" value="john@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" name="phone" placeholder="+1 234 567 8901" value="+1 234 567 8901">
+                        </div>
+                        <div class="form-group">
+                            <label for="license-number">License Number</label>
+                            <input type="text" id="license-number" name="licenseNumber" placeholder="RE123456789" value="RE123456789">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group form-group-full">
+                            <label for="address">Business Address</label>
+                            <input type="text" id="address" name="address" placeholder="123 Main St, City, State 12345" value="123 Main St, City, State 12345">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bio">Bio</label>
+                        <textarea id="bio" name="bio" placeholder="Tell us about yourself...">Experienced real estate professional with over 10 years in the industry.</textarea>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <!-- Change Password -->
+                    <h2 class="section-title password-section">Change Password</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="current-password">Current Password</label>
+                            <input type="password" id="current-password" name="currentPassword" placeholder="Enter current password">
+                        </div>
+                        <div class="form-group">
+                            <label for="new-password">New Password</label>
+                            <input type="password" id="new-password" name="newPassword" placeholder="Enter new password">
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm-password">Confirm New Password</label>
+                            <input type="password" id="confirm-password" name="confirmPassword" placeholder="Confirm new password">
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <!-- Notification Preferences -->
+                    <h2 class="section-title notifications-section">Notification Preferences</h2>
+                    <div class="checkbox-group">
+                        <div class="custom-checkbox">
+                            <input type="checkbox" id="email-notify" name="emailNotify" checked>
+                            <span class="checkmark"></span>
+                        </div>
+                        <label for="email-notify">Email Notifications</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <div class="custom-checkbox">
+                            <input type="checkbox" id="sms-notify" name="smsNotify">
+                            <span class="checkmark"></span>
+                        </div>
+                        <label for="sms-notify">SMS Notifications</label>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn save-btn" id="save-btn">
+                            <i class="fas fa-save"></i>
+                            <span class="loading-spinner"></span>
+                            <span class="btn-text">Save Changes</span>
+                        </button>
+                        <button type="reset" class="btn reset-btn">
+                            <i class="fas fa-undo"></i>
+                            Reset
+                        </button>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <!-- Success Message -->
+    <div class="success-message" id="success-message">
+        <i class="fas fa-check-circle"></i>
+        <span>Settings saved successfully!</span>
+    </div>
+
+    <script src="./js/sellersetting.js"></script>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Seller Properties - PropertyPost</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="./stylings/sellerproperties.css" />
+</head>
+<body>
+  <div class="dashboard">
+    <div class="sidebar">
+      <div class="logo"><i class="fas fa-home"></i> PropertyPost</div>
+      <nav>
+        <a href="./sellerdashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        <a href="./sellerproperties.html" class="active"><i class="fas fa-building"></i> Properties</a>
+        <a href="./sellermessage.html"><i class="fas fa-envelope"></i> Messages</a>
+        <a href="./selleranalytics.html"><i class="fas fa-chart-line"></i> Analytics</a>
+        <a href="./sellersettings.html"><i class="fas fa-cog"></i> Settings</a>
+        <a href="#" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+      </nav>
+    </div>
+
+    <div class="main">
+      <header class="main-header">
+        <div class="user-info">
+          <span>Welcome, Seller</span>
+          <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" />
+        </div>
+      </header>
+
+      <div class="section-header">
+        <h2><i class="fas fa-building"></i> Your Properties</h2>
+        <a href="addproperty.html" style="text-decoration: none;">
+          <button class="add-btn"><i class="fas fa-plus"></i> Add Property</button>
+        </a>
+      </div>
+
+      <div class="property-filters">
+        <select id="status-filter">
+          <option value="all">All Statuses</option>
+          <option value="active">Active</option>
+          <option value="pending">Pending</option>
+          <option value="sold">Sold</option>
+        </select>
+      </div>
+
+      <div id="properties-list" class="properties-list">
+        <!-- Dynamic property cards will be inserted here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // Logout handler
+    const logoutBtn = document.querySelector(".logout");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", async (e) => {
+        e.preventDefault();
+        try {
+          await fetch("http://localhost:5000/api/user/logout", {
+            method: "POST",
+            credentials: "include"
+          });
+        } catch (err) {
+          console.error("Logout failed:", err);
+        }
+        window.location.href = "login.html";
+      });
+    }
+
+    // Update welcome message & user profile img from session
+    async function loadUserSession() {
+      try {
+        const res = await fetch("http://localhost:5000/api/user/session", {
+          credentials: "include"
+        });
+        if (!res.ok) throw new Error("Session fetch failed");
+        const data = await res.json();
+
+        if (!data.loggedIn) {
+          window.location.href = "login.html";
+          return;
+        }
+
+        if (data.user.role !== "seller") {
+          window.location.href = "dashboard.html"; // Redirect buyers away
+          return;
+        }
+
+        // Update welcome text and profile image
+        const userInfoSpan = document.querySelector(".user-info span");
+        const userInfoImg = document.querySelector(".user-info img");
+        userInfoSpan.textContent = `Welcome, ${data.user.name}`;
+        if (data.user.profile_img) {
+          userInfoImg.src = data.user.profile_img;
+        }
+
+        return data.user.id;
+      } catch (err) {
+        console.error("Failed to get user session:", err);
+        window.location.href = "login.html";
+      }
+    }
+
+    // Render a single property card HTML
+    function createPropertyCard(property) {
+      const card = document.createElement("div");
+      card.classList.add("property-card", "fade-in");
+      card.dataset.propertyId = property.property_id;
+
+      card.innerHTML = `
+        <img src="${property.image_url || 'https://via.placeholder.com/400x250?text=No+Image'}" alt="Property" />
+        <div class="property-info">
+          <h3>${property.title}</h3>
+          <p class="property-id"><i class="fas fa-key"></i> Property ID: <span>${property.property_id}</span></p>
+          <p class="location"><i class="fas fa-map-marker-alt"></i> ${property.location}</p>
+          <label for="status-${property.property_id}" class="status-label">Status:</label>
+          <select id="status-${property.property_id}" class="status-select">
+            <option value="active" ${property.status === "active" ? "selected" : ""}>Active</option>
+            <option value="discussion" ${property.status === "discussion" ? "selected" : ""}>Discussion Mode</option>
+            <option value="pending" ${property.status === "pending" ? "selected" : ""}>Pending</option>
+            <option value="sold" ${property.status === "sold" ? "selected" : ""}>Sold</option>
+          </select>
+          <p class="views"><i class="fas fa-eye"></i> Views: <span class="view-count">${property.views ?? 0}</span></p>
+          <p class="saved"><i class="fas fa-heart"></i> Saved by: <span class="saved-count">${property.saved_count ?? 0}</span></p>
+          <p class="price">$${property.price ?? "N/A"}/month</p>
+          <div class="property-actions">
+            <button class="edit-btn"><i class="fas fa-edit"></i> Edit</button>
+            <button class="delete-btn"><i class="fas fa-trash-alt"></i> Delete</button>
+          </div>
+        </div>
+      `;
+
+      // Add status background update logic on this select
+      const statusSelect = card.querySelector(".status-select");
+      function updateStatusClass() {
+        statusSelect.classList.remove("active", "discussion", "pending", "sold", "status-animated");
+        void statusSelect.offsetWidth; // restart animation
+        statusSelect.classList.add(statusSelect.value, "status-animated");
+      }
+      statusSelect.addEventListener("change", updateStatusClass);
+      updateStatusClass();
+
+      return card;
+    }
+
+    // Fetch properties from backend and display them
+    async function loadProperties(filterStatus = "all") {
+      try {
+        const res = await fetch("http://localhost:5000/api/seller/properties", {
+          credentials: "include"
+        });
+        if (!res.ok) throw new Error("Failed to fetch properties");
+        const data = await res.json();
+
+        if (!data.success) {
+          alert("Failed to load properties");
+          return;
+        }
+
+        const propertiesList = document.getElementById("properties-list");
+        propertiesList.innerHTML = "";
+
+        // Filter properties if needed
+        let properties = data.properties;
+        if (filterStatus !== "all") {
+          properties = properties.filter(p => p.status === filterStatus);
+        }
+
+        if (properties.length === 0) {
+          propertiesList.innerHTML = "<p>No properties found.</p>";
+          return;
+        }
+
+        properties.forEach(prop => {
+          propertiesList.appendChild(createPropertyCard(prop));
+        });
+
+        // Reapply fade-in scroll animation
+        const faders = document.querySelectorAll(".fade-in");
+        const appearOptions = { threshold: 0.2, rootMargin: "0px 0px -50px 0px" };
+        const appearOnScroll = new IntersectionObserver((entries, observer) => {
+          entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add("appear");
+            observer.unobserve(entry.target);
+          });
+        }, appearOptions);
+        faders.forEach(fader => appearOnScroll.observe(fader));
+      } catch (err) {
+        console.error("Error loading properties:", err);
+        alert("Error loading properties. Please try again later.");
+      }
+    }
+
+    // Event listener for filter dropdown
+    const statusFilter = document.getElementById("status-filter");
+    statusFilter.addEventListener("change", () => {
+      loadProperties(statusFilter.value);
+    });
+
+    // On page load: validate session, load user info and properties
+    document.addEventListener("DOMContentLoaded", async () => {
+      const userId = await loadUserSession();
+      if (userId) {
+        loadProperties(); // load all properties initially
+      }
+    });
+  </script>
+</body>
+</html>

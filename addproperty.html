@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Room | RoomFinder</title>
+  <link rel="stylesheet" href="./stylings/addproperty.css">
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="rf-theme">
+  <!-- Enhanced Animated Background -->
+  <div class="animated-background">
+    <!-- Original Floating Particles -->
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+
+    <!-- Horizontal Drifting Particles -->
+    <div class="moving-particle drift-horizontal"></div>
+    <div class="moving-particle drift-horizontal"></div>
+    <div class="moving-particle drift-horizontal"></div>
+    <div class="moving-particle drift-horizontal"></div>
+
+    <!-- Diagonal Moving Particles -->
+    <div class="moving-particle drift-diagonal"></div>
+    <div class="moving-particle drift-diagonal"></div>
+    <div class="moving-particle drift-diagonal"></div>
+
+    <!-- Vertical Falling Particles -->
+    <div class="moving-particle drift-vertical"></div>
+    <div class="moving-particle drift-vertical"></div>
+    <div class="moving-particle drift-vertical"></div>
+    <div class="moving-particle drift-vertical"></div>
+    <div class="moving-particle drift-vertical"></div>
+
+    <!-- Spiral Particles -->
+    <div class="moving-particle spiral"></div>
+    <div class="moving-particle spiral"></div>
+    <div class="moving-particle spiral"></div>
+
+    <!-- Pulsing Particles -->
+    <div class="moving-particle pulse"></div>
+    <div class="moving-particle pulse"></div>
+    <div class="moving-particle pulse"></div>
+    <div class="moving-particle pulse"></div>
+
+    <!-- Orbiting Particles -->
+    <div class="moving-particle orbit"></div>
+    <div class="moving-particle orbit"></div>
+    <div class="moving-particle orbit"></div>
+
+    <!-- Zigzag Particles -->
+    <div class="moving-particle zigzag"></div>
+    <div class="moving-particle zigzag"></div>
+    <div class="moving-particle zigzag"></div>
+
+    <!-- Geometric Shapes -->
+    <div class="geometric-shape triangle"></div>
+    <div class="geometric-shape square"></div>
+    <div class="geometric-shape circle"></div>
+    <div class="geometric-shape hexagon"></div>
+
+    <!-- Morphing Blobs -->
+    <div class="morphing-blob"></div>
+    <div class="morphing-blob"></div>
+    <div class="morphing-blob"></div>
+
+    <!-- Twinkling Stars -->
+    <div class="star"></div>
+    <div class="star"></div>
+    <div class="star"></div>
+    <div class="star"></div>
+    <div class="star"></div>
+  </div>
+
+  <!-- Logo/Title -->
+  <div class="text-center pt-8 pb-4 relative z-10">
+    <h1 class="logo-title animate-fade-in-up">
+      <span class="logo-room">Room</span>Finder
+    </h1>
+    <p class="logo-subtitle animate-fade-in-up">Post your room and find the perfect tenant</p>
+  </div>
+
+  <div class="container">
+    <!-- Progress Steps -->
+    <div class="progress-container animate-fade-in-up">
+      <div class="progress-steps">
+        <div class="step-item" data-step="0">
+          <div class="step-circle">
+            <i class="fas fa-home"></i>
+          </div>
+          <div class="step-info">
+            <div class="step-number">Step 1</div>
+            <div class="step-title">Basic Info</div>
+          </div>
+        </div>
+        <i class="fas fa-chevron-right step-arrow"></i>
+        
+        <div class="step-item" data-step="1">
+          <div class="step-circle">
+            <i class="fas fa-file-text"></i>
+          </div>
+          <div class="step-info">
+            <div class="step-number">Step 2</div>
+            <div class="step-title">Details</div>
+          </div>
+        </div>
+        <i class="fas fa-chevron-right step-arrow"></i>
+        
+        <div class="step-item" data-step="2">
+          <div class="step-circle">
+            <i class="fas fa-image"></i>
+          </div>
+          <div class="step-info">
+            <div class="step-number">Step 3</div>
+            <div class="step-title">Photos</div>
+          </div>
+        </div>
+        <i class="fas fa-chevron-right step-arrow"></i>
+        
+        <div class="step-item" data-step="3">
+          <div class="step-circle">
+            <i class="fas fa-map-marker-alt"></i>
+          </div>
+          <div class="step-info">
+            <div class="step-number">Step 4</div>
+            <div class="step-title">Location</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Form Card -->
+    <div class="form-card glass-card animate-slide-in-scale">
+      <div class="form-header">
+        <h2 id="step-title">Basic Info</h2>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+      </div>
+
+      <!-- Step Content Container -->
+      <form id="property-form" method="post">
+        <div id="step-content">
+          <!-- Step 0: Basic Info -->
+          <div class="step-content active" id="step-0">
+            <div class="form-group">
+              <label>Room Title *</label>
+              <input type="text" id="room-title" placeholder="e.g., Spacious 2BHK Apartment in Dhanmondi" class="glass-input">
+            </div>
+            <div class="form-group">
+              <label>Monthly Rent (৳) *</label>
+              <input type="number" id="room-rent" placeholder="e.g., 25000" class="glass-input">
+            </div>
+            <div class="form-group">
+              <label>Description</label>
+              <textarea id="room-description" placeholder="Describe your room in detail..." rows="4" class="glass-input"></textarea>
+            </div>
+          </div>
+  
+          <!-- Step 1: Details -->
+          <div class="step-content" id="step-1">
+            <!-- Amenities -->
+            <div class="form-section">
+              <label>Amenities</label>
+              <div class="input-with-button">
+                <input type="text" id="new-amenity" placeholder="e.g., WiFi, AC, Parking" class="glass-input">
+                <button type="button" class="glass-button" onclick="addAmenity()">
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
+              <div class="tags-container" id="amenities-container"></div>
+            </div>
+  
+            <!-- Pros -->
+            <div class="form-section">
+              <label>Pros</label>
+              <div class="input-with-button">
+                <input type="text" id="new-pro" placeholder="e.g., Great location, Quiet area" class="glass-input">
+                <button type="button" class="glass-button" onclick="addPro()">
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
+              <div class="tags-container" id="pros-container"></div>
+            </div>
+  
+            <!-- Cons -->
+            <div class="form-section">
+              <label>Cons</label>
+              <div class="input-with-button">
+                <input type="text" id="new-con" placeholder="e.g., Traffic noise, No elevator" class="glass-input">
+                <button type="button" class="glass-button" onclick="addCon()">
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
+              <div class="tags-container" id="cons-container"></div>
+            </div>
+          </div>
+  
+          <!-- Step 2: Photos -->
+          <div class="step-content" id="step-2">
+            <div class="upload-section">
+              <h3>Upload Room Photos</h3>
+              <p>Add up to 10 high-quality photos of your room</p>
+              
+              <button type="button" class="glass-button upload-btn" onclick="triggerFileInput()">
+                <i class="fas fa-upload"></i>
+                Upload Photos
+              </button>
+  
+              <input type="file" name="images" id="file-input" multiple accept="image/*" style="display: none;">
+            </div>
+  
+            <div id="images-grid" class="images-grid"></div>
+            <div id="image-counter" class="image-counter">0/10 photos uploaded</div>
+          </div>
+  
+          <!-- Step 3: Location -->
+          <div class="step-content" id="step-3">
+            <div class="form-group">
+              <label>Location Address *</label>
+              <input type="text" id="room-location" placeholder="Enter the address or click on map" class="glass-input">
+            </div>
+            
+            <div class="form-group">
+              <label>Select Location on Map</label>
+              <p class="help-text">Click on the map to set the exact location</p>
+              <div id="map-container" class="map-container">
+                <div id="loading-text">Loading map...</div>
+              </div>
+            </div>
+  
+            <div id="location-selected" class="location-selected" style="display: none;">
+              <i class="fas fa-check"></i>
+              <span id="coordinates-display"></span>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <!-- Navigation Buttons -->
+      <div class="form-navigation">
+        <button type="button" id="prev-btn" class="glass-button-outline" onclick="previousStep()" disabled>
+          <i class="fas fa-chevron-left"></i>
+          Previous
+        </button>
+
+        <button type="button" id="next-btn" class="glass-button-primary" onclick="nextStep()">
+          Next
+          <i class="fas fa-chevron-right"></i>
+        </button>
+
+        <button type="button" id="submit-btn" class="glass-button-primary" onclick="submitForm()" style="display: none;">
+          Post Room
+          <i class="fas fa-check"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initMap" async defer></script>
+  <script src="./js/addproperty.js"></script>
+
+  
+  <!-- add properties -->
+  <script>
+    document.getElementById('submit-btn').addEventListener('click', async (e) => {
+  e.preventDefault();
+
+  const title = document.getElementById('room-title').value;
+  const rent = document.getElementById('room-rent').value;
+  const description = document.getElementById('room-description').value;
+  const location = document.getElementById('room-location').value;
+
+  const amenities = document.getElementById('new-amenity').value;
+  const pros = document.getElementById('new-pro').value;
+  const cons = document.getElementById('new-con').value;
+
+  const files = document.getElementById('file-input').files;
+
+  // Use FormData to send files + text fields
+  const formData = new FormData();
+  formData.append('title', title);
+  formData.append('rent', rent);
+  formData.append('description', description);
+  formData.append('amenities', amenities);
+  formData.append('pros', pros);
+  formData.append('cons', cons);
+  formData.append('location', location);
+
+  for (let i = 0; i < files.length; i++) {
+    formData.append('images', files[i]);
+  }
+
+  try {
+    const res = await fetch('http://localhost:5000/api/properties/add', {
+      method: 'POST',
+      credentials: 'include',
+      body: formData // don't set Content-Type header! browser sets it automatically for multipart/form-data
+    });
+
+    const result = await res.json();
+    if (result.success) {
+      alert('Property added successfully!');
+      // reset or redirect
+    } else {
+      alert('Error: ' + (result.error || result.message));
+    }
+  } catch (error) {
+    console.error('Submit Error:', error);
+    alert('Something went wrong.');
+  }
+});
+
+  </script>
+    
+  
+</body>
+</html>

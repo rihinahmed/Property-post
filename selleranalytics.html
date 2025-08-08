@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Analytics - PropertyPost</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="./stylings/selleranalytics.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="dashboard">
+    <aside class="sidebar">
+      <div class="logo">
+        <i class="fas fa-home"></i> PropertyPost
+      </div>
+      <nav>
+        <a href="./sellerdashboard.html"> <i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        <a href="./sellerproperties.html"><i class="fas fa-building"></i> Properties</a>
+        <a href="./sellermessage.html"><i class="fas fa-envelope"></i> Messages</a>
+        <a href="./selleranalytics.html" class="active"><i class="fas fa-chart-line"></i> Analytics</a>
+        <a href="./sellersettings.html"><i class="fas fa-cog"></i> Settings</a>
+        <a href="#logout" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <section class="analytics-section">
+        <h1>Dashboard Analytics</h1>
+
+        <div class="stats-cards">
+          <div class="card">
+            <h3>Total Properties</h3>
+            <p class="count" data-target="125">0</p>
+          </div>
+          <div class="card">
+            <h3>Active Listings</h3>
+            <p class="count" data-target="87">0</p>
+          </div>
+          <div class="card">
+            <h3>Monthly Views</h3>
+            <p class="count" data-target="4300">0</p>
+          </div>
+          <div class="card">
+            <h3>New Messages</h3>
+            <p class="count" data-target="23">0</p>
+          </div>
+        </div>
+
+        <div class="charts">
+          <div class="chart-card">
+            <h3>Property Views (Last 6 months)</h3>
+            <canvas id="viewsChart"></canvas>
+          </div>
+          <div class="chart-card">
+            <h3>New Listings (Last 6 months)</h3>
+            <canvas id="listingsChart"></canvas>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <script>
+    // Counter Animation
+    const counters = document.querySelectorAll('.count');
+    counters.forEach(counter => {
+      const updateCount = () => {
+        const target = +counter.getAttribute('data-target');
+        const count = +counter.innerText;
+        const increment = target / 200;
+
+        if (count < target) {
+          counter.innerText = Math.ceil(count + increment);
+          setTimeout(updateCount, 15);
+        } else {
+          counter.innerText = target.toLocaleString();
+        }
+      };
+      updateCount();
+    });
+
+    // Chart.js setup
+    const viewsCtx = document.getElementById('viewsChart').getContext('2d');
+    const viewsChart = new Chart(viewsCtx, {
+      type: 'line',
+      data: {
+        labels: ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+        datasets: [{
+          label: 'Views',
+          data: [450, 600, 750, 850, 900, 1100],
+          borderColor: '#4fc3f7',
+          backgroundColor: 'rgba(79,195,247,0.3)',
+          fill: true,
+          tension: 0.4,
+          pointRadius: 5,
+          pointHoverRadius: 7,
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { labels: { color: '#fff' }}},
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: { color: '#ddd' },
+            grid: { color: 'rgba(255,255,255,0.1)' }
+          },
+          x: {
+            ticks: { color: '#ddd' },
+            grid: { color: 'rgba(255,255,255,0.1)' }
+          }
+        }
+      }
+    });
+
+    const listingsCtx = document.getElementById('listingsChart').getContext('2d');
+    const listingsChart = new Chart(listingsCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+        datasets: [{
+          label: 'New Listings',
+          data: [12, 15, 10, 20, 25, 30],
+          backgroundColor: '#4fc3f7',
+          borderRadius: 6,
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false }},
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: { color: '#ddd' },
+            grid: { color: 'rgba(255,255,255,0.1)' }
+          },
+          x: {
+            ticks: { color: '#ddd' },
+            grid: { color: 'rgba(255,255,255,0.1)' }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

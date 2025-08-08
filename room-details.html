@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Room Details | RoomFinder</title>
-  <link rel="stylesheet" href="/stylings/style.css">
-  <link rel="stylesheet" href="/stylings/room_details.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <!-- AOS CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <link rel="stylesheet" href="/stylings/style.css"/>
+  <link rel="stylesheet" href="/stylings/room_details.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet"/>
+  <style>
+    #map { display: none; }
+    .save-room-btn.saved i { color: red; }
+  </style>
 </head>
-
 <body class="room-details">
-  <!-- Header -->
   <header class="header">
     <div class="logo">RoomFinder</div>
     <nav class="nav-links">
@@ -24,272 +25,205 @@
     </nav>
   </header>
 
-  <!-- Room Details Section -->
   <section class="room-details-section" data-aos="fade-up">
     <div class="container">
       <div class="room-details-wrapper">
-        <!-- Room Images Carousel -->
-        <div class="room-images" data-aos="fade-right">
+        <div class="room-images" data-aos="fade-right" id="carousel-images">
           <div class="carousel-wrapper">
-            <div class="carousel-images">
-              <img src="https://i.ibb.co/2M5pKJz/family1.jpg" alt="Room Image 1">
-              <img src="https://i.ibb.co/GJkrjGv/family2.jpg" alt="Room Image 2">
-              <img src="https://i.ibb.co/sqGbzqv/family3.jpg" alt="Room Image 3">
-            </div>
+            <div class="carousel-images"></div>
           </div>
           <button class="carousel-btn prev">&#10094;</button>
           <button class="carousel-btn next">&#10095;</button>
         </div>
-
-        <!-- Room Information -->
         <div class="room-info" data-aos="fade-left">
-          <h1>Modern Apartment</h1>
-          <p class="location">Mirpur DOHS</p>
-          <p class="rent">৳22,000/month</p>
-          <div class="room-amenities">
+          <h1 id="room-title">Loading...</h1>
+          <p class="location" id="room-location"></p>
+          <p class="rent" id="room-rent"></p>
+          <div class="room-amenities" id="room-amenities">
             <h3>Amenities</h3>
-            <ul>
-              <li><i class="fas fa-bed"></i> 2 Bedrooms</li>
-              <li><i class="fas fa-bath"></i> 2 Bathrooms</li>
-              <li><i class="fas fa-balcony"></i> Balcony</li>
-            </ul>
+            <ul></ul>
           </div>
           <div class="room-description">
             <h3>Description</h3>
-            <p>This beautiful modern apartment is located in Mirpur DOHS, offering a spacious living area with 2 bedrooms and 2 bathrooms. It also features a lovely balcony with a great view. Ideal for families looking for comfort and convenience.</p>
+            <p id="room-description"></p>
           </div>
+          <button id="saveRoomBtn" class="save-room-btn">
+            <i class="fas fa-heart"></i> Save Room
+          </button>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Pros and Cons Section -->
   <section class="pros-cons" data-aos="zoom-in">
     <div class="container">
       <h2>Pros & Cons</h2>
       <div class="pros-cons-wrapper">
         <div class="pros" data-aos="fade-right">
           <h3>Pros</h3>
-          <ul>
-            <li><i class="fas fa-check-circle"></i> Spacious Living Area</li>
-            <li><i class="fas fa-check-circle"></i> Great Location</li>
-            <li><i class="fas fa-check-circle"></i> Affordable Rent</li>
-          </ul>
+          <ul id="pros-list"></ul>
         </div>
         <div class="cons" data-aos="fade-left">
           <h3>Cons</h3>
-          <ul>
-            <li><i class="fas fa-times-circle"></i> No Dedicated Parking</li>
-            <li><i class="fas fa-times-circle"></i> Small Kitchen Area</li>
-          </ul>
+          <ul id="cons-list"></ul>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Google Map Location Section -->
   <section class="google-map-section" data-aos="fade-up">
     <div class="container">
       <h2>Room Location</h2>
       <div class="map-container">
-        <div id="map" style="width: 100%; height: 400px;"></div>
-        <p class="map-lock-text">Unlock the map for only 100 Taka to view the location on Google Maps.</p>
+        <div id="map" style="width:100%; height:400px;"></div>
+        <p class="map-lock-text">Unlock the map for only 100 Taka to view the location.</p>
       </div>
       <button class="unlock-map-btn" onclick="unlockMapContent()">Unlock Map</button>
     </div>
   </section>
 
-  <!-- Room Gallery -->
   <section class="room-gallery" data-aos="zoom-in-up">
     <h2>Room Gallery</h2>
-    <div class="gallery">
-      <img src="https://i.ibb.co/2M5pKJz/family1.jpg" alt="Gallery Image 1">
-      <img src="https://i.ibb.co/GJkrjGv/family2.jpg" alt="Gallery Image 2">
-      <img src="https://i.ibb.co/sqGbzqv/family3.jpg" alt="Gallery Image 3">
-    </div>
+    <div class="gallery" id="room-gallery"></div>
   </section>
 
-  <!-- Nearby Rooms Suggestions -->
-  <section class="nearby-rooms" data-aos="fade-up">
-    <h2>Nearby Rooms</h2>
-    <div class="room-card" data-aos="fade-up">
-      <img src="https://i.ibb.co/2M5pKJz/family1.jpg" alt="Nearby Room">
-      <h3>Cozy Studio</h3>
-      <p>৳15,000/month</p>
-    </div>
-    <div class="room-card" data-aos="fade-up" data-aos-delay="100">
-      <img src="https://i.ibb.co/2M5pKJz/family1.jpg" alt="Nearby Room">
-      <h3>Spacious Flat</h3>
-      <p>৳20,000/month</p>
-    </div>
-  </section>
-
-  <!-- Nearby Attractions Section -->
-  <section class="nearby-attractions" data-aos="fade-up">
-    <h2>Nearby Attractions</h2>
-    <div class="attraction-wrapper">
-      <div class="attraction-card" data-aos="zoom-in">
-        <i class="fas fa-map-marker-alt"></i>
-        <h3>Mirpur Park</h3>
-        <p>5 min walk</p>
-      </div>
-      <div class="attraction-card" data-aos="zoom-in" data-aos-delay="100">
-        <i class="fas fa-store"></i>
-        <h3>Shopping Mall</h3>
-        <p>10 min drive</p>
-      </div>
-      <div class="attraction-card" data-aos="zoom-in" data-aos-delay="200">
-        <i class="fas fa-school"></i>
-        <h3>Top-Rated Schools</h3>
-        <p>3 min walk</p>
-      </div>
-      <div class="attraction-card" data-aos="zoom-in" data-aos-delay="300">
-        <i class="fas fa-cogs"></i>
-        <h3>Community Center</h3>
-        <p>15 min walk</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- User Reviews -->
-  <section class="user-reviews" data-aos="fade-up">
-    <h2>What Our Users Say</h2>
-    <div class="review-wrapper">
-      <div class="review" data-aos="fade-right">
-        <div class="rating">
-          <i class="fas fa-star"></i><i class="fas fa-star"></i>
-          <i class="fas fa-star"></i><i class="fas fa-star"></i>
-          <i class="fas fa-star-half-alt"></i>
-        </div>
-        <strong>John Doe</strong>
-        <p>"A great place to stay, very spacious and convenient location! Highly recommend."</p>
-      </div>
-      <div class="review" data-aos="fade-up" data-aos-delay="100">
-        <div class="rating">
-          <i class="fas fa-star"></i><i class="fas fa-star"></i>
-          <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-          <i class="far fa-star"></i>
-        </div>
-        <strong>Jane Smith</strong>
-        <p>"The apartment is beautiful, but parking could be better. Otherwise, excellent experience."</p>
-      </div>
-      <div class="review" data-aos="fade-left" data-aos-delay="200">
-        <div class="rating">
-          <i class="fas fa-star"></i><i class="fas fa-star"></i>
-          <i class="fas fa-star"></i><i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-        </div>
-        <strong>Michael Lee</strong>
-        <p>"Amazing place! Perfect for families. Great neighborhood and plenty of space!"</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
   <footer class="footer" data-aos="fade-up">
     <div class="footer-content">
-      <div class="footer-column">
-        <h4>RoomFinder</h4>
-        <p>Find your perfect space with us.</p>
-      </div>
+      <div class="footer-column"><h4>RoomFinder</h4><p>Find your perfect space with us.</p></div>
       <div class="footer-column">
         <h4>Quick Links</h4>
-        <div class="footer-links">
-          <a href="#">Home</a>
-          <a href="#">Family</a>
-          <a href="#">Hostel</a>
-          <a href="#">Bachelor</a>
-        </div>
+        <div class="footer-links"><a href="#">Home</a><a href="#">Family</a><a href="#">Hostel</a><a href="#">Bachelor</a></div>
       </div>
       <div class="footer-column">
-        <h4>Contact</h4>
-        <div class="footer-links">
-          <a href="#">support@roomfinder.com</a>
-          <a href="#">+880 1700 000000</a>
-        </div>
+        <h4>Contact</h4><div class="footer-links"><a href="#">support@roomfinder.com</a><a href="#">+880 1700 000000</a></div>
       </div>
     </div>
-    <div class="footer-bottom">&copy; 2025 RoomFinder. All rights reserved.</div>
+    <div class="footer-bottom">© 2025 RoomFinder. All rights reserved.</div>
   </footer>
 
-  <!-- Google Maps -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
+
   <script>
-    function initMap() {
-      var mapOptions = {
-        center: {lat: 23.8103, lng: 90.4125},
+    let map, marker;
+    let roomId;
+
+    window.onload = async function () {
+      const params = new URLSearchParams(window.location.search);
+      roomId = params.get("room_id");
+
+      if (!roomId) {
+        alert("Room ID missing in URL!");
+        return;
+      }
+
+      try {
+        const response = await fetch(`http://localhost:5000/api/rooms/${roomId}`);
+        const data = await response.json();
+
+        if (!data.success) {
+          alert("Room not found.");
+          return;
+        }
+
+        const room = data.room;
+
+        // Set title, location, rent, description
+        document.getElementById("room-title").textContent = room.TITLE || "No Title";
+        document.getElementById("room-location").textContent = room.LOCATION || "";
+        document.getElementById("room-rent").textContent = room.RENT ? `৳${room.RENT}/month` : "";
+        document.getElementById("room-description").textContent = room.DESCRIPTION || "";
+
+        // Amenities (array expected)
+        const amenitiesArray = Array.isArray(room.AMENITIES) ? room.AMENITIES : [];
+        const amenitiesList = amenitiesArray.map(item => `<li><i class="fas fa-check"></i> ${item.trim()}</li>`).join('');
+        document.querySelector("#room-amenities ul").innerHTML = amenitiesList || "<li>No amenities listed.</li>";
+
+        // Pros & Cons (arrays expected)
+        const prosArray = Array.isArray(room.PROS) ? room.PROS : [];
+        const consArray = Array.isArray(room.CONS) ? room.CONS : [];
+
+        document.getElementById("pros-list").innerHTML = prosArray.length ? prosArray.map(p => `<li><i class="fas fa-check-circle"></i> ${p.trim()}</li>`).join('') : "<li>No pros listed.</li>";
+        document.getElementById("cons-list").innerHTML = consArray.length ? consArray.map(c => `<li><i class="fas fa-times-circle"></i> ${c.trim()}</li>`).join('') : "<li>No cons listed.</li>";
+
+        // Images Carousel & Gallery (arrays expected)
+        const imagesArray = Array.isArray(room.IMAGES) ? room.IMAGES : [];
+        if (imagesArray.length) {
+          // Carousel images
+          const carouselImagesDiv = document.querySelector(".carousel-images");
+          carouselImagesDiv.innerHTML = imagesArray.map(img => `<img src="${img}" alt="Room Image">`).join('');
+
+          // Gallery images
+          const galleryDiv = document.getElementById("room-gallery");
+          galleryDiv.innerHTML = imagesArray.map(img => `<img src="${img}" alt="Gallery Image">`).join('');
+        } else {
+          document.querySelector(".carousel-images").innerHTML = "<p>No images available.</p>";
+          document.getElementById("room-gallery").innerHTML = "<p>No images available.</p>";
+        }
+
+        // Initialize Map (hide map initially)
+        document.getElementById("map").style.display = "none";
+        document.querySelector(".map-lock-text").style.display = "block";
+        document.querySelector(".unlock-map-btn").style.display = "inline-block";
+
+        if (room.LATITUDE && room.LONGITUDE) {
+          initMap(parseFloat(room.LATITUDE), parseFloat(room.LONGITUDE), room.TITLE);
+        }
+      } catch (error) {
+        alert("Failed to load room data. Please try again later.");
+        console.error(error);
+      }
+
+      // Mark save button if already saved
+      const savedRooms = JSON.parse(localStorage.getItem("savedRooms") || "[]");
+      if (savedRooms.includes(roomId)) {
+        document.getElementById("saveRoomBtn").classList.add("saved");
+        document.getElementById("saveRoomBtn").querySelector("i").style.color = "red";
+      }
+    };
+
+    function initMap(lat, lng, title) {
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat, lng },
         zoom: 15,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-      };
-      var map = new google.maps.Map(document.getElementById('map'), mapOptions);
-      var marker = new google.maps.Marker({
-        position: {lat: 23.8103, lng: 90.4125},
-        map: map,
-        title: 'Modern Apartment'
+      });
+
+      marker = new google.maps.Marker({
+        position: { lat, lng },
+        map,
+        title,
       });
     }
 
     function unlockMapContent() {
-      document.getElementById('map').style.display = 'block';
-      document.querySelector('.map-lock-text').style.display = 'none';
-      document.querySelector('.unlock-map-btn').style.display = 'none';
+      document.getElementById("map").style.display = "block";
+      document.querySelector(".map-lock-text").style.display = "none";
+      document.querySelector(".unlock-map-btn").style.display = "none";
+      if (map) {
+        google.maps.event.trigger(map, "resize");
+      }
     }
   </script>
 
-  <!-- AOS JS -->
+  <script>
+    document.getElementById("saveRoomBtn").addEventListener("click", () => {
+      let savedRooms = JSON.parse(localStorage.getItem("savedRooms") || "[]");
+      if (!savedRooms.includes(roomId)) {
+        savedRooms.push(roomId);
+        localStorage.setItem("savedRooms", JSON.stringify(savedRooms));
+        alert("Room saved!");
+        document.getElementById("saveRoomBtn").classList.add("saved");
+        document.getElementById("saveRoomBtn").querySelector("i").style.color = "red";
+      } else {
+        alert("Room already saved.");
+      }
+    });
+  </script>
+
   <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
   <script>
     AOS.init({
       duration: 1000,
-      once: true
-    });
-  </script>
-
-  <!--spark animation-->
-  <script>
-    document.addEventListener('click', function (e) {
-      const count = 10;
-      const sparkColor = '#6366f2'; // Matches your theme
-      const size = 6;
-      const radius = 40;
-      const duration = 600;
-  
-      for (let i = 0; i < count; i++) {
-        const spark = document.createElement('div');
-        spark.style.position = 'absolute';
-        spark.style.width = 4 + 'px';
-        spark.style.height = 4 + 'px';
-        spark.style.borderRadius = '50%';
-        spark.style.backgroundColor = sparkColor;
-        spark.style.pointerEvents = 'none';
-        spark.style.zIndex = '9999';
-  
-        // Correct position on the full page
-        const pageX = e.pageX;
-        const pageY = e.pageY;
-  
-        const angle = (2 * Math.PI * i) / count;
-        const x = Math.cos(angle) * radius;
-        const y = Math.sin(angle) * radius;
-  
-        spark.style.left = pageX + 'px';
-        spark.style.top = pageY + 'px';
-  
-        document.body.appendChild(spark);
-  
-        spark.animate(
-          [
-            { transform: 'translate(0, 0)', opacity: 1 },
-            { transform: `translate(${x}px, ${y}px)`, opacity: 0 }
-          ],
-          {
-            duration: duration,
-            easing: 'ease-out'
-          }
-        );
-  
-        setTimeout(() => spark.remove(), duration);
-      }
+      once: true,
     });
   </script>
 </body>

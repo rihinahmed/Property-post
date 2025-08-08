@@ -1,0 +1,479 @@
+@import url('https://fonts.googleapis.com/css2?family=Segoe+UI&display=swap');
+
+:root {
+  --primary-color: #4fc3f7;
+  --background-color: rgba(255, 255, 255, 0.1);
+  --text-color: #ffffff;
+  --card-bg: rgba(255, 255, 255, 0.08);
+  --card-glow: rgba(79, 195, 247, 0.3);
+  --border-radius: 1rem;
+  --glass-blur: 10px;
+  --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --sidebar-width: 250px;
+  --shadow-color: rgba(79, 195, 247, 0.25);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family);
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  color: var(--text-color);
+  height: 100vh;
+  overflow-x: hidden;
+}
+
+.dashboard {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* Sidebar */
+.sidebar {
+  width: var(--sidebar-width);
+  background: var(--card-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  box-shadow: 0 0 20px var(--card-glow);
+  border-radius: 0 20px 20px 0;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 1.5rem;
+  color: var(--text-color);
+  animation: fadeInLeft 0.6s ease forwards;
+}
+
+.logo {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--primary-color);
+}
+
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1.3rem;
+}
+
+.sidebar nav a {
+  color: var(--text-color);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.7rem 1rem;
+  border-radius: 10px;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.sidebar nav a:hover,
+.sidebar nav a.active {
+  background-color: var(--primary-color);
+  color: #000;
+  font-weight: 700;
+}
+
+.sidebar nav a.logout {
+  margin-top: auto;
+  background: #ff4d4d;
+  color: #fff;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar nav a.logout:hover {
+  background: #e03e3e;
+}
+
+/* Main Content */
+.main {
+  flex: 1;
+  padding: 2rem 3rem;
+  overflow-y: auto;
+  animation: fadeInUp 0.6s ease forwards;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 2.5rem;
+  gap: 1rem;
+  color: var(--primary-color);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-weight: 600;
+}
+
+.user-info img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: 2px solid var(--primary-color);
+  object-fit: cover;
+}
+
+/* Section Header */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.8rem;
+  color: var(--primary-color);
+}
+
+.section-header h2 {
+  font-weight: 700;
+  font-size: 1.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+a {
+  text-decoration: none;
+}
+
+.add-btn {
+  background-color: var(--primary-color);
+  border: none;
+  color: #000;
+  padding: 0.6rem 1.3rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 0 10px var(--primary-color);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background-color 0.3s ease;
+}
+
+.add-btn:hover {
+  background-color: #81d4fa;
+}
+
+/* Filters */
+.property-filters {
+  margin-bottom: 2rem;
+}
+
+.property-filters select {
+  width: 220px;
+  padding: 10px 15px;
+  border-radius: 12px;
+  border: none;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--text-color);
+  outline: none;
+  backdrop-filter: blur(var(--glass-blur));
+  transition: background-color 0.3s ease, color 0.3s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+}
+
+/* Fix for dropdown options (works best in Firefox + Chromium-based) */
+.property-filters select option {
+  background: #ffffff;
+  color: #000000;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Hover effect for the whole select box */
+.property-filters select:hover,
+.property-filters select:focus {
+  background: rgba(255, 255, 255, 0.3);
+  color: #000;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+/* Optional: animate dropdown arrow (custom icon) if you're using one */
+.property-filters select:focus {
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+
+/* Properties List */
+.properties-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill,minmax(280px,1fr));
+  gap: 1.6rem;
+}
+
+/* Single Property Card */
+.status-label {
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-top: 1rem;
+  display: inline-block;
+  margin-bottom: 0.3rem;
+  font-size: 0.95rem;
+}
+
+.status-select {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  background-color: var(--card-bg) !important;  /* override default white */
+  color: var(--text-color) !important;
+  backdrop-filter: blur(var(--glass-blur));
+  box-shadow: 0 0 10px var(--card-glow);
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  position: relative;
+  outline: none;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.15);
+  z-index: 1;
+}
+.status-select option {
+  background-color: #203a43; /* darkish background */
+  color: var(--text-color);
+}
+
+/* Add a custom arrow */
+.status-select::-ms-expand {
+  display: none;
+}
+.status-select::after {
+  content: '\25BC';
+  position: absolute;
+  right: 15px;
+  pointer-events: none;
+  color: var(--primary-color);
+}
+.status-select:focus {
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  outline: none;
+}
+
+/* Status colors for dropdown options - note: styling options inside select is limited and varies by browser */
+/* Instead, use JS to add classes on the select element itself for different statuses (below styles for that) */
+
+/* We'll style the select when it has a specific class indicating the status */
+
+.status-select.active {
+  background-color: rgba(0, 180, 100, 0.25);
+  color: #00e676;
+  box-shadow: 0 0 12px #4fc3f7;
+}
+
+.status-select.discussion {
+  background-color: rgba(33, 150, 243, 0.25);
+  color: #2196f3;
+  box-shadow: 0 0 12px #f7b64f;
+}
+
+.status-select.pending {
+  background-color: rgba(255, 193, 7, 0.25);
+  color: #ffc107;
+  box-shadow: 0 0 12px #f76f4f;
+}
+
+.status-select.sold {
+  background-color: rgba(244, 67, 54, 0.25);
+  color: #f44336;
+  box-shadow: 0 0 12px #4ff77a;
+}
+.status-select.status-animated::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300%;
+  height: 300%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
+  transform: translate(-50%, -50%) scale(0);
+  animation: spreadOut 0.6s ease-out forwards;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes spreadOut {
+  to {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+  }
+}
+
+/* Info lines for views and saved */
+.views, .saved {
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-top: 0.7rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #ccc;
+}
+
+.views i, .saved i {
+  color: var(--primary-color);
+}
+
+.property-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  border-radius: var(--border-radius);
+  box-shadow: 0 0 15px var(--card-glow);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(20px);
+  animation-fill-mode: forwards;
+}
+
+.property-card.appear {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.property-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  transition: scale 0.3s ease;
+}
+
+.property-card:hover img {
+  scale: 1.05;
+}
+
+.property-info {
+  padding: 1rem 1.2rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.property-id {
+  font-size: 0.95rem;
+  margin: 4px 0;
+  color: var(--text-color);
+  opacity: 0.85;
+}
+
+.property-id i {
+  margin-right: 6px;
+  color: var(--accent-color); /* Make it stand out slightly */
+}
+
+.property-info h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: var(--primary-color);
+  font-weight: 700;
+}
+
+.property-info .location {
+  font-size: 0.9rem;
+  color: #bbb;
+  margin-bottom: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.property-info .price {
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: #ddd;
+}
+
+/* Buttons inside property card */
+.property-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: auto;
+  padding-bottom: 1rem;
+}
+
+.property-actions button {
+  flex: 1;
+  background-color: var(--primary-color);
+  border: none;
+  padding: 0.6rem 0;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 0 8px var(--primary-color);
+  transition: background-color 0.3s ease;
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.property-actions button.edit-btn:hover {
+  background-color: #81d4fa;
+}
+
+.property-actions button.delete-btn {
+  background-color: #ff4d4d;
+  box-shadow: 0 0 8px #ff4d4d;
+  color: #fff;
+}
+
+.property-actions button.delete-btn:hover {
+  background-color: #e03e3e;
+}
+
+
+/* Fade in animation */
+.fade-in {
+  animation: fadeInUp 0.8s forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  } to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+  .main {
+    padding: 1.5rem 1rem;
+  }
+  .property-filters select {
+    width: 100%;
+  }
+  .properties-list {
+    grid-template-columns: 1fr;
+  }
+}

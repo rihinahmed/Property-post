@@ -14,6 +14,7 @@ router.get("/summary", async (req, res) => {
     const conn = await oracledb.getConnection(dbConfig);
     const userId = user.id;
 
+    // Fix: rooms have no user_id column, so no user filter on rooms queries
     const [
       totalRooms,
       newListings,
@@ -21,11 +22,11 @@ router.get("/summary", async (req, res) => {
       messages,
       announcements
     ] = await Promise.all([
-      conn.execute(`SELECT COUNT(*) FROM rooms WHERE user_id = :userId`, [userId]),
-      conn.execute(`SELECT COUNT(*) FROM rooms WHERE user_id = :userId AND listed_date >= SYSDATE - 7`, [userId]),
+      conn.execute(`SELECT COUNT(*) FROM rooms`),  // all rooms count
+      conn.execute(`SELECT COUNT(*) FROM rooms WHERE created_at >= SYSDATE - 7`), // recent rooms in last 7 days
       conn.execute(`SELECT COUNT(*) FROM blog_posts WHERE user_id = :userId`, [userId]),
       conn.execute(`SELECT COUNT(*) FROM messages WHERE user_id = :userId`, [userId]),
-      conn.execute(`SELECT COUNT(*) FROM announcements`)  // global count, no user filter
+      conn.execute(`SELECT COUNT(*) FROM announcements`)  // global announcements count
     ]);
 
     await conn.close();

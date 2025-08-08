@@ -1,6 +1,36 @@
+const express = require("express");
+const router = express.Router();
+const oracledb = require("oracledb");
+const dbConfig = require("../config/db");
 const logActivity = require("../utils/logger");
-router.post('/login', async (req, res) => {
-  const { email, password, role } = req.body; // Include role if your login form includes it
+
+// Seller insertion utility
+async function insertSellerIfNotExists(connection, user) {
+  const check = await connection.execute(
+    `SELECT * FROM sellers WHERE user_id = :id`,
+    { id: user.ID },
+    { outFormat: oracledb.OUT_FORMAT_OBJECT }
+  );
+
+  if (check.rows.length === 0) {
+    await connection.execute(
+      `INSERT INTO sellers (user_id, name, email, profile_img) VALUES (:id, :name, :email, :img)`,
+      {
+        id: user.ID,
+        name: user.NAME,
+        email: user.EMAIL,
+        img: user.PROFILE_IMG || null
+      },
+      { autoCommit: true }
+    );
+    console.log("📝 Seller added to sellers table.");
+  } else {
+    console.log("⚠️ Seller already exists in sellers table.");
+  }
+}
+
+router.post("/login", async (req, res) => {
+  const { email, password, role } = req.body;
   let connection;
 
   try {
@@ -13,12 +43,9 @@ router.post('/login', async (req, res) => {
       { outFormat: oracledb.OUT_FORMAT_OBJECT }
     );
 
-    console.log("🔍 DB Result:", result.rows);
-
     if (result.rows.length === 1) {
       const user = result.rows[0];
 
-      // Compare plaintext password (⚠️ not secure — for demo/dev only)
       if (password === user.PASSWORD_HASH) {
         if (role && role !== user.ROLE) {
           return res.json({ success: false, message: "Incorrect role!" });
@@ -28,12 +55,16 @@ router.post('/login', async (req, res) => {
           id: user.ID,
           name: user.NAME,
           email: user.EMAIL,
-          role: user.ROLE,
-          
+          role: user.ROLE
         };
-        await logActivity(user.ID, "Login", "Success", "User logged in");
 
+        await logActivity(user.ID, "Login", "Success", "User logged in");
         console.log("✅ Session created:", req.session.user);
+
+        // If seller, insert to sellers table if not already present
+        if (user.ROLE === "seller") {
+          await insertSellerIfNotExists(connection, user);
+        }
 
         return res.json({
           success: true,
@@ -41,11 +72,9 @@ router.post('/login', async (req, res) => {
           user: req.session.user
         });
       } else {
-        console.log("❌ Password mismatch");
         return res.json({ success: false, message: "Incorrect password" });
       }
     } else {
-      console.log("❌ User not found");
       return res.json({ success: false, message: "User not found" });
     }
   } catch (err) {
@@ -55,3 +84,5 @@ router.post('/login', async (req, res) => {
     if (connection) await connection.close();
   }
 });
+
+module.exports = router;

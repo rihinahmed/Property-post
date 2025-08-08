@@ -1,0 +1,194 @@
+@import url('https://fonts.googleapis.com/css2?family=Segoe+UI&display=swap');
+
+:root {
+  --primary-color: #4fc3f7;
+  --background-color: rgba(255, 255, 255, 0.1);
+  --text-color: #ffffff;
+  --card-bg: rgba(255, 255, 255, 0.08);
+  --card-glow: rgba(79, 195, 247, 0.3);
+  --border-radius: 1rem;
+  --glass-blur: 10px;
+  --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --sidebar-width: 250px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family);
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  color: var(--text-color);
+  height: 100vh;
+  overflow: hidden;
+}
+
+.dashboard {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* Sidebar */
+.sidebar {
+  width: var(--sidebar-width);
+  background: var(--card-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  box-shadow: 0 0 20px var(--card-glow);
+  border-radius: 0 20px 20px 0;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 1.5rem;
+  color: var(--text-color);
+  animation: fadeInLeft 0.6s ease forwards;
+}
+
+.logo {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--primary-color);
+}
+
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1.3rem;
+}
+
+.sidebar nav a {
+  color: var(--text-color);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.7rem 1rem;
+  border-radius: 10px;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.sidebar nav a:hover,
+.sidebar nav a.active {
+  background-color: var(--primary-color);
+  color: #000;
+}
+
+.sidebar nav a.logout {
+  margin-top: auto;
+  background: #ff4d4d;
+  color: #fff;
+  font-weight: 600;
+}
+
+.sidebar nav a.logout:hover {
+  background: #e03e3e;
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  padding: 2rem 3rem;
+  overflow-y: auto;
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.analytics-section h1 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  color: var(--primary-color);
+}
+
+.stats-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.card {
+  background: var(--card-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  border-radius: var(--border-radius);
+  box-shadow: 0 0 20px var(--card-glow);
+  padding: 1.5rem 2rem;
+  text-align: center;
+  opacity: 0;
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.card:nth-child(1) { animation-delay: 0.2s; }
+.card:nth-child(2) { animation-delay: 0.4s; }
+.card:nth-child(3) { animation-delay: 0.6s; }
+.card:nth-child(4) { animation-delay: 0.8s; }
+
+.card h3 {
+  margin-bottom: 0.8rem;
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: var(--primary-color);
+}
+
+.card .count {
+  font-size: 2.8rem;
+  font-weight: 700;
+}
+
+.charts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+}
+
+.chart-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  border-radius: var(--border-radius);
+  box-shadow: 0 0 20px var(--card-glow);
+  padding: 1.5rem 2rem;
+  opacity: 0;
+  animation: fadeInUp 0.8s ease forwards;
+}
+
+.chart-card h3 {
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+  font-weight: 600;
+  font-size: 1.3rem;
+}
+
+@media (max-width: 768px) {
+  .charts {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
