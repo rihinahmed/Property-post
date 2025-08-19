@@ -1,49 +1,173 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Messages - PropertyPost</title>
-  <link rel="stylesheet" href="./stylings/sellermessage.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Messages - PropertyPost</title>
+    <link rel="stylesheet" href="./stylings/sellermessage.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
 </head>
 <body>
-  <div class="message-container">
-    <div class="message-list">
-      <h2>Inbox</h2>
-      <div class="search-bar">
-        <input type="text" placeholder="Search messages..." />
-      </div>
-      <div class="message">
-        <img src="https://i.pravatar.cc/40?img=1" alt="User avatar" />
-        <div class="message-info">
-          <h4>Rahim Khan</h4>
-          <p>Hi, is this room still available?</p>
+    <div class="message-container">
+        <div class="message-list">
+            <h2>Inbox</h2>
+            <div class="search-bar">
+                <input type="text" placeholder="Search messages..." />
+            </div>
+            <!-- Dynamic message list will be rendered here by JavaScript -->
+            <div id="loading-indicator" style="text-align: center; padding: 20px; font-style: italic; color: #888;">Loading conversations...</div>
         </div>
-      </div>
-      <div class="message">
-        <img src="https://i.pravatar.cc/40?img=2" alt="User avatar" />
-        <div class="message-info">
-          <h4>Sumaiya Akter</h4>
-          <p>Thanks for confirming!</p>
+
+        <div class="chat-box">
+            <!-- Dynamic chat content will be rendered here by JavaScript -->
+            <div class="chat-placeholder">Select a conversation to start chatting.</div>
         </div>
-      </div>
-      <!-- Add more messages as needed -->
     </div>
 
-    <div class="chat-box">
-      <div class="chat-header">Rahim Khan</div>
-      <div class="chat-messages">
-        <div class="chat-message received">Hi, is this room still available?</div>
-        <div class="chat-message sent">Yes, it's available. Do you want to schedule a visit?</div>
-        <div class="chat-message received">Yes, tomorrow 3 PM works?</div>
-        <div class="chat-message sent">Perfect! See you then.</div>
-      </div>
-      <div class="chat-input">
-        <input type="text" placeholder="Type a message..." />
-        <button>Send</button>
-      </div>
-    </div>
-  </div>
+    <script>
+        // Placeholder for the current user's ID. You would get this from your authentication system.
+        const currentUserId = 1;
+
+        // Renders the list of conversations in the inbox
+        function renderInbox(conversations) {
+            const messageListContainer = document.querySelector('.message-list');
+            const loadingIndicator = document.getElementById('loading-indicator');
+            loadingIndicator.style.display = 'none';
+            
+            // Remove the old conversations and only keep the search bar.
+            const existingConversations = messageListContainer.querySelectorAll('.message');
+            existingConversations.forEach(conv => conv.remove());
+
+            if (conversations.length === 0) {
+                messageListContainer.innerHTML += '<div style="text-align: center; padding: 20px; font-style: italic; color: #888;">No conversations found.</div>';
+                return;
+            }
+
+            conversations.forEach(conv => {
+                const messageEl = document.createElement('div');
+                messageEl.classList.add('message');
+                messageEl.dataset.partnerId = conv.partnerId;
+                messageEl.innerHTML = `
+                    <img src="${conv.partnerAvatar}" alt="User avatar" />
+                    <div class="message-info">
+                        <h4>${conv.partnerName}</h4>
+                        <p>${conv.lastMessage}</p>
+                    </div>
+                `;
+                messageListContainer.appendChild(messageEl);
+
+                // Add a click event listener to each conversation to load the chat history
+                messageEl.addEventListener('click', () => {
+                    fetchChatHistory(currentUserId, conv.partnerId);
+                });
+            });
+        }
+
+        // Renders the specific chat box for a conversation
+        function renderChat(conversation, chatHistory) {
+            const chatBoxContainer = document.querySelector('.chat-box');
+            chatBoxContainer.innerHTML = `
+                <div class="chat-header">${conversation.name}</div>
+                <div class="chat-messages">
+                    ${chatHistory.map(msg => `
+                        <div class="chat-message ${msg.sender === currentUserId ? 'sent' : 'received'}">${msg.text}</div>
+                    `).join('')}
+                </div>
+                <div class="chat-input">
+                    <input type="text" placeholder="Type a message..." />
+                    <button>Send</button>
+                </div>
+            `;
+
+            // Add event listener to the "Send" button after it's been rendered
+            const sendButton = chatBoxContainer.querySelector('.chat-input button');
+            const messageInput = chatBoxContainer.querySelector('.chat-input input');
+            
+            sendButton.addEventListener('click', () => {
+                const messageText = messageInput.value.trim();
+                if (messageText) {
+                    sendMessage(currentUserId, conversation.id, messageText);
+                    messageInput.value = ''; // Clear the input field
+                }
+            });
+
+            // Also handle sending on "Enter" key press
+            messageInput.addEventListener('keypress', (event) => {
+                if (event.key === 'Enter') {
+                    sendButton.click();
+                }
+            });
+        }
+
+        // Fetches all conversations for the current user from the backend
+        async function fetchMessages() {
+            try {
+                const response = await fetch(`http://localhost:5000/api/messages/${currentUserId}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    renderInbox(result.data);
+                } else {
+                    console.error("Failed to fetch messages:", result.message);
+                    document.getElementById('loading-indicator').innerText = 'Failed to load conversations.';
+                }
+            } catch (error) {
+                console.error("Network error fetching messages:", error);
+                document.getElementById('loading-indicator').innerText = 'Network error. Please check your server.';
+            }
+        }
+        
+        // Fetches the chat history for a specific conversation
+        async function fetchChatHistory(userId, partnerId) {
+            // Note: This API endpoint doesn't exist yet, we'll build it next.
+            // For now, this is a placeholder function.
+            // When we build the backend, it will look like:
+            // const response = await fetch(`http://localhost:5000/api/messages/${userId}/chat/${partnerId}`);
+            // For now, this is a placeholder function that returns fake data
+            const fakeData = [
+                { sender: userId, text: "Hi there!" },
+                { sender: partnerId, text: "Hello! Is this still available?" },
+                { sender: userId, text: "Yes, it is." }
+            ];
+            
+            // Render the chat with the fake data
+            const conversation = { id: partnerId, name: 'Chat Partner' };
+            renderChat(conversation, fakeData);
+        }
+
+        // Function to send a message to the backend
+        async function sendMessage(senderId, recipientId, messageText) {
+            const messageData = {
+                senderId: senderId,
+                recipientId: recipientId,
+                messageText: messageText
+            };
+
+            try {
+                const response = await fetch('http://localhost:5000/api/messages', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(messageData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    console.log("Message sent successfully!");
+                    // You might want to reload the chat history after sending
+                    // to see the new message, though for now, it's not implemented.
+                } else {
+                    console.error("Failed to send message:", result.message);
+                }
+            } catch (error) {
+                console.error("Network error:", error);
+            }
+        }
+
+        // Initialize the page by fetching the messages from the backend
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchMessages();
+        });
+    </script>
 </body>
 </html>

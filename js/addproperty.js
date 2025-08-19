@@ -388,33 +388,73 @@ function initMap() {
 }
 
 // Form Submission
-function submitForm() {
-  // Get current values
-  roomData.title = document.getElementById('room-title').value;
-  roomData.rent = document.getElementById('room-rent').value;
-  roomData.description = document.getElementById('room-description').value;
-  roomData.location = document.getElementById('room-location').value;
-  
-  // Validate
-  if (!roomData.title.trim() || !roomData.location.trim() || !roomData.rent.trim()) {
-    showToast('Please fill in all required fields', 'error');
-    return;
+async function submitForm() {
+  // 1. Get the latest values from the form fields
+  const title = document.getElementById('room-title').value;
+  const rent = document.getElementById('room-rent').value;
+  const description = document.getElementById('room-description').value;
+  const location = document.getElementById('room-location').value;
+
+  // 2. Validate the fields
+  if (!title.trim() || !location.trim() || !rent.trim()) {
+      showToast('Please fill in all required fields', 'error');
+      return;
   }
-  
+
   if (roomData.images.length === 0) {
-    showToast('Please upload at least one image', 'error');
-    return;
+      showToast('Please upload at least one image', 'error');
+      return;
+  }
+
+  // 3. Create the FormData object to send to the backend
+  const formData = new FormData();
+  formData.append('title', title);
+  formData.append('rent', rent);
+  formData.append('description', description);
+  formData.append('location', location);
+  
+  // Append amenities, pros, and cons ONLY if they are not empty.
+  // This is the CRITICAL change for handling optional fields correctly.
+  if (roomData.amenities.length > 0) {
+      formData.append('amenities', roomData.amenities.join(','));
   }
   
-  // Here you would typically send the data to your backend
-  console.log('Room data to submit:', roomData);
+  if (roomData.pros.length > 0) {
+      formData.append('pros', roomData.pros.join(','));
+  }
   
-  showToast('Room posted successfully!', 'success');
+  if (roomData.cons.length > 0) {
+      formData.append('cons', roomData.cons.join(','));
+  }
   
-  // Reset form after delay
-  setTimeout(() => {
-    resetForm();
-  }, 2000);
+  // Append the images
+  roomData.images.forEach(file => {
+      formData.append('images', file);
+  });
+
+  // 4. Send the data to the backend using fetch
+  try {
+      const response = await fetch('http://localhost:5000/api/properties/add', {
+          method: 'POST',
+          credentials: 'include',
+          body: formData
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+          showToast('Room posted successfully!', 'success');
+          setTimeout(() => {
+              resetForm();
+          }, 2000);
+      } else {
+          showToast('Error: ' + data.message, 'error');
+          console.error('Server error:', data.message);
+      }
+  } catch (err) {
+      showToast('Failed to submit property: ' + err.message, 'error');
+      console.error('Network or fetch error:', err);
+  }
 }
 
 function resetForm() {

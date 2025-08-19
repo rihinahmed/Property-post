@@ -25,7 +25,7 @@
       <header class="main-header">
         <div class="user-info">
           <span>Welcome, Seller</span>
-          <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" />
+          <img src="" alt="User" />
         </div>
       </header>
 
@@ -56,158 +56,240 @@
     // Logout handler
     const logoutBtn = document.querySelector(".logout");
     if (logoutBtn) {
-      logoutBtn.addEventListener("click", async (e) => {
-        e.preventDefault();
-        try {
-          await fetch("http://localhost:5000/api/user/logout", {
-            method: "POST",
-            credentials: "include"
-          });
-        } catch (err) {
-          console.error("Logout failed:", err);
-        }
-        window.location.href = "login.html";
-      });
+        logoutBtn.addEventListener("click", async (e) => {
+            e.preventDefault();
+            try {
+                await fetch("http://localhost:5000/api/user/logout", {
+                    method: "POST",
+                    credentials: "include"
+                });
+            } catch (err) {
+                console.error("Logout failed:", err);
+            }
+            window.location.href = "login.html";
+        });
     }
 
     // Update welcome message & user profile img from session
     async function loadUserSession() {
-      try {
-        const res = await fetch("http://localhost:5000/api/user/session", {
-          credentials: "include"
-        });
-        if (!res.ok) throw new Error("Session fetch failed");
-        const data = await res.json();
+        try {
+            const res = await fetch("http://localhost:5000/api/user/session", {
+                credentials: "include"
+            });
+            if (!res.ok) throw new Error("Session fetch failed");
+            const data = await res.json();
 
-        if (!data.loggedIn) {
-          window.location.href = "login.html";
-          return;
+            if (!data.loggedIn) {
+                window.location.href = "login.html";
+                return;
+            }
+
+            if (data.user.role !== "seller") {
+                window.location.href = "dashboard.html"; // Redirect buyers away
+                return;
+            }
+
+            // Update welcome text and profile image
+            const userInfoSpan = document.querySelector(".user-info span");
+            const userInfoImg = document.querySelector(".user-info img");
+            userInfoSpan.textContent = `Welcome, ${data.user.name}`;
+            if (data.user.profile_img) {
+                userInfoImg.src = `http://localhost:5000/useruploads/${data.user.profile_img}`;
+            } else {
+                userInfoImg.src = 'https://via.placeholder.com/40x40?text=User';
+            }
+
+            return data.user.id;
+        } catch (err) {
+            console.error("Failed to get user session:", err);
+            window.location.href = "login.html";
         }
-
-        if (data.user.role !== "seller") {
-          window.location.href = "dashboard.html"; // Redirect buyers away
-          return;
-        }
-
-        // Update welcome text and profile image
-        const userInfoSpan = document.querySelector(".user-info span");
-        const userInfoImg = document.querySelector(".user-info img");
-        userInfoSpan.textContent = `Welcome, ${data.user.name}`;
-        if (data.user.profile_img) {
-          userInfoImg.src = data.user.profile_img;
-        }
-
-        return data.user.id;
-      } catch (err) {
-        console.error("Failed to get user session:", err);
-        window.location.href = "login.html";
-      }
     }
 
     // Render a single property card HTML
     function createPropertyCard(property) {
-      const card = document.createElement("div");
-      card.classList.add("property-card", "fade-in");
-      card.dataset.propertyId = property.property_id;
+        const card = document.createElement("div");
+        card.classList.add("property-card", "fade-in");
+        card.dataset.propertyId = property.property_id;
 
-      card.innerHTML = `
-        <img src="${property.image_url || 'https://via.placeholder.com/400x250?text=No+Image'}" alt="Property" />
-        <div class="property-info">
-          <h3>${property.title}</h3>
-          <p class="property-id"><i class="fas fa-key"></i> Property ID: <span>${property.property_id}</span></p>
-          <p class="location"><i class="fas fa-map-marker-alt"></i> ${property.location}</p>
-          <label for="status-${property.property_id}" class="status-label">Status:</label>
-          <select id="status-${property.property_id}" class="status-select">
-            <option value="active" ${property.status === "active" ? "selected" : ""}>Active</option>
-            <option value="discussion" ${property.status === "discussion" ? "selected" : ""}>Discussion Mode</option>
-            <option value="pending" ${property.status === "pending" ? "selected" : ""}>Pending</option>
-            <option value="sold" ${property.status === "sold" ? "selected" : ""}>Sold</option>
-          </select>
-          <p class="views"><i class="fas fa-eye"></i> Views: <span class="view-count">${property.views ?? 0}</span></p>
-          <p class="saved"><i class="fas fa-heart"></i> Saved by: <span class="saved-count">${property.saved_count ?? 0}</span></p>
-          <p class="price">$${property.price ?? "N/A"}/month</p>
-          <div class="property-actions">
-            <button class="edit-btn"><i class="fas fa-edit"></i> Edit</button>
-            <button class="delete-btn"><i class="fas fa-trash-alt"></i> Delete</button>
-          </div>
-        </div>
-      `;
+        const imageFilenames = property.images;
+        const imageUrl = imageFilenames && imageFilenames.length > 0
+            ? `http://localhost:5000/selleruploads/${imageFilenames[0].trim()}`
+            : 'https://picsum.photos/400/250';
 
-      // Add status background update logic on this select
-      const statusSelect = card.querySelector(".status-select");
-      function updateStatusClass() {
-        statusSelect.classList.remove("active", "discussion", "pending", "sold", "status-animated");
-        void statusSelect.offsetWidth; // restart animation
-        statusSelect.classList.add(statusSelect.value, "status-animated");
-      }
-      statusSelect.addEventListener("change", updateStatusClass);
-      updateStatusClass();
+        card.innerHTML = `
+            <img src="${imageUrl}" alt="Property" />
+            <div class="property-info">
+                <h3>${property.title}</h3>
+                <p class="property-id"><i class="fas fa-key"></i> Property ID: <span>${property.property_id}</span></p>
+                <p class="location"><i class="fas fa-map-marker-alt"></i> ${property.location}</p>
+                <label for="status-${property.property_id}" class="status-label">Status:</label>
+                <select id="status-${property.property_id}" class="status-select">
+                    <option value="active" ${property.status === "active" ? "selected" : ""}>Active</option>
+                    <option value="discussion" ${property.status === "discussion" ? "selected" : ""}>Discussion Mode</option>
+                    <option value="pending" ${property.status === "pending" ? "selected" : ""}>Pending</option>
+                    <option value="sold" ${property.status === "sold" ? "selected" : ""}>Sold</option>
+                </select>
+                <p class="views"><i class="fas fa-eye"></i> Views: <span class="view-count">${property.views ?? 0}</span></p>
+                <p class="saved"><i class="fas fa-heart"></i> Saved by: <span class="saved-count">${property.saved_count ?? 0}</span></p>
+                <p class="price">৳${property.rent ?? "N/A"}/month</p>
+                <div class="property-actions">
+                    <button class="edit-btn"><i class="fas fa-edit"></i> Edit</button>
+                    <button class="delete-btn"><i class="fas fa-trash-alt"></i> Delete</button>
+                </div>
+            </div>
+        `;
 
-      return card;
+        const statusSelect = card.querySelector(".status-select");
+        function updateStatusClass() {
+            statusSelect.classList.remove("active", "discussion", "pending", "sold", "status-animated");
+            void statusSelect.offsetWidth;
+            statusSelect.classList.add(statusSelect.value, "status-animated");
+        }
+        statusSelect.addEventListener("change", updateStatusClass);
+        updateStatusClass();
+
+        return card;
+    }
+
+    // Function to update a property's status
+    async function updateStatus(propertyId, newStatus) {
+        try {
+            const res = await fetch(`http://localhost:5000/api/seller/properties/${propertyId}/status`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: newStatus }),
+                credentials: 'include'
+            });
+            const data = await res.json();
+            if (data.success) {
+                alert('Property status updated successfully!');
+            } else {
+                alert('Failed to update status: ' + data.message);
+            }
+        } catch (err) {
+            console.error('Error updating status:', err);
+            alert('An error occurred while updating the status.');
+        }
+    }
+
+    // Function to delete a property
+    async function deleteProperty(propertyId) {
+        if (!confirm('Are you sure you want to delete this property? This cannot be undone.')) {
+            return;
+        }
+        try {
+            const res = await fetch(`http://localhost:5000/api/seller/properties/${propertyId}`, {
+                method: 'DELETE',
+                credentials: 'include'
+            });
+            const data = await res.json();
+            if (data.success) {
+                alert('Property deleted successfully!');
+                const currentFilter = document.getElementById("status-filter").value;
+                const propertiesList = document.getElementById("properties-list");
+                const sellerId = propertiesList.dataset.sellerId;
+                if (sellerId) {
+                     loadProperties(sellerId, currentFilter);
+                }
+            } else {
+                alert('Failed to delete property: ' + data.message);
+            }
+        } catch (err) {
+            console.error('Error deleting property:', err);
+            alert('An error occurred while deleting the property.');
+        }
     }
 
     // Fetch properties from backend and display them
-    async function loadProperties(filterStatus = "all") {
-      try {
-        const res = await fetch("http://localhost:5000/api/seller/properties", {
-          credentials: "include"
-        });
-        if (!res.ok) throw new Error("Failed to fetch properties");
-        const data = await res.json();
+    async function loadProperties(sellerId, filterStatus = "all") {
+        try {
+            const res = await fetch(`http://localhost:5000/api/seller/properties?seller_id=${sellerId}`, {
+                credentials: "include"
+            });
+            if (!res.ok) throw new Error("Failed to fetch properties");
+            const data = await res.json();
 
-        if (!data.success) {
-          alert("Failed to load properties");
-          return;
+            if (!data.success) {
+                alert("Failed to load properties");
+                return;
+            }
+
+            const propertiesList = document.getElementById("properties-list");
+            propertiesList.innerHTML = "";
+
+            let properties = data.properties;
+            if (filterStatus !== "all") {
+                properties = properties.filter(p => p.status === filterStatus);
+            }
+
+            if (properties.length === 0) {
+                propertiesList.innerHTML = "<p class='no-properties'>No properties found.</p>";
+                return;
+            }
+
+            properties.forEach(prop => {
+                const card = createPropertyCard(prop);
+                propertiesList.appendChild(card);
+            });
+
+            // Re-attach listeners for the new cards
+            propertiesList.querySelectorAll('.status-select').forEach(select => {
+                select.addEventListener('change', (e) => {
+                    const propertyId = e.target.closest('.property-card').dataset.propertyId;
+                    const newStatus = e.target.value;
+                    updateStatus(propertyId, newStatus);
+                });
+            });
+
+            propertiesList.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const propertyId = e.target.closest('.property-card').dataset.propertyId;
+                    deleteProperty(propertyId);
+                });
+            });
+
+            propertiesList.querySelectorAll('.edit-btn').forEach(button => {
+                 button.addEventListener('click', (e) => {
+                    const propertyId = e.target.closest('.property-card').dataset.propertyId;
+                    window.location.href = `edit-property.html?id=${propertyId}`;
+                 });
+            });
+
+            const faders = document.querySelectorAll(".fade-in");
+            const appearOptions = { threshold: 0.2, rootMargin: "0px 0px -50px 0px" };
+            const appearOnScroll = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    entry.target.classList.add("appear");
+                    observer.unobserve(entry.target);
+                });
+            }, appearOptions);
+            faders.forEach(fader => appearOnScroll.observe(fader));
+        } catch (err) {
+            console.error("Error loading properties:", err);
+            alert("Error loading properties. Please try again later.");
         }
-
-        const propertiesList = document.getElementById("properties-list");
-        propertiesList.innerHTML = "";
-
-        // Filter properties if needed
-        let properties = data.properties;
-        if (filterStatus !== "all") {
-          properties = properties.filter(p => p.status === filterStatus);
-        }
-
-        if (properties.length === 0) {
-          propertiesList.innerHTML = "<p>No properties found.</p>";
-          return;
-        }
-
-        properties.forEach(prop => {
-          propertiesList.appendChild(createPropertyCard(prop));
-        });
-
-        // Reapply fade-in scroll animation
-        const faders = document.querySelectorAll(".fade-in");
-        const appearOptions = { threshold: 0.2, rootMargin: "0px 0px -50px 0px" };
-        const appearOnScroll = new IntersectionObserver((entries, observer) => {
-          entries.forEach(entry => {
-            if (!entry.isIntersecting) return;
-            entry.target.classList.add("appear");
-            observer.unobserve(entry.target);
-          });
-        }, appearOptions);
-        faders.forEach(fader => appearOnScroll.observe(fader));
-      } catch (err) {
-        console.error("Error loading properties:", err);
-        alert("Error loading properties. Please try again later.");
-      }
     }
 
     // Event listener for filter dropdown
     const statusFilter = document.getElementById("status-filter");
     statusFilter.addEventListener("change", () => {
-      loadProperties(statusFilter.value);
+        const propertiesList = document.getElementById("properties-list");
+        if(propertiesList.dataset.sellerId) {
+            loadProperties(propertiesList.dataset.sellerId, statusFilter.value);
+        }
     });
 
     // On page load: validate session, load user info and properties
     document.addEventListener("DOMContentLoaded", async () => {
-      const userId = await loadUserSession();
-      if (userId) {
-        loadProperties(); // load all properties initially
-      }
+        const userId = await loadUserSession();
+        if (userId) {
+            const propertiesList = document.getElementById("properties-list");
+            propertiesList.dataset.sellerId = userId;
+            loadProperties(userId);
+        }
     });
-  </script>
+</script>
 </body>
 </html>

@@ -144,8 +144,8 @@
       </div>
 
       <!-- Step Content Container -->
-      <form id="property-form" method="post">
-        <div id="step-content">
+      <div id="step-content">
+        <form id="property-form" enctype="multipart/form-data" method="POST">
           <!-- Step 0: Basic Info -->
           <div class="step-content active" id="step-0">
             <div class="form-group">
@@ -168,7 +168,7 @@
             <div class="form-section">
               <label>Amenities</label>
               <div class="input-with-button">
-                <input type="text" id="new-amenity" placeholder="e.g., WiFi, AC, Parking" class="glass-input">
+                <input type="text" id="new-amenity" name="amenities" placeholder="e.g., WiFi, AC, Parking" class="glass-input">
                 <button type="button" class="glass-button" onclick="addAmenity()">
                   <i class="fas fa-plus"></i>
                 </button>
@@ -180,7 +180,7 @@
             <div class="form-section">
               <label>Pros</label>
               <div class="input-with-button">
-                <input type="text" id="new-pro" placeholder="e.g., Great location, Quiet area" class="glass-input">
+                <input type="text" id="new-pro" name="pros" placeholder="e.g., Great location, Quiet area" class="glass-input">
                 <button type="button" class="glass-button" onclick="addPro()">
                   <i class="fas fa-plus"></i>
                 </button>
@@ -192,7 +192,7 @@
             <div class="form-section">
               <label>Cons</label>
               <div class="input-with-button">
-                <input type="text" id="new-con" placeholder="e.g., Traffic noise, No elevator" class="glass-input">
+                <input type="text" id="new-con" name="cons" placeholder="e.g., Traffic noise, No elevator" class="glass-input">
                 <button type="button" class="glass-button" onclick="addCon()">
                   <i class="fas fa-plus"></i>
                 </button>
@@ -212,7 +212,7 @@
                 Upload Photos
               </button>
   
-              <input type="file" name="images" id="file-input" multiple accept="image/*" style="display: none;">
+              <input type="file" name="images" id="file-input" multiple style="display: none;">
             </div>
   
             <div id="images-grid" class="images-grid"></div>
@@ -239,8 +239,8 @@
               <span id="coordinates-display"></span>
             </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
 
       <!-- Navigation Buttons -->
       <div class="form-navigation">
@@ -266,62 +266,10 @@
   <div id="toast-container" class="toast-container"></div>
 
   <!-- Scripts -->
+  
   <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initMap" async defer></script>
   <script src="./js/addproperty.js"></script>
 
-  
-  <!-- add properties -->
-  <script>
-    document.getElementById('submit-btn').addEventListener('click', async (e) => {
-  e.preventDefault();
-
-  const title = document.getElementById('room-title').value;
-  const rent = document.getElementById('room-rent').value;
-  const description = document.getElementById('room-description').value;
-  const location = document.getElementById('room-location').value;
-
-  const amenities = document.getElementById('new-amenity').value;
-  const pros = document.getElementById('new-pro').value;
-  const cons = document.getElementById('new-con').value;
-
-  const files = document.getElementById('file-input').files;
-
-  // Use FormData to send files + text fields
-  const formData = new FormData();
-  formData.append('title', title);
-  formData.append('rent', rent);
-  formData.append('description', description);
-  formData.append('amenities', amenities);
-  formData.append('pros', pros);
-  formData.append('cons', cons);
-  formData.append('location', location);
-
-  for (let i = 0; i < files.length; i++) {
-    formData.append('images', files[i]);
-  }
-
-  try {
-    const res = await fetch('http://localhost:5000/api/properties/add', {
-      method: 'POST',
-      credentials: 'include',
-      body: formData // don't set Content-Type header! browser sets it automatically for multipart/form-data
-    });
-
-    const result = await res.json();
-    if (result.success) {
-      alert('Property added successfully!');
-      // reset or redirect
-    } else {
-      alert('Error: ' + (result.error || result.message));
-    }
-  } catch (error) {
-    console.error('Submit Error:', error);
-    alert('Something went wrong.');
-  }
-});
-
-  </script>
-    
   
 </body>
 </html>

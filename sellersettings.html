@@ -1,144 +1,245 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings - PropertyPost</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="./stylings/sellersettings.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings - PropertyPost</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="./stylings/sellersettings.css">
+<style>
+    /* Optional quick inline style for profile preview */
+    #profile-picture {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background-color: #ddd;
+        background-size: cover;
+        background-position: center;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: #555;
+    }
+</style>
 </head>
 <body>
-    <button class="menu-toggle" onclick="toggleSidebar()">
-        <i class="fas fa-bars"></i>
-    </button>
+<button class="menu-toggle" onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+</button>
 
-    <div class="dashboard">
-        <aside class="sidebar" id="sidebar">
-            <div class="logo">
-                <i class="fas fa-home"></i> PropertyPost
-            </div>
-            <nav>
-                <a href="./sellerdashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-                <a href="./sellerproperties.html"><i class="fas fa-building"></i> Properties</a>
-                <a href="./sellermessage.html"><i class="fas fa-envelope"></i> Messages</a>
-                <a href="./selleranalytics.html"><i class="fas fa-chart-line"></i> Analytics</a>
-                <a href="./sellersettings.html" class="active"><i class="fas fa-cog"></i> Settings</a>
-                <a href="#" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
-            </nav>
-        </aside>
+<div class="dashboard">
+    <aside class="sidebar" id="sidebar">
+        <div class="logo">
+            <i class="fas fa-home"></i> PropertyPost
+        </div>
+        <nav>
+            <a href="./sellerdashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            <a href="./sellerproperties.html"><i class="fas fa-building"></i> Properties</a>
+            <a href="./sellermessage.html"><i class="fas fa-envelope"></i> Messages</a>
+            <a href="./selleranalytics.html"><i class="fas fa-chart-line"></i> Analytics</a>
+            <a href="./sellersettings.html" class="active"><i class="fas fa-cog"></i> Settings</a>
+            <a href="#" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </nav>
+    </aside>
 
-        <main class="main-content">
-            <section class="settings-section">
-                <h1>Settings</h1>
+    <main class="main-content">
+        <section class="settings-section">
+            <h1>Settings</h1>
+            <div id="loading-indicator" style="text-align: center; padding: 20px; display: none;">Loading settings...</div>
+            <div id="error-message" style="text-align: center; padding: 20px; color: red; display: none;"></div>
+            
+            <form class="settings-form" id="settings-form" style="display: none;">
+                <input type="hidden" id="user-id" name="userId">
+                <input type="hidden" id="hidden-email" name="email">
 
-                <form class="settings-form" id="settings-form">
-                    <!-- Profile Picture Section -->
-                    <div class="profile-section">
-                        <div class="profile-picture-container">
-                            <div class="profile-picture" id="profile-picture">
-                                <i class="fas fa-camera"></i>
-                            </div>
-                            <label for="profile-upload" class="upload-btn">
-                                <i class="fas fa-camera"></i>
-                            </label>
-                            <input type="file" id="profile-upload" accept="image/*">
+                <div class="profile-section">
+                    <div class="profile-picture-container">
+                        <div class="profile-picture" id="profile-picture">
+                            <i class="fas fa-camera"></i>
                         </div>
-                        <p class="upload-text">Click the camera icon to upload profile picture</p>
+                        <input type="file" id="profile-upload" name="profile_img" accept="image/*" style="display:none;">
                     </div>
+                    <p class="upload-text">Click the camera icon to upload profile picture</p>
+                </div>
 
-                    <!-- Personal Information -->
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="full-name">Full Name</label>
-                            <input type="text" id="full-name" name="fullName" placeholder="John Doe" value="John Doe" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email Address</label>
-                            <input type="email" id="email" name="email" placeholder="john@example.com" value="john@example.com" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">Phone Number</label>
-                            <input type="tel" id="phone" name="phone" placeholder="+1 234 567 8901" value="+1 234 567 8901">
-                        </div>
-                        <div class="form-group">
-                            <label for="license-number">License Number</label>
-                            <input type="text" id="license-number" name="licenseNumber" placeholder="RE123456789" value="RE123456789">
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group form-group-full">
-                            <label for="address">Business Address</label>
-                            <input type="text" id="address" name="address" placeholder="123 Main St, City, State 12345" value="123 Main St, City, State 12345">
-                        </div>
-                    </div>
-
+                <div class="form-row">
                     <div class="form-group">
-                        <label for="bio">Bio</label>
-                        <textarea id="bio" name="bio" placeholder="Tell us about yourself...">Experienced real estate professional with over 10 years in the industry.</textarea>
+                        <label for="full-name">Full Name</label>
+                        <input type="text" id="full-name" name="full_name" placeholder="John Doe" required>
                     </div>
-
-                    <div class="divider"></div>
-
-                    <!-- Change Password -->
-                    <h2 class="section-title password-section">Change Password</h2>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="current-password">Current Password</label>
-                            <input type="password" id="current-password" name="currentPassword" placeholder="Enter current password">
-                        </div>
-                        <div class="form-group">
-                            <label for="new-password">New Password</label>
-                            <input type="password" id="new-password" name="newPassword" placeholder="Enter new password">
-                        </div>
-                        <div class="form-group">
-                            <label for="confirm-password">Confirm New Password</label>
-                            <input type="password" id="confirm-password" name="confirmPassword" placeholder="Confirm new password">
-                        </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" placeholder="john@example.com" required readonly>
                     </div>
-
-                    <div class="divider"></div>
-
-                    <!-- Notification Preferences -->
-                    <h2 class="section-title notifications-section">Notification Preferences</h2>
-                    <div class="checkbox-group">
-                        <div class="custom-checkbox">
-                            <input type="checkbox" id="email-notify" name="emailNotify" checked>
-                            <span class="checkmark"></span>
-                        </div>
-                        <label for="email-notify">Email Notifications</label>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" placeholder="+1 234 567 8901">
                     </div>
-                    <div class="checkbox-group">
-                        <div class="custom-checkbox">
-                            <input type="checkbox" id="sms-notify" name="smsNotify">
-                            <span class="checkmark"></span>
-                        </div>
-                        <label for="sms-notify">SMS Notifications</label>
+                    <div class="form-group">
+                        <label for="nid_photo">NID Number</label>
+                        <input type="text" id="nid_photo" name="nid_photo" placeholder="5572........">
                     </div>
+                </div>
 
-                    <!-- Form Actions -->
-                    <div class="form-actions">
-                        <button type="submit" class="btn save-btn" id="save-btn">
-                            <i class="fas fa-save"></i>
-                            <span class="loading-spinner"></span>
-                            <span class="btn-text">Save Changes</span>
-                        </button>
-                        <button type="reset" class="btn reset-btn">
-                            <i class="fas fa-undo"></i>
-                            Reset
-                        </button>
+                <div class="form-row">
+                    <div class="form-group form-group-full">
+                        <label for="address">Business Address</label>
+                        <input type="text" id="address" name="address" placeholder="123 Main St, City, State 12345">
                     </div>
-                </form>
-            </section>
-        </main>
-    </div>
+                </div>
 
-    <!-- Success Message -->
-    <div class="success-message" id="success-message">
-        <i class="fas fa-check-circle"></i>
-        <span>Settings saved successfully!</span>
-    </div>
+                <div class="form-group">
+                    <label for="bio">Bio</label>
+                    <textarea id="bio" name="bio" placeholder="Tell us about yourself..."></textarea>
+                </div>
 
-    <script src="./js/sellersetting.js"></script>
+                <div class="form-actions">
+                    <button type="submit" class="btn save-btn" id="save-btn">
+                        <i class="fas fa-save"></i>
+                        <span class="btn-text">Save Changes</span>
+                    </button>
+                    <button type="reset" class="btn reset-btn">
+                        <i class="fas fa-undo"></i>
+                        Reset
+                    </button>
+                </div>
+            </form>
+        </section>
+    </main>
+</div>
+
+<div class="success-message" id="success-message">
+    <i class="fas fa-check-circle"></i>
+    <span>Settings saved successfully!</span>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", initializePage);
+
+// Profile picture click opens file input
+document.getElementById("profile-picture").addEventListener("click", () => {
+    document.getElementById("profile-upload").click();
+});
+
+document.getElementById("profile-upload").addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+        document.getElementById("profile-picture").style.backgroundImage = `url(${reader.result})`;
+        document.getElementById("profile-picture").innerHTML = '';
+    };
+    reader.readAsDataURL(file);
+});
+
+async function initializePage() {
+    const loadingEl = document.getElementById("loading-indicator");
+    const errorEl = document.getElementById("error-message");
+    const formEl = document.getElementById("settings-form");
+
+    loadingEl.style.display = "block";
+    errorEl.style.display = "none";
+    formEl.style.display = "none";
+
+    try {
+        const sessionRes = await fetch("http://localhost:5000/api/user/session", { credentials: "include" });
+        const sessionData = await sessionRes.json();
+
+        if (!sessionData.loggedIn || sessionData.user.role.toLowerCase() !== "seller") {
+            window.location.replace("login.html");
+            return;
+        }
+
+        const userId = sessionData.user.id;
+        const userEmail = sessionData.user.email;
+
+        // Fetching settings from the /api/settings endpoint without redundant query params
+        const settingsRes = await fetch(`http://localhost:5000/api/settings`, {
+            credentials: "include"
+        });
+
+        // Check for non-ok response and get the specific error message
+        if (!settingsRes.ok) {
+            const errorData = await settingsRes.json();
+            throw new Error(errorData.message || "Failed to fetch settings due to an unknown error.");
+        }
+
+        const settingsData = await settingsRes.json();
+
+        const s = settingsData.settings;
+
+        document.getElementById("user-id").value = userId;
+        document.getElementById("hidden-email").value = userEmail;
+        document.getElementById("full-name").value = s.full_name || "";
+        document.getElementById("email").value = userEmail;
+        document.getElementById("phone").value = s.phone || "";
+        document.getElementById("nid_photo").value = s.nid_photo || "";
+        document.getElementById("address").value = s.address || "";
+        document.getElementById("bio").value = s.bio || "";
+
+        const profilePic = document.getElementById("profile-picture");
+        if (s.profile_img) {
+            profilePic.style.backgroundImage = `url(http://localhost:5000/selleruploads/${s.profile_img})`;
+            profilePic.innerHTML = '';
+        }
+
+        loadingEl.style.display = "none";
+        formEl.style.display = "block";
+    } catch (err) {
+        console.error("Init error:", err);
+        loadingEl.style.display = "none";
+        // Display the specific error message from the thrown error object
+        errorEl.textContent = err.message;
+        errorEl.style.display = "block";
+    }
+}
+
+document.getElementById("settings-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById("save-btn");
+    btn.disabled = true;
+    btn.querySelector(".btn-text").textContent = "Saving...";
+
+    const formData = new FormData(e.target);
+    // FIX: The line below is no longer needed because FormData(e.target) already handles it.
+    // const profileUpload = document.getElementById("profile-upload");
+    // if (profileUpload.files.length > 0) formData.append("profile_img", profileUpload.files[0]);
+
+    try {
+        const res = await fetch("http://localhost:5000/api/settings/update", {
+            method: "POST",
+            credentials: "include",
+            body: formData
+        });
+        const data = await res.json();
+        if (data.success) {
+            showSuccess(data.message);
+        } else {
+            // Display the specific error message from the backend
+            alert(data.message);
+        }
+    } catch (err) {
+        console.error("Save error:", err);
+        // Fallback generic message
+        alert("An error occurred while saving settings. Please check the console for more details.");
+    } finally {
+        btn.disabled = false;
+        btn.querySelector(".btn-text").textContent = "Save Changes";
+    }
+});
+
+function showSuccess(msg) {
+    const successEl = document.getElementById("success-message");
+    successEl.querySelector("span").textContent = msg;
+    successEl.style.display = "flex";
+    setTimeout(() => (successEl.style.display = "none"), 3000);
+}
+
+function toggleSidebar() {
+    document.getElementById("sidebar").classList.toggle("active");
+}
+</script>
 </body>
 </html>
