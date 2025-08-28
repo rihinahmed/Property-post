@@ -116,130 +116,146 @@
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", initializePage);
-
-// Profile picture click opens file input
-document.getElementById("profile-picture").addEventListener("click", () => {
-    document.getElementById("profile-upload").click();
-});
-
-document.getElementById("profile-upload").addEventListener("change", (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-        document.getElementById("profile-picture").style.backgroundImage = `url(${reader.result})`;
-        document.getElementById("profile-picture").innerHTML = '';
-    };
-    reader.readAsDataURL(file);
-});
-
-async function initializePage() {
-    const loadingEl = document.getElementById("loading-indicator");
-    const errorEl = document.getElementById("error-message");
-    const formEl = document.getElementById("settings-form");
-
-    loadingEl.style.display = "block";
-    errorEl.style.display = "none";
-    formEl.style.display = "none";
-
-    try {
-        const sessionRes = await fetch("http://localhost:5000/api/user/session", { credentials: "include" });
-        const sessionData = await sessionRes.json();
-
-        if (!sessionData.loggedIn || sessionData.user.role.toLowerCase() !== "seller") {
-            window.location.replace("login.html");
-            return;
-        }
-
-        const userId = sessionData.user.id;
-        const userEmail = sessionData.user.email;
-
-        // Fetching settings from the /api/settings endpoint without redundant query params
-        const settingsRes = await fetch(`http://localhost:5000/api/settings`, {
-            credentials: "include"
-        });
-
-        // Check for non-ok response and get the specific error message
-        if (!settingsRes.ok) {
-            const errorData = await settingsRes.json();
-            throw new Error(errorData.message || "Failed to fetch settings due to an unknown error.");
-        }
-
-        const settingsData = await settingsRes.json();
-
-        const s = settingsData.settings;
-
-        document.getElementById("user-id").value = userId;
-        document.getElementById("hidden-email").value = userEmail;
-        document.getElementById("full-name").value = s.full_name || "";
-        document.getElementById("email").value = userEmail;
-        document.getElementById("phone").value = s.phone || "";
-        document.getElementById("nid_photo").value = s.nid_photo || "";
-        document.getElementById("address").value = s.address || "";
-        document.getElementById("bio").value = s.bio || "";
-
+    document.addEventListener("DOMContentLoaded", async () => {
+        const loadingEl = document.getElementById("loading-indicator");
+        const errorEl = document.getElementById("error-message");
+        const formEl = document.getElementById("settings-form");
         const profilePic = document.getElementById("profile-picture");
-        if (s.profile_img) {
-            profilePic.style.backgroundImage = `url(http://localhost:5000/selleruploads/${s.profile_img})`;
-            profilePic.innerHTML = '';
+        const profileUpload = document.getElementById("profile-upload");
+    
+        // ===== Session Check =====
+        try {
+            const sessionRes = await fetch("http://localhost:5000/api/user/session", { credentials: "include" });
+            const sessionData = await sessionRes.json();
+    
+            if (!sessionData.loggedIn || sessionData.user.role.toLowerCase() !== "seller") {
+                window.location.replace("login.html");
+                return;
+            }
+    
+            const userId = sessionData.user.id;
+            const userEmail = sessionData.user.email;
+    
+            document.getElementById("user-id").value = userId;
+            document.getElementById("hidden-email").value = userEmail;
+    
+            // ===== Fetch user settings =====
+            loadingEl.style.display = "block";
+            formEl.style.display = "none";
+            errorEl.style.display = "none";
+    
+            const settingsRes = await fetch("http://localhost:5000/api/settings", { credentials: "include" });
+            if (!settingsRes.ok) throw new Error("Failed to fetch settings from server.");
+            const settingsData = await settingsRes.json();
+            const s = settingsData.settings;
+    
+            document.getElementById("full-name").value = s.full_name || "";
+            document.getElementById("email").value = userEmail;
+            document.getElementById("phone").value = s.phone || "";
+            document.getElementById("nid_photo").value = s.nid_photo || "";
+            document.getElementById("address").value = s.address || "";
+            document.getElementById("bio").value = s.bio || "";
+    
+            if (s.profile_img) {
+                profilePic.style.backgroundImage = `url(http://localhost:5000/selleruploads/${s.profile_img})`;
+                profilePic.innerHTML = '';
+            }
+    
+            loadingEl.style.display = "none";
+            formEl.style.display = "block";
+    
+        } catch (err) {
+            console.error("Initialization error:", err);
+            loadingEl.style.display = "none";
+            errorEl.textContent = err.message;
+            errorEl.style.display = "block";
         }
-
-        loadingEl.style.display = "none";
-        formEl.style.display = "block";
-    } catch (err) {
-        console.error("Init error:", err);
-        loadingEl.style.display = "none";
-        // Display the specific error message from the thrown error object
-        errorEl.textContent = err.message;
-        errorEl.style.display = "block";
-    }
-}
-
-document.getElementById("settings-form").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const btn = document.getElementById("save-btn");
-    btn.disabled = true;
-    btn.querySelector(".btn-text").textContent = "Saving...";
-
-    const formData = new FormData(e.target);
-    // FIX: The line below is no longer needed because FormData(e.target) already handles it.
-    // const profileUpload = document.getElementById("profile-upload");
-    // if (profileUpload.files.length > 0) formData.append("profile_img", profileUpload.files[0]);
-
-    try {
-        const res = await fetch("http://localhost:5000/api/settings/update", {
-            method: "POST",
-            credentials: "include",
-            body: formData
+    
+        // ===== Profile picture preview =====
+        profilePic.addEventListener("click", () => profileUpload.click());
+        profileUpload.addEventListener("change", (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = () => {
+                profilePic.style.backgroundImage = `url(${reader.result})`;
+                profilePic.innerHTML = '';
+            };
+            reader.readAsDataURL(file);
         });
-        const data = await res.json();
-        if (data.success) {
-            showSuccess(data.message);
-        } else {
-            // Display the specific error message from the backend
-            alert(data.message);
+    
+        // ===== Save settings =====
+        formEl.addEventListener("submit", async (e) => {
+            e.preventDefault(); // Prevent page reload
+            const btn = document.getElementById("save-btn");
+            btn.disabled = true;
+            btn.querySelector(".btn-text").textContent = "Saving...";
+    
+            const formData = new FormData(formEl);
+    
+            try {
+                const res = await fetch("http://localhost:5000/api/settings/update", {
+                    method: "POST",
+                    credentials: "include",
+                    body: formData
+                });
+                const data = await res.json();
+    
+                if (data.success) {
+                    showSuccess(data.message);
+    
+                    // Update all fields from returned settings
+                    const s = data.settings;
+                    document.getElementById("full-name").value = s.full_name || "";
+                    document.getElementById("phone").value = s.phone || "";
+                    document.getElementById("nid_photo").value = s.nid_photo || "";
+                    document.getElementById("address").value = s.address || "";
+                    document.getElementById("bio").value = s.bio || "";
+    
+                    if (s.profile_img) {
+                        profilePic.style.backgroundImage = `url(http://localhost:5000/selleruploads/${s.profile_img})`;
+                        profilePic.innerHTML = '';
+                    }
+    
+                    // Clear file input after saving
+                    profileUpload.value = "";
+                } else {
+                    alert(data.message || "Failed to save settings.");
+                }
+            } catch (err) {
+                console.error("Save error:", err);
+                alert("Error saving settings. Check console for details.");
+            } finally {
+                btn.disabled = false;
+                btn.querySelector(".btn-text").textContent = "Save Changes";
+            }
+        });
+    
+        // ===== Logout handler =====
+        const logoutBtn = document.querySelector(".logout");
+        if (logoutBtn) {
+            logoutBtn.addEventListener("click", async (e) => {
+                e.preventDefault();
+                try {
+                    await fetch("http://localhost:5000/api/user/logout", { method: "POST", credentials: "include" });
+                } catch (err) {
+                    console.error("Logout failed:", err);
+                }
+                window.location.replace("login.html");
+            });
         }
-    } catch (err) {
-        console.error("Save error:", err);
-        // Fallback generic message
-        alert("An error occurred while saving settings. Please check the console for more details.");
-    } finally {
-        btn.disabled = false;
-        btn.querySelector(".btn-text").textContent = "Save Changes";
-    }
-});
-
-function showSuccess(msg) {
-    const successEl = document.getElementById("success-message");
-    successEl.querySelector("span").textContent = msg;
-    successEl.style.display = "flex";
-    setTimeout(() => (successEl.style.display = "none"), 3000);
-}
-
-function toggleSidebar() {
-    document.getElementById("sidebar").classList.toggle("active");
-}
-</script>
+    
+        // ===== Success popup =====
+        function showSuccess(msg) {
+            const successEl = document.getElementById("success-message");
+            successEl.querySelector("span").textContent = msg;
+            successEl.style.display = "flex";
+            setTimeout(() => (successEl.style.display = "none"), 3000);
+        }
+    });
+    </script>
+    
+    
+    
 </body>
 </html>

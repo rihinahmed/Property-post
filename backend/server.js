@@ -1,3 +1,4 @@
+// server.js
 const express = require("express");
 const cors = require("cors");
 const session = require("express-session");
@@ -5,13 +6,15 @@ const oracledb = require("oracledb");
 const path = require("path");
 const helmet = require("helmet");
 const multer = require("multer");
+const fs = require("fs");
 
 const app = express();
-console.log("Server is running from directory:", __dirname);
 const PORT = 5000;
 
+console.log("Server is running from directory:", __dirname);
+
 // ===========================
-// Oracle DB Config and Setup
+// Oracle DB Config
 // ===========================
 const dbConfig = {
     user: "SYSTEM",
@@ -23,7 +26,17 @@ oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
 oracledb.fetchAsString = [oracledb.CLOB];
 oracledb.autoCommit = true;
 
-// CORS Configuration
+// ===========================
+// Middleware Setup
+// ===========================
+
+// Ensure upload directories exist
+const sellerUploadDir = path.join(__dirname, "selleruploads");
+const userUploadDir = path.join(__dirname, "useruploads");
+fs.mkdirSync(sellerUploadDir, { recursive: true });
+fs.mkdirSync(userUploadDir, { recursive: true });
+
+// CORS
 const allowedOrigins = ["http://localhost:5500", "http://127.0.0.1:5500"];
 app.use(cors({
     origin: allowedOrigins,
@@ -33,35 +46,36 @@ app.use(cors({
 // Security headers
 app.use(helmet());
 
-// Middleware to parse JSON bodies
+// JSON parsing
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
+// Multer storage for profile uploads
 const storage = multer.diskStorage({
-    destination: function(req, file, cb) {
-        cb(null, path.join(__dirname, 'selleruploads')); // Upload folder
+    destination: (req, file, cb) => {
+        cb(null, sellerUploadDir);
     },
-    filename: function(req, file, cb) {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
         const ext = path.extname(file.originalname);
-        cb(null, file.fieldname + '-' + uniqueSuffix + ext); // Unique filename
+        cb(null, file.fieldname + "-" + uniqueSuffix + ext);
     }
 });
 const upload = multer({ storage });
-app.use(express.json());
 
-
-// Static folders to serve uploaded files and public assets
+// Static folders
 app.use(express.static(path.join(__dirname, "public")));
 app.use('/uploads', express.static(path.join(__dirname, "uploads")));
-app.use('/selleruploads', express.static(path.join(__dirname, 'selleruploads')));
-app.use('/useruploads', express.static(path.join(__dirname, 'useruploads')));
+app.use('/selleruploads', express.static(sellerUploadDir));
+app.use('/useruploads', express.static(userUploadDir));
 
-// Session setup
+// Session
 app.use(session({
     secret: "roomfinder-secret",
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: false,
+        secure: false, // localhost
         httpOnly: true,
         sameSite: 'lax',
         maxAge: 1000 * 60 * 60 // 1 hour
@@ -72,36 +86,30 @@ app.use(session({
 // Routes
 // ===========================
 
-// User authentication routes (already correct)
+// User signup
 app.post("/api/user/signup", async (req, res) => {
     const { name, email, password, role } = req.body;
     let conn;
     try {
         conn = await oracledb.getConnection(dbConfig);
         await conn.execute(
-            `INSERT INTO users (name, email, password_hash, role)
-             VALUES (:name, :email, :password, :role)`,
-            { name, email, password, role },
+            `INSERT INTO users (name, email, password_hash, role) VALUES (:name, :email, :password, :role)`,
+            { name, email, password, role }
         );
         res.json({ success: true, message: "User registered successfully!" });
     } catch (err) {
-        console.error("❌ Signup failed:", err);
+        console.error("Signup error:", err);
         if (err.errorNum === 1) {
             res.json({ success: false, message: "Email already exists!" });
         } else {
             res.status(500).json({ success: false, message: "Signup failed: " + err.message });
         }
     } finally {
-        if (conn) {
-            try {
-                await conn.close();
-            } catch (err) {
-                console.error("❌ Error closing connection:", err);
-            }
-        }
+        if (conn) await conn.close();
     }
 });
 
+// User login
 app.post("/api/user/login", async (req, res) => {
     const { email, password, role } = req.body;
     let conn;
@@ -111,19 +119,16 @@ app.post("/api/user/login", async (req, res) => {
             `SELECT id, name, password_hash, role, profile_img FROM users WHERE email = :email`,
             [email]
         );
-
-        if (result.rows.length === 0) {
+        if (result.rows.length === 0)
             return res.json({ success: false, message: "User not found!" });
-        }
 
         const { ID, NAME, PASSWORD_HASH, ROLE, PROFILE_IMG } = result.rows[0];
 
-        if (password !== PASSWORD_HASH) {
+        if (password !== PASSWORD_HASH)
             return res.json({ success: false, message: "Incorrect password!" });
-        }
-        if (role !== ROLE) {
+
+        if (role.toLowerCase() !== ROLE.toLowerCase())
             return res.json({ success: false, message: "Incorrect role!" });
-        }
 
         req.session.user = { id: ID, name: NAME, email, role: ROLE, profile_img: PROFILE_IMG };
 
@@ -133,19 +138,14 @@ app.post("/api/user/login", async (req, res) => {
             user: { id: ID, name: NAME, email, role: ROLE, profile_img: PROFILE_IMG }
         });
     } catch (err) {
-        console.error("❌ Login failed:", err);
+        console.error("Login failed:", err);
         res.status(500).json({ success: false, message: "Login failed: " + err.message });
     } finally {
-        if (conn) {
-            try {
-                await conn.close();
-            } catch (err) {
-                console.error("❌ Error closing connection:", err);
-            }
-        }
+        if (conn) await conn.close();
     }
 });
 
+// Logout
 app.post("/api/user/logout", (req, res) => {
     req.session.destroy(err => {
         if (err) return res.json({ success: false });
@@ -154,15 +154,76 @@ app.post("/api/user/logout", (req, res) => {
     });
 });
 
+// Session check
 app.get("/api/user/session", (req, res) => {
-    if (req.session.user) {
-        res.json({ loggedIn: true, user: req.session.user });
-    } else {
-        res.json({ loggedIn: false });
+    if (req.session.user) res.json({ loggedIn: true, user: req.session.user });
+    else res.json({ loggedIn: false });
+});
+
+// ===========================
+// Settings Routes (for sellersettings.html)
+// ===========================
+const settingsRouter = express.Router();
+
+// GET user settings
+settingsRouter.get("/", async (req, res) => {
+    if (!req.session.user) return res.status(401).json({ success: false, message: "Not logged in" });
+    const userId = req.session.user.id;
+    let conn;
+    try {
+        conn = await oracledb.getConnection(dbConfig);
+        const result = await conn.execute(
+            `SELECT full_name, phone, nid_photo, address, bio, profile_img FROM users WHERE id = :id`,
+            [userId]
+        );
+        res.json({ success: true, settings: result.rows[0] });
+    } catch (err) {
+        console.error("Fetch settings error:", err);
+        res.status(500).json({ success: false, message: "Failed to fetch settings" });
+    } finally {
+        if (conn) await conn.close();
     }
 });
 
-// Import and use your route modules
+// POST update settings (supports profile upload)
+settingsRouter.post("/update", upload.single("profile_img"), async (req, res) => {
+    if (!req.session.user) return res.status(401).json({ success: false, message: "Not logged in" });
+    const userId = req.session.user.id;
+    const { full_name, phone, nid_photo, address, bio } = req.body;
+    let profile_img = req.file ? req.file.filename : undefined;
+
+    let conn;
+    try {
+        conn = await oracledb.getConnection(dbConfig);
+
+        // Build dynamic update query
+        const queryParts = [];
+        const binds = { id: userId };
+        if (full_name) { queryParts.push("full_name = :full_name"); binds.full_name = full_name; }
+        if (phone) { queryParts.push("phone = :phone"); binds.phone = phone; }
+        if (nid_photo) { queryParts.push("nid_photo = :nid_photo"); binds.nid_photo = nid_photo; }
+        if (address) { queryParts.push("address = :address"); binds.address = address; }
+        if (bio) { queryParts.push("bio = :bio"); binds.bio = bio; }
+        if (profile_img) { queryParts.push("profile_img = :profile_img"); binds.profile_img = profile_img; }
+
+        const updateQuery = `UPDATE users SET ${queryParts.join(", ")} WHERE id = :id`;
+        await conn.execute(updateQuery, binds);
+
+        res.json({ success: true, message: "Settings updated successfully!" });
+    } catch (err) {
+        console.error("Update settings error:", err);
+        res.status(500).json({ success: false, message: "Failed to update settings" });
+    } finally {
+        if (conn) await conn.close();
+    }
+});
+
+// Mount settings router
+app.use("/api/settings", settingsRouter);
+
+// ===========================
+// Import & mount other route modules
+// ===========================
 const profileRoute = require("./routes/profileRoute");
 const dashboardRoute = require("./routes/dashboardRoute");
 const announcementRoutes = require('./routes/announcementRoutes');
@@ -173,7 +234,6 @@ const sellerProperties = require('./routes/sellerProperties');
 const propertyUpdateRoute = require('./routes/propertyUpdateRoute');
 const messagesRoute = require('./routes/messageRoute');
 const analyticsRouter = require('./routes/analyticsRoute');
-const settingsRouter = require('./routes/settingsRoute');
 const authRoutes = require('./routes/authRoute');
 
 app.use('/api/properties', addproperties);
@@ -186,15 +246,16 @@ app.use('/api/seller', sellerProperties);
 app.use('/api/property', propertyUpdateRoute);
 app.use('/api/messages', messagesRoute);
 app.use('/api/analytics', analyticsRouter);
-app.use('/api', settingsRouter); // <-- FIX: Changed this line from '/api/settings' to '/api'
 app.use('/api/auth', authRoutes);
 
-// 404 fallback for undefined API routes
+// 404 fallback
 app.use((req, res) => {
     res.status(404).json({ success: false, message: "API route not found." });
 });
 
-// Start server
+// ===========================
+// Start Server
+// ===========================
 app.listen(PORT, () => {
     console.log(`🚀 Server running at http://localhost:${PORT}`);
 });

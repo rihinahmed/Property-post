@@ -1,134 +1,90 @@
-const express = require('express');
-const oracledb = require('oracledb');
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
-const dbConfig = require('../config/db'); 
-
+const express = require("express");
 const router = express.Router();
-console.log("✅ settingsRoute.js loaded");
+const oracledb = require("oracledb");
+const multer = require("multer");
+const path = require("path");
 
-// ===========================
-// Multer config for profile images
-// ===========================
+// Multer setup for profile images
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const dir = path.join(__dirname, '../selleruploads');
-        if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-        cb(null, dir);
+        cb(null, path.join(__dirname, "../selleruploads"));
     },
     filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
         const ext = path.extname(file.originalname);
-        const uniqueName = `profile_${Date.now()}${ext}`;
-        cb(null, uniqueName);
+        cb(null, "profile-" + uniqueSuffix + ext);
     }
 });
 const upload = multer({ storage });
 
-// ===========================
-// GET user settings at the /api/settings route
-// ===========================
-router.get('/settings', async (req, res) => {
-    // Security check: Ensure user is logged in
-    if (!req.session.user) {
-        return res.status(401).json({ success: false, message: 'Not authenticated.' });
-    }
+const dbConfig = {
+    user: "SYSTEM",
+    password: "Rihin1234",
+    connectString: "localhost/XEPDB1"
+};
 
-    let connection;
+// GET /api/settings
+router.get("/", async (req, res) => {
+    if (!req.session.user) return res.status(401).json({ success: false, message: "Not logged in." });
+
+    let conn;
     try {
-        const userEmail = req.session.user.email;
-        connection = await oracledb.getConnection(dbConfig);
-
-        const result = await connection.execute(
-            `SELECT ID, FULL_NAME, PHONE, NID_PHOTO, ADDRESS, BIO, PROFILE_IMG FROM USERS WHERE EMAIL = :email`,
-            { email: userEmail },
-            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+        conn = await oracledb.getConnection(dbConfig);
+        const result = await conn.execute(
+            `SELECT full_name, phone, nid_photo, address, bio, profile_img 
+             FROM users WHERE id = :id`,
+            [req.session.user.id]
         );
 
-        if (result.rows.length === 0) {
-            return res.status(404).json({ success: false, message: 'User not found.' });
-        }
+        if (result.rows.length === 0) return res.status(404).json({ success: false, message: "User not found." });
 
-        const s = result.rows[0];
-        res.json({
-            success: true,
-            settings: {
-                id: s.ID,
-                full_name: s.FULL_NAME,
-                phone: s.PHONE,
-                nid_photo: s.NID_PHOTO,
-                address: s.ADDRESS,
-                bio: s.BIO,
-                profile_img: s.PROFILE_IMG
-            }
-        });
-
+        res.json({ success: true, settings: result.rows[0] });
     } catch (err) {
-        console.error('Error fetching settings:', err);
-        res.status(500).json({ success: false, message: `Error fetching settings: ${err.message}` });
+        console.error(err);
+        res.status(500).json({ success: false, message: "Failed to fetch settings." });
     } finally {
-        if (connection) {
-            try { await connection.close(); } catch (err) { console.error(err); }
-        }
+        if (conn) await conn.close();
     }
 });
 
-// ===========================
-// POST update user settings at the /api/settings/update route
-// ===========================
-router.post('/settings/update', upload.single('profile_img'), async (req, res) => {
-    // Security check: Ensure user is logged in
-    if (!req.session.user) {
-        return res.status(401).json({ success: false, message: 'Not authenticated.' });
-    }
+// POST /api/settings/update
+router.post("/update", upload.single("profile_img"), async (req, res) => {
+    if (!req.session.user) return res.status(401).json({ success: false, message: "Not logged in." });
 
-    let connection;
+    const { full_name, phone, nid_photo, address, bio } = req.body;
+    const profile_img = req.file ? req.file.filename : null;
+
+    let conn;
     try {
-        console.log("Incoming form data:", req.body);
-        console.log("Incoming file:", req.file);
+        conn = await oracledb.getConnection(dbConfig);
 
-        const userId = parseInt(req.session.user.id, 10);
-        
-        const { full_name, phone, address, bio, nid_photo } = req.body;
-        const profileImgFile = req.file;
+        // Update user settings
+        let query = `UPDATE users SET full_name = :full_name, phone = :phone, nid_photo = :nid_photo, address = :address, bio = :bio`;
+        const params = { full_name, phone, nid_photo, address, bio, id: req.session.user.id };
 
-        connection = await oracledb.getConnection(dbConfig);
-
-        let updateQuery = `
-            UPDATE USERS SET
-                FULL_NAME = :full_name,
-                PHONE = :phone,
-                ADDRESS = :address,
-                BIO = :bio,
-                NID_PHOTO = :nid_photo
-        `;
-        const bindings = { full_name, phone, address, bio, nid_photo, id: userId };
-
-        if (profileImgFile) {
-            updateQuery += `, PROFILE_IMG = :profile_img`;
-            bindings.profile_img = profileImgFile.filename;
+        if (profile_img) {
+            query += `, profile_img = :profile_img`;
+            params.profile_img = profile_img;
+            req.session.user.profile_img = profile_img; // update session
         }
 
-        updateQuery += ` WHERE ID = :id`;
+        query += ` WHERE id = :id`;
 
-        const result = await connection.execute(updateQuery, bindings, { autoCommit: true });
+        await conn.execute(query, params);
 
-        if (result.rowsAffected > 0) {
-            if (profileImgFile) {
-                req.session.user.profile_img = profileImgFile.filename;
-            }
-            res.json({ success: true, message: 'Settings updated successfully.' });
-        } else {
-            res.status(404).json({ success: false, message: 'User not found or no changes made.' });
-        }
+        // Fetch updated settings to return to frontend
+        const result = await conn.execute(
+            `SELECT full_name, phone, nid_photo, address, bio, profile_img 
+             FROM users WHERE id = :id`,
+            [req.session.user.id]
+        );
 
+        res.json({ success: true, message: "Settings saved successfully!", settings: result.rows[0] });
     } catch (err) {
-        console.error('❌ Error updating settings:', err); 
-        res.status(500).json({ success: false, message: `An error occurred: ${err.message}` });
+        console.error(err);
+        res.status(500).json({ success: false, message: "Failed to update settings." });
     } finally {
-        if (connection) {
-            try { await connection.close(); } catch (err) { console.error(err); }
-        }
+        if (conn) await conn.close();
     }
 });
 
