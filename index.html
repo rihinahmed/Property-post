@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/stylings/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="/js/search.js" defer></script>
 
 </head>
 <body>
@@ -70,7 +71,7 @@
             <p id="heroSubtitle">RoomFinder helps students and families discover rooms, hostels, and sublets across your city.</p>
       
             <div class="search-bar">
-              <input type="text" placeholder="Search by area (e.g. Dhanmondi)">
+              <input type="text" id="search" placeholder="Search by area (e.g. Dhanmondi)" data-search>
               <button>Search</button>
             </div>
           </div>
@@ -194,99 +195,32 @@
       </div>
     
       <!-- Cards Full Width Outside Container -->
-      <div class="recent-list">
-        <div class="recent-card">
-          <img src="https://i.ibb.co/2M5pKJz/family1.jpg" alt="Family Room">
-          <div class="card-body">
-            <h4>Family Apartment</h4>
-            <p class="location">Bashundhara R/A</p>
-            <p class="info">2 Bed · 2 Bath · July</p>
-            <p class="rent">৳50,000/month</p>
-          </div>
-        </div>
-        <div class="recent-card">
-          <img src="https://i.ibb.co/2M5pKJz/family1.jpg" alt="Family Room">
-          <div class="card-body">
-            <h4>Family Apartment</h4>
-            <p class="location">Bashundhara R/A</p>
-            <p class="info">2 Bed · 2 Bath · July</p>
-            <p class="rent">৳50,000/month</p>
-          </div>
-        </div>
-        <div class="recent-card">
-          <img src="https://i.ibb.co/2M5pKJz/family1.jpg" alt="Family Room">
-          <div class="card-body">
-            <h4>Family Apartment</h4>
-            <p class="location">Bashundhara R/A</p>
-            <p class="info">2 Bed · 2 Bath · July</p>
-            <p class="rent">৳50,000/month</p>
-          </div>
-        </div>
-        <div class="recent-card">
-          <img src="https://i.ibb.co/2M5pKJz/family1.jpg" alt="Family Room">
-          <div class="card-body">
-            <h4>Family Apartment</h4>
-            <p class="location">Bashundhara R/A</p>
-            <p class="info">2 Bed · 2 Bath · July</p>
-            <p class="rent">৳50,000/month</p>
-          </div>
-        </div>
-        <div class="recent-card">
-          <img src="https://i.ibb.co/2M5pKJz/family1.jpg" alt="Family Room">
-          <div class="card-body">
-            <h4>Family Apartment</h4>
-            <p class="location">Bashundhara R/A</p>
-            <p class="info">2 Bed · 2 Bath · July</p>
-            <p class="rent">৳50,000/month</p>
-          </div>
-        </div>
-        <div class="recent-card">
-          <img src="https://i.ibb.co/2M5pKJz/family1.jpg" alt="Family Room">
-          <div class="card-body">
-            <h4>Family Apartment</h4>
-            <p class="location">Bashundhara R/A</p>
-            <p class="info">2 Bed · 2 Bath · July</p>
-            <p class="rent">৳50,000/month</p>
-          </div>
-        </div>
-        <div class="recent-card">
-          <img src="https://i.ibb.co/2M5pKJz/family1.jpg" alt="Family Room">
-          <div class="card-body">
-            <h4>Family Apartment</h4>
-            <p class="location">Bashundhara R/A</p>
-            <p class="info">2 Bed · 2 Bath · July</p>
-            <p class="rent">৳50,000/month</p>
-          </div>
-        </div>
-        <div class="recent-card">
-          <img src="https://i.ibb.co/2M5pKJz/family1.jpg" alt="Family Room">
-          <div class="card-body">
-            <h4>Family Apartment</h4>
-            <p class="location">Bashundhara R/A</p>
-            <p class="info">2 Bed · 2 Bath · July</p>
-            <p class="rent">৳50,000/month</p>
-          </div>
-        </div>
-        <div class="recent-card">
-          <img src="https://i.ibb.co/2M5pKJz/family1.jpg" alt="Family Room">
-          <div class="card-body">
-            <h4>Family Apartment</h4>
-            <p class="location">Bashundhara R/A</p>
-            <p class="info">2 Bed · 2 Bath · July</p>
-            <p class="rent">৳50,000/month</p>
-          </div>
-        </div>
-        <div class="recent-card">
-          <img src="https://i.ibb.co/2M5pKJz/family1.jpg" alt="Family Room">
-          <div class="card-body">
-            <h4>Family Apartment</h4>
-            <p class="location">Bashundhara R/A</p>
-            <p class="info">2 Bed · 2 Bath · July</p>
-            <p class="rent">৳50,000/month</p>
-          </div>
-        </div>
+      <div class="recent-list" data-user-cards-container>
+        
+        
+        
+        
+        
+        
+        
         <!-- More cards... -->
-      </div>
+      </div>  
+        
+
+        <template data-user-template>
+          <div class="recent-card">
+            <img src="\backend\uploads\1757186014483-Screenshot (4).png" alt="Family Room">
+            <div class="card-body">
+              <h4 class="title" data-title></h4>
+              <p class="location" data-location></p>
+              <p class="description" data-description></p>
+              <p class="rent" data-rent></p>
+            </div>
+          </div>
+        </template>
+        
+        
+      
       <!-- Bachelor Section -->
       <div class="container">
         <div class="category-top">

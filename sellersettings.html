@@ -117,142 +117,214 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", async () => {
-        const loadingEl = document.getElementById("loading-indicator");
-        const errorEl = document.getElementById("error-message");
-        const formEl = document.getElementById("settings-form");
-        const profilePic = document.getElementById("profile-picture");
-        const profileUpload = document.getElementById("profile-upload");
+    console.log("Page loaded - starting settings initialization");
     
-        // ===== Session Check =====
+    const loadingEl = document.getElementById("loading-indicator");
+    const errorEl = document.getElementById("error-message");
+    const formEl = document.getElementById("settings-form");
+    const profilePic = document.getElementById("profile-picture");
+    const profileUpload = document.getElementById("profile-upload");
+
+    try {
+        // Check session
+        console.log("Checking session...");
+        const sessionRes = await fetch("http://localhost:5000/api/user/session", { 
+            credentials: "include" 
+        });
+        const sessionData = await sessionRes.json();
+        console.log("Session data:", sessionData);
+
+        if (!sessionData.loggedIn || sessionData.user.role.toLowerCase() !== "seller") {
+            console.log("Session invalid, redirecting to login");
+            window.location.replace("login.html");
+            return;
+        }
+
+        // Set hidden fields
+        document.getElementById("user-id").value = sessionData.user.id;
+        document.getElementById("hidden-email").value = sessionData.user.email;
+
+        // Show loading
+        loadingEl.style.display = "block";
+        formEl.style.display = "none";
+        errorEl.style.display = "none";
+
+        // Fetch settings
+        console.log("Fetching settings...");
+        const settingsRes = await fetch("http://localhost:5000/api/settings", { 
+            credentials: "include" 
+        });
+        const settingsData = await settingsRes.json();
+        console.log("Settings data received:", settingsData);
+
+        if (!settingsData.success) {
+            throw new Error(settingsData.message || "Failed to fetch settings");
+        }
+
+        const s = settingsData.settings;
+        console.log("Populating form with:", s);
+
+        // Oracle returns uppercase column names, so check both formats
+        const fullName = s.full_name || s.FULL_NAME || '';
+        const phone = s.phone || s.PHONE || '';
+        const nidPhoto = s.nid_photo || s.NID_PHOTO || '';
+        const address = s.address || s.ADDRESS || '';
+        const bio = s.bio || s.BIO || '';
+        const profileImg = s.profile_img || s.PROFILE_IMG || '';
+
+        // Wait a bit for DOM to be ready
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        // Populate form fields
+        const fullNameField = document.getElementById("full-name");
+        const emailField = document.getElementById("email");
+        const phoneField = document.getElementById("phone");
+        const nidField = document.getElementById("nid_photo");
+        const addressField = document.getElementById("address");
+        const bioField = document.getElementById("bio");
+
+        // Set values and remove placeholder
+        if (fullName) {
+            fullNameField.value = fullName;
+            fullNameField.removeAttribute("placeholder");
+        }
+        
+        emailField.value = sessionData.user.email;
+        emailField.removeAttribute("placeholder");
+        
+        if (phone) {
+            phoneField.value = phone;
+            phoneField.removeAttribute("placeholder");
+        }
+        
+        if (nidPhoto) {
+            nidField.value = nidPhoto;
+            nidField.removeAttribute("placeholder");
+        }
+        
+        if (address) {
+            addressField.value = address;
+            addressField.removeAttribute("placeholder");
+        }
+        
+        if (bio) {
+            bioField.value = bio;
+            bioField.removeAttribute("placeholder");
+        }
+
+        // Handle profile image
+        if (profileImg) {
+            profilePic.style.backgroundImage = `url(http://localhost:5000/selleruploads/${profileImg})`;
+            profilePic.innerHTML = '';
+        }
+
+        // Hide loading and show form
+        loadingEl.style.display = "none";
+        formEl.style.display = "block";
+
+        console.log("Form populated successfully");
+
+        // Verify values were set
+        setTimeout(() => {
+            console.log("Verification - Form field values:");
+            console.log("Full Name:", fullNameField.value);
+            console.log("Phone:", phoneField.value);
+            console.log("NID:", nidField.value);
+            console.log("Address:", addressField.value);
+            console.log("Bio:", bioField.value);
+        }, 200);
+
+    } catch (err) {
+        console.error("Error:", err);
+        loadingEl.style.display = "none";
+        errorEl.textContent = err.message;
+        errorEl.style.display = "block";
+    }
+
+    // Profile picture click handler
+    profilePic.addEventListener("click", () => profileUpload.click());
+
+    // Profile upload preview
+    profileUpload.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (!file.type.startsWith('image/')) {
+            alert('Please select a valid image file');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            profilePic.style.backgroundImage = `url(${reader.result})`;
+            profilePic.innerHTML = '';
+        };
+        reader.readAsDataURL(file);
+    });
+
+    // Form submission
+    formEl.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        console.log("Saving settings...");
+
+        const btn = document.getElementById("save-btn");
+        const btnText = btn.querySelector(".btn-text");
+        btn.disabled = true;
+        btnText.textContent = "Saving...";
+
         try {
-            const sessionRes = await fetch("http://localhost:5000/api/user/session", { credentials: "include" });
-            const sessionData = await sessionRes.json();
-    
-            if (!sessionData.loggedIn || sessionData.user.role.toLowerCase() !== "seller") {
-                window.location.replace("login.html");
-                return;
-            }
-    
-            const userId = sessionData.user.id;
-            const userEmail = sessionData.user.email;
-    
-            document.getElementById("user-id").value = userId;
-            document.getElementById("hidden-email").value = userEmail;
-    
-            // ===== Fetch user settings =====
-            loadingEl.style.display = "block";
-            formEl.style.display = "none";
-            errorEl.style.display = "none";
-    
-            const settingsRes = await fetch("http://localhost:5000/api/settings", { credentials: "include" });
-            if (!settingsRes.ok) throw new Error("Failed to fetch settings from server.");
-            const settingsData = await settingsRes.json();
-            const s = settingsData.settings;
-    
-            document.getElementById("full-name").value = s.full_name || "";
-            document.getElementById("email").value = userEmail;
-            document.getElementById("phone").value = s.phone || "";
-            document.getElementById("nid_photo").value = s.nid_photo || "";
-            document.getElementById("address").value = s.address || "";
-            document.getElementById("bio").value = s.bio || "";
-    
-            if (s.profile_img) {
-                profilePic.style.backgroundImage = `url(http://localhost:5000/selleruploads/${s.profile_img})`;
-                profilePic.innerHTML = '';
-            }
-    
-            loadingEl.style.display = "none";
-            formEl.style.display = "block";
-    
-        } catch (err) {
-            console.error("Initialization error:", err);
-            loadingEl.style.display = "none";
-            errorEl.textContent = err.message;
-            errorEl.style.display = "block";
-        }
-    
-        // ===== Profile picture preview =====
-        profilePic.addEventListener("click", () => profileUpload.click());
-        profileUpload.addEventListener("change", (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = () => {
-                profilePic.style.backgroundImage = `url(${reader.result})`;
-                profilePic.innerHTML = '';
-            };
-            reader.readAsDataURL(file);
-        });
-    
-        // ===== Save settings =====
-        formEl.addEventListener("submit", async (e) => {
-            e.preventDefault(); // Prevent page reload
-            const btn = document.getElementById("save-btn");
-            btn.disabled = true;
-            btn.querySelector(".btn-text").textContent = "Saving...";
-    
             const formData = new FormData(formEl);
-    
-            try {
-                const res = await fetch("http://localhost:5000/api/settings/update", {
-                    method: "POST",
-                    credentials: "include",
-                    body: formData
-                });
-                const data = await res.json();
-    
-                if (data.success) {
-                    showSuccess(data.message);
-    
-                    // Update all fields from returned settings
-                    const s = data.settings;
-                    document.getElementById("full-name").value = s.full_name || "";
-                    document.getElementById("phone").value = s.phone || "";
-                    document.getElementById("nid_photo").value = s.nid_photo || "";
-                    document.getElementById("address").value = s.address || "";
-                    document.getElementById("bio").value = s.bio || "";
-    
-                    if (s.profile_img) {
-                        profilePic.style.backgroundImage = `url(http://localhost:5000/selleruploads/${s.profile_img})`;
-                        profilePic.innerHTML = '';
-                    }
-    
-                    // Clear file input after saving
-                    profileUpload.value = "";
-                } else {
-                    alert(data.message || "Failed to save settings.");
-                }
-            } catch (err) {
-                console.error("Save error:", err);
-                alert("Error saving settings. Check console for details.");
-            } finally {
-                btn.disabled = false;
-                btn.querySelector(".btn-text").textContent = "Save Changes";
-            }
-        });
-    
-        // ===== Logout handler =====
-        const logoutBtn = document.querySelector(".logout");
-        if (logoutBtn) {
-            logoutBtn.addEventListener("click", async (e) => {
-                e.preventDefault();
-                try {
-                    await fetch("http://localhost:5000/api/user/logout", { method: "POST", credentials: "include" });
-                } catch (err) {
-                    console.error("Logout failed:", err);
-                }
-                window.location.replace("login.html");
+            const res = await fetch("http://localhost:5000/api/settings/update", {
+                method: "POST",
+                credentials: "include",
+                body: formData
             });
-        }
-    
-        // ===== Success popup =====
-        function showSuccess(msg) {
-            const successEl = document.getElementById("success-message");
-            successEl.querySelector("span").textContent = msg;
-            successEl.style.display = "flex";
-            setTimeout(() => (successEl.style.display = "none"), 3000);
+
+            const data = await res.json();
+            console.log("Save response:", data);
+
+            if (data.success) {
+                showSuccess("Settings updated successfully!");
+                profileUpload.value = "";
+            } else {
+                alert(data.message || "Failed to save settings.");
+            }
+        } catch (err) {
+            console.error("Save error:", err);
+            alert("Error saving settings: " + err.message);
+        } finally {
+            btn.disabled = false;
+            btnText.textContent = "Save Changes";
         }
     });
+
+    // Success message function
+    function showSuccess(msg) {
+        const successEl = document.getElementById("success-message");
+        successEl.querySelector("span").textContent = msg;
+        successEl.style.display = "flex";
+        setTimeout(() => successEl.style.display = "none", 3000);
+    }
+
+    // Logout handler
+    document.querySelector(".logout").addEventListener("click", async (e) => {
+        e.preventDefault();
+        try {
+            await fetch("http://localhost:5000/api/user/logout", { 
+                method: "POST", 
+                credentials: "include" 
+            });
+        } catch (err) {
+            console.error("Logout failed:", err);
+        }
+        window.location.replace("login.html");
+    });
+});
+
+// Sidebar toggle
+function toggleSidebar() {
+    document.getElementById("sidebar").classList.toggle("open");
+}
     </script>
     
     

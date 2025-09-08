@@ -6,7 +6,191 @@
   <title>Seller Dashboard | PropertyPost</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <link rel="stylesheet" href="./stylings/seller_dashboard.css" />
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <style>
+    /* Additional styles for dynamic features */
+    .main-content {
+      padding-bottom: 2rem;
+    }
+    
+    .dashboard-section {
+      margin-bottom: 3rem;
+      animation: fadeInUp 0.6s ease forwards;
+      opacity: 0;
+    }
+    
+    .dashboard-section:nth-child(2) { animation-delay: 1s; }
+    .dashboard-section:nth-child(3) { animation-delay: 1.2s; }
+    .dashboard-section:nth-child(4) { animation-delay: 1.4s; }
+    
+    .section-title {
+      color: var(--primary-color);
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+    
+    .activity-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      border-radius: var(--border-radius);
+      box-shadow: 0 0 20px var(--card-glow);
+      padding: 2rem;
+    }
+    
+    .activity-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+      transition: all 0.3s ease;
+    }
+    
+    .activity-item:hover {
+      background: var(--background-color);
+    }
+    
+    .activity-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--primary-color);
+      color: #000;
+      font-size: 0.9rem;
+    }
+    
+    .activity-content {
+      flex: 1;
+    }
+    
+    .activity-title {
+      font-weight: 500;
+      margin-bottom: 0.3rem;
+    }
+    
+    .activity-time {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.85rem;
+    }
+    
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .action-btn {
+      background: var(--card-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      border: 1px solid rgba(79, 195, 247, 0.3);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      text-align: center;
+      text-decoration: none;
+      color: var(--text-color);
+      transition: all 0.3s ease;
+      box-shadow: 0 0 15px var(--card-glow);
+    }
+    
+    .action-btn:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 25px var(--card-glow);
+      background: var(--background-color);
+    }
+    
+    .action-btn i {
+      font-size: 2.5rem;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+    
+    .action-btn h4 {
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+    
+    .action-btn p {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(79, 195, 247, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--primary-color);
+      animation: spin 1s ease-in-out infinite;
+    }
+    
+    .welcome-text {
+      color: var(--primary-color);
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    
+    .current-time {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 1rem;
+    }
+    
+    .trend-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+    }
+    
+    .trend-up { color: #4caf50; }
+    .trend-down { color: #f44336; }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    .card:hover {
+      animation: pulse 0.6s ease;
+    }
+    
+    .refresh-btn {
+      background: var(--primary-color);
+      color: #000;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+    
+    .refresh-btn:hover {
+      background: #29b6f6;
+    }
+    
+    @media (max-width: 768px) {
+      .grid-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .chart-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="dashboard">
@@ -24,9 +208,6 @@
         <a href="./sellermessage.html">
           <i class="fas fa-envelope"></i> Messages
         </a>
-        <a href="./selleranalytics.html">
-          <i class="fas fa-chart-line"></i> Analytics
-        </a>
         <a href="./sellersettings.html">
           <i class="fas fa-cog"></i> Settings
         </a>
@@ -38,106 +219,95 @@
 
     <main class="main-content">
       <header class="main-header">
+        <div>
+          <div class="welcome-text" id="welcome-message">Welcome back!</div>
+          <div class="current-time" id="current-time">Loading...</div>
+        </div>
         <div class="user-info">
-          <span>Welcome, User</span>
-          <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User Profile" />
+          <img id="user-avatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt="User Profile" />
         </div>
       </header>
 
       <section class="summary-cards">
         <div class="card">
           <h3>Total Properties</h3>
-          <p id="total-properties">0</p>
+          <p id="total-properties"><span class="loading"></span></p>
+          <div class="trend-indicator trend-up">
+            <i class="fas fa-arrow-up"></i>
+            <span>+12% this month</span>
+          </div>
           <i class="fas fa-home icon"></i>
         </div>
+        
         <div class="card">
           <h3>Active Listings</h3>
-          <p id="active-listings">0</p>
+          <p id="active-listings"><span class="loading"></span></p>
+          <div class="trend-indicator trend-up">
+            <i class="fas fa-arrow-up"></i>
+            <span>+8% this week</span>
+          </div>
           <i class="fas fa-clipboard-list icon"></i>
         </div>
+        
         <div class="card">
           <h3>Unread Messages</h3>
-          <p id="unread-messages">0</p>
+          <p id="unread-messages"><span class="loading"></span></p>
+          <div class="trend-indicator" id="messages-trend">
+            <i class="fas fa-minus"></i>
+            <span>No change</span>
+          </div>
           <i class="fas fa-envelope icon"></i>
         </div>
+        
         <div class="card">
           <h3>Monthly Views</h3>
-          <p id="monthly-views">0</p>
+          <p id="monthly-views"><span class="loading"></span></p>
+          <div class="trend-indicator trend-up">
+            <i class="fas fa-arrow-up"></i>
+            <span>+24% this month</span>
+          </div>
           <i class="fas fa-eye icon"></i>
         </div>
       </section>
+
+      <div class="dashboard-section">
+        <div class="grid-container">
+          <div class="activity-card">
+            <div class="chart-header">
+              <h3 class="section-title">Recent Activity</h3>
+              <button class="refresh-btn" onclick="refreshActivity()">
+                <i class="fas fa-refresh"></i> Refresh
+              </button>
+            </div>
+            <div id="activity-list">
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-section">
+        <h3 class="section-title">Quick Actions</h3>
+        <div class="quick-actions">
+          <a href="./addproperty.html" class="action-btn">
+            <i class="fas fa-plus-circle"></i>
+            <h4>Add New Property</h4>
+            <p>List a new property for rent</p>
+          </a>
+          
+          <a href="./sellermessage.html" class="action-btn">
+            <i class="fas fa-envelope-open"></i>
+            <h4>Check Messages</h4>
+            <p>View and respond to inquiries</p>
+          </a>
+          
+          <a href="./sellersettings.html" class="action-btn">
+            <i class="fas fa-cog"></i>
+            <h4>Account Settings</h4>
+            <p>Manage your profile and preferences</p>
+          </a>
+        </div>
+      </div>
     </main>
   </div>
-
-  <!-- Seller session handler -->
-  <script>
-    // Safe logout handler
-    const logoutBtn = document.querySelector(".logout");
-    if (logoutBtn) {
-      logoutBtn.addEventListener("click", async (e) => {
-        e.preventDefault();
-        try {
-          await fetch("http://localhost:5000/api/user/logout", {
-            method: "POST",
-            credentials: "include"
-          });
-        } catch (err) {
-          console.error("Logout failed:", err);
-        }
-        window.location.href = "login.html";
-      });
-    }
-
-    async function fetchSellerStats(userId) {
-      try {
-        const res = await fetch(`http://localhost:5000/api/dashboard/seller/${userId}`, {
-          credentials: "include"
-        });
-        if (!res.ok) throw new Error("Failed to fetch seller stats");
-
-        const stats = await res.json();
-
-        document.getElementById("total-properties").textContent = stats.totalProperties ?? 0;
-        document.getElementById("active-listings").textContent = stats.activeListings ?? 0;
-        document.getElementById("unread-messages").textContent = stats.unreadMessages ?? 0;
-        document.getElementById("monthly-views").textContent = stats.monthlyViews ?? 0;
-      } catch (err) {
-        console.error("Failed to load seller dashboard data:", err);
-      }
-    }
-
-    // On page load: Check session & role, redirect if needed, fetch data
-    document.addEventListener("DOMContentLoaded", async () => {
-      try {
-        const res = await fetch("http://localhost:5000/api/user/session", {
-          credentials: "include"
-        });
-        const data = await res.json();
-
-        if (!data.loggedIn) {
-          window.location.href = "login.html";
-          return;
-        }
-
-        if (data.user.role !== "seller") {
-          window.location.href = "dashboard.html"; // redirect buyer to buyer dashboard
-          return;
-        }
-
-        // Set user info on header
-        document.querySelector(".user-info span").textContent = `Welcome, ${data.user.name}`;
-        if (data.user.profile_img) {
-          document.querySelector(".user-info img").src = data.user.profile_img;
-        }
-
-        // Fetch dashboard stats for this seller
-        fetchSellerStats(data.user.id);
-      } catch (err) {
-        console.error("Session check failed:", err);
-        window.location.href = "login.html";
-      }
-    });
-  </script>
-  
 </body>
 </html>

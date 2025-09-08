@@ -235,6 +235,8 @@ const propertyUpdateRoute = require('./routes/propertyUpdateRoute');
 const messagesRoute = require('./routes/messageRoute');
 const analyticsRouter = require('./routes/analyticsRoute');
 const authRoutes = require('./routes/authRoute');
+const settingsRoute = require('./routes/settingsRoute');
+const searchProperties = require('./routes/searchProperties');
 
 app.use('/api/properties', addproperties);
 app.use("/api/user/profile", profileRoute);
@@ -247,6 +249,8 @@ app.use('/api/property', propertyUpdateRoute);
 app.use('/api/messages', messagesRoute);
 app.use('/api/analytics', analyticsRouter);
 app.use('/api/auth', authRoutes);
+app.use('/api/settings', settingsRoute);
+app.use('/api/search', searchProperties);
 
 // 404 fallback
 app.use((req, res) => {
