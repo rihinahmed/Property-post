@@ -197,8 +197,15 @@ async function fetchAndRenderData(propertyId) {
                 amenities: data.amenities || [],
                 pros: data.pros || [],
                 cons: data.cons || [],
-                locationAddress: data.location || ''
+                location: {
+                    house: data.location?.house || '',
+                    street: data.location?.street || '',
+                    area: data.location?.area || '',
+                    district: data.location?.district || '',
+                    postal_code: data.location?.postal_code || ''
+                }
             };
+            
             images = data.images || [];
 
             initializeForm();
@@ -218,7 +225,12 @@ function initializeForm() {
     document.getElementById('title').value = formData.title || '';
     document.getElementById('rent').value = formData.rent || '';
     document.getElementById('description').value = formData.description || '';
-    document.getElementById('locationAddress').value = formData.locationAddress || '';
+    document.getElementById('location-house').value = formData.location.house || '';
+    document.getElementById('location-street').value = formData.location.street || '';
+    document.getElementById('location-area').value = formData.location.area || '';
+    document.getElementById('location-district').value = formData.location.district || '';
+    document.getElementById('location-postal').value = formData.location.postal_code || '';
+
     
     // Render dynamic content based on fetched data
     renderAmenities();
@@ -258,12 +270,18 @@ function setupEventListeners() {
     });
     
     // Form input changes
-    const formInputs = ['title', 'rent', 'description', 'locationAddress'];
-    formInputs.forEach(inputId => {
-        document.getElementById(inputId).addEventListener('input', function(e) {
+    const formInputs = ['title', 'rent', 'description', 'location-house', 'location-street', 'location-area', 'location-district', 'location-postal'];
+formInputs.forEach(inputId => {
+    document.getElementById(inputId).addEventListener('input', function(e) {
+        if (inputId.startsWith('location-')) {
+            const key = inputId.split('-')[1]; // 'house', 'street', etc.
+            formData.location[key] = e.target.value;
+        } else {
             formData[e.target.name || e.target.id] = e.target.value;
-        });
+        }
     });
+});
+
     
     // Added event listener for the reset button
     document.querySelector('[onclick="resetForm()"]').addEventListener('click', resetForm);
@@ -423,20 +441,29 @@ async function handleSubmit(event) {
         return;
     }
     
-    // Update formData with current input values
+    // Create the updatedData object directly from form values
     const formElements = event.target.elements;
     const updatedData = {
         title: formElements.title.value,
         rent: parseInt(formElements.rent.value, 10),
         description: formElements.description.value,
-        location: formElements.locationAddress.value,
+        // The location object should be constructed from form inputs here
+        location: {
+            house: formElements['location-house'].value,
+            street: formElements['location-street'].value,
+            area: formElements['location-area'].value,
+            district: formElements['location-district'].value,
+            // Renamed 'postal_code' to 'postal' to match the backend
+            postal: formElements['location-postal'].value
+        },
         amenities: formData.amenities,
         pros: formData.pros,
         cons: formData.cons,
-        images: images,
-        status: 'published' // Assuming you'll set a status on update
+        // The images field should not be sent with this request
+        // Images are handled by a separate route now
+        status: 'published' // You might want to get this from a form element
     };
-
+    
     try {
         const response = await fetch(`${API_URL}/${currentPropertyId}`, {
             method: 'PUT',

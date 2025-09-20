@@ -221,6 +221,8 @@ settingsRouter.post("/update", upload.single("profile_img"), async (req, res) =>
 // Mount settings router
 app.use("/api/settings", settingsRouter);
 
+
+
 // ===========================
 // Import & mount other route modules
 // ===========================
@@ -237,6 +239,7 @@ const analyticsRouter = require('./routes/analyticsRoute');
 const authRoutes = require('./routes/authRoute');
 const settingsRoute = require('./routes/settingsRoute');
 const searchProperties = require('./routes/searchProperties');
+const blogRoute = require('./routes/blogRoute');
 
 app.use('/api/properties', addproperties);
 app.use("/api/user/profile", profileRoute);
@@ -251,6 +254,16 @@ app.use('/api/analytics', analyticsRouter);
 app.use('/api/auth', authRoutes);
 app.use('/api/settings', settingsRoute);
 app.use('/api/search', searchProperties);
+app.use('/selleruploads', express.static(sellerUploadDir));
+app.use('/api/blogs', blogRoute);
+
+// Allow CORS and cross-origin resource policy for images
+app.use('/selleruploads', (req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*"); // Or use your frontend's origin
+    res.header("Cross-Origin-Resource-Policy", "cross-origin");
+    next();
+});
+app.use('/selleruploads', express.static(path.join(__dirname, "selleruploads")));
 
 // 404 fallback
 app.use((req, res) => {

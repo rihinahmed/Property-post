@@ -222,10 +222,30 @@
           <!-- Step 3: Location -->
           <div class="step-content" id="step-3">
             <div class="form-group">
-              <label>Location Address *</label>
-              <input type="text" id="room-location" placeholder="Enter the address or click on map" class="glass-input">
+              <label>House No *</label>
+              <input type="text" id="location-house" placeholder="House / Building" class="glass-input">
             </div>
-            
+          
+            <div class="form-group">
+              <label>Street *</label>
+              <input type="text" id="location-street" placeholder="Street / Road" class="glass-input">
+            </div>
+          
+            <div class="form-group">
+              <label>Area *</label>
+              <input type="text" id="location-area" placeholder="Area / Block" class="glass-input">
+            </div>
+          
+            <div class="form-group">
+              <label>District *</label>
+              <input type="text" id="location-district" placeholder="District / City" class="glass-input">
+            </div>
+          
+            <div class="form-group">
+              <label>Postal Code</label>
+              <input type="text" id="location-postal" placeholder="Postal / ZIP Code" class="glass-input">
+            </div>
+          
             <div class="form-group">
               <label>Select Location on Map</label>
               <p class="help-text">Click on the map to set the exact location</p>
@@ -233,12 +253,13 @@
                 <div id="loading-text">Loading map...</div>
               </div>
             </div>
-  
+          
             <div id="location-selected" class="location-selected" style="display: none;">
               <i class="fas fa-check"></i>
               <span id="coordinates-display"></span>
             </div>
           </div>
+          
         </form>
       </div>
 

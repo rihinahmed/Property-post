@@ -2,7 +2,6 @@
 let currentStep = 0;
 let roomData = {
   title: '',
-  location: '',
   rent: '',
   description: '',
   amenities: [],
@@ -10,8 +9,16 @@ let roomData = {
   cons: [],
   images: [],
   latitude: null,
-  longitude: null
+  longitude: null,
+  location: {
+    house: '',
+    street: '',
+    area: '',
+    district: '',
+    postal_code: ''
+  }
 };
+
 
 let map = null;
 let marker = null;
@@ -71,9 +78,22 @@ function initializeEventListeners() {
     roomData.description = e.target.value;
   });
   
-  document.getElementById('room-location').addEventListener('input', function(e) {
-    roomData.location = e.target.value;
+  document.getElementById('location-house').addEventListener('input', e => {
+    roomData.location.house = e.target.value;
   });
+  document.getElementById('location-street').addEventListener('input', e => {
+    roomData.location.street = e.target.value;
+  });
+  document.getElementById('location-area').addEventListener('input', e => {
+    roomData.location.area = e.target.value;
+  });
+  document.getElementById('location-district').addEventListener('input', e => {
+    roomData.location.district = e.target.value;
+  });
+  document.getElementById('location-postal').addEventListener('input', e => {
+    roomData.location.postal_code = e.target.value;
+  });
+  
 }
 
 // Step Navigation
@@ -163,12 +183,15 @@ function validateCurrentStep() {
         return false;
       }
       break;
-    case 3:
-      if (!roomData.location.trim()) {
-        showToast('Please enter a location', 'error');
-        return false;
-      }
-      break;
+      case 3:
+        if (!roomData.location.house.trim() ||
+            !roomData.location.street.trim() ||
+            !roomData.location.area.trim() ||
+            !roomData.location.district.trim()) {
+          showToast('Please complete the location fields', 'error');
+          return false;
+        }
+        break;
   }
   return true;
 }
@@ -364,8 +387,8 @@ function initMap() {
       const geocoder = new google.maps.Geocoder();
       geocoder.geocode({ location: { lat: lat, lng: lng } }, function(results, status) {
         if (status === 'OK' && results[0]) {
-          roomData.location = results[0].formatted_address;
-          document.getElementById('room-location').value = roomData.location;
+          // roomData.location = results[0].formatted_address;
+          // document.getElementById('room-location').value = roomData.location;
         }
       });
       
@@ -390,14 +413,24 @@ function initMap() {
 // Form Submission
 async function submitForm() {
   // 1. Get the latest values from the form fields
-  const title = document.getElementById('room-title').value;
-  const rent = document.getElementById('room-rent').value;
-  const description = document.getElementById('room-description').value;
-  const location = document.getElementById('room-location').value;
+  const title = document.getElementById('room-title').value.trim();
+  const rent = document.getElementById('room-rent').value.trim();
+  const description = document.getElementById('room-description').value.trim();
+
+  const locationHouse = document.getElementById('location-house').value.trim();
+  const locationStreet = document.getElementById('location-street').value.trim();
+  const locationArea = document.getElementById('location-area').value.trim();
+  const locationDistrict = document.getElementById('location-district').value.trim();
+  const locationPostal = document.getElementById('location-postal').value.trim();
 
   // 2. Validate the fields
-  if (!title.trim() || !location.trim() || !rent.trim()) {
-      showToast('Please fill in all required fields', 'error');
+  if (!title || !rent) {
+      showToast('Please fill in the title and rent fields', 'error');
+      return;
+  }
+
+  if (!locationHouse || !locationStreet || !locationArea || !locationDistrict) {
+      showToast('Please complete all required location fields', 'error');
       return;
   }
 
@@ -406,33 +439,42 @@ async function submitForm() {
       return;
   }
 
-  // 3. Create the FormData object to send to the backend
+  // Convert rent to number
+  const rentNumber = isNaN(rent) ? null : Number(rent);
+  if (rentNumber === null) {
+      showToast('Rent must be a valid number', 'error');
+      return;
+  }
+
+  // 3. Create the FormData object
   const formData = new FormData();
   formData.append('title', title);
-  formData.append('rent', rent);
+  formData.append('rent', rentNumber);
   formData.append('description', description);
-  formData.append('location', location);
-  
-  // Append amenities, pros, and cons ONLY if they are not empty.
-  // This is the CRITICAL change for handling optional fields correctly.
+
+  formData.append('location_house', locationHouse);
+  formData.append('location_street', locationStreet);
+  formData.append('location_area', locationArea);
+  formData.append('location_district', locationDistrict);
+  formData.append('location_postal', locationPostal);
+
   if (roomData.amenities.length > 0) {
       formData.append('amenities', roomData.amenities.join(','));
   }
-  
+
   if (roomData.pros.length > 0) {
       formData.append('pros', roomData.pros.join(','));
   }
-  
+
   if (roomData.cons.length > 0) {
       formData.append('cons', roomData.cons.join(','));
   }
-  
-  // Append the images
+
   roomData.images.forEach(file => {
       formData.append('images', file);
   });
 
-  // 4. Send the data to the backend using fetch
+  // 4. Send the data to the backend
   try {
       const response = await fetch('http://localhost:5000/api/properties/add', {
           method: 'POST',
@@ -448,8 +490,8 @@ async function submitForm() {
               resetForm();
           }, 2000);
       } else {
-          showToast('Error: ' + data.message, 'error');
-          console.error('Server error:', data.message);
+          showToast('Error: ' + (data.message || 'Server error'), 'error');
+          console.error('Server error:', data);
       }
   } catch (err) {
       showToast('Failed to submit property: ' + err.message, 'error');
@@ -457,11 +499,11 @@ async function submitForm() {
   }
 }
 
+
 function resetForm() {
   // Reset data
   roomData = {
     title: '',
-    location: '',
     rent: '',
     description: '',
     amenities: [],
@@ -469,14 +511,26 @@ function resetForm() {
     cons: [],
     images: [],
     latitude: null,
-    longitude: null
+    longitude: null,
+    location: {
+      house: '',
+      street: '',
+      area: '',
+      district: '',
+      postal_code: ''
+    }
   };
+  
   
   // Reset form inputs
   document.getElementById('room-title').value = '';
   document.getElementById('room-rent').value = '';
   document.getElementById('room-description').value = '';
-  document.getElementById('room-location').value = '';
+  document.getElementById('location-house').value = '';
+  document.getElementById('location-street').value = '';
+  document.getElementById('location-area').value = '';
+  document.getElementById('location-district').value = '';
+  document.getElementById('location-postal').value = '';
   document.getElementById('new-amenity').value = '';
   document.getElementById('new-pro').value = '';
   document.getElementById('new-con').value = '';
@@ -545,7 +599,6 @@ function updateFormData() {
   roomData.title = document.getElementById('room-title').value;
   roomData.rent = document.getElementById('room-rent').value;
   roomData.description = document.getElementById('room-description').value;
-  roomData.location = document.getElementById('room-location').value;
 }
 
 // Add event listeners for real-time updates

@@ -654,6 +654,70 @@ body {
 }
 
 
+.room_details_a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.room_details_a:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.recent-card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.recent-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.card-body {
+  padding: 16px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.card-body .title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 8px;
+}
+
+.card-body .location,
+.card-body .description,
+.card-body .rent {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 6px;
+}
+
+.room_details_a {
+  text-decoration: none !important;
+  color: inherit;
+  display: block;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.room_details_a:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+
+
 /* Most popular section */
 .most-popular {
   padding: 60px 20px;

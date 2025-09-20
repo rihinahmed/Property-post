@@ -114,7 +114,7 @@
 
         const imageFilenames = property.images;
         const imageUrl = imageFilenames && imageFilenames.length > 0
-            ? `http://localhost:5000/selleruploads/${imageFilenames[0].trim()}`
+            ? `http://localhost:5500/backend/selleruploads/${imageFilenames[0].trim()}`
             : 'https://picsum.photos/400/250';
 
         card.innerHTML = `
@@ -122,7 +122,10 @@
             <div class="property-info">
                 <h3>${property.title}</h3>
                 <p class="property-id"><i class="fas fa-key"></i> Property ID: <span>${property.property_id}</span></p>
-                <p class="location"><i class="fas fa-map-marker-alt"></i> ${property.location}</p>
+                <p class="location">
+                    <i class="fas fa-map-marker-alt"></i> 
+                    ${property.location.area || ''}, ${property.location.district || ''}
+                </p>
                 <label for="status-${property.property_id}" class="status-label">Status:</label>
                 <select id="status-${property.property_id}" class="status-select">
                     <option value="active" ${property.status === "active" ? "selected" : ""}>Active</option>

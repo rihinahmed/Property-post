@@ -1,209 +1,212 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>RoomFinder Blog</title>
-  <link rel="stylesheet" href="/stylings/style.css">
-  <link rel="stylesheet" href="/stylings/blog.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RoomFinder Blog</title>
+  <link rel="stylesheet" href="/stylings/style.css">
+  <link rel="stylesheet" href="/stylings/blog.css">
 </head>
 <body>
 
-  <!-- Header -->
-  <header class="header">
-    <div class="logo">RoomFinder</div>
-    <nav class="nav-links">
-      <a href="/">Home</a>
-      <a href="/rooms">Rooms</a>
-      <a href="/blog" class="active">Blog</a>
-      <a href="/contact">Contact</a>
-    </nav>
-  </header>
+    <header class="header">
+    <div class="logo">RoomFinder</div>
+    <nav class="nav-links">
+      <a href="/">Home</a>
+      <a href="/rooms">Rooms</a>
+      <a href="/blog" class="active">Blog</a>
+      <a href="/contact">Contact</a>
+    </nav>
+  </header>
 
-  <!-- Blog Hero -->
-  <section class="hero blog-hero">
-    <div class="hero-content">
-      <div class="hero-left">
-        <h1>RoomFinder Blog</h1>
-        <p>Articles, tips, and insights to make your rental journey easier.</p>
-      </div>
-    </div>
-  </section>
+    <section class="hero blog-hero">
+    <div class="hero-content">
+      <div class="hero-left">
+        <h1>RoomFinder Blog</h1>
+        <p>Articles, tips, and insights to make your rental journey easier.</p>
+      </div>
+    </div>
+  </section>
 
-  <!-- Featured Blog -->
-  <section class="featured blog-featured">
-    <h2>Featured Article</h2>
-    <div class="blog-featured-card">
-      <img src="/images/article.jpg" alt="Featured Blog">
-      <div class="blog-featured-content">
-        <h3>5 Mistakes First-Time Renters Make</h3>
-        <p>Discover the common traps and how to avoid them while renting your first place in Dhaka.</p>
-        <div class="blog-meta">
-          <span>🏷️ Renting Tips</span>
-          <span>🕓 3 min read</span>
-        </div>
-        <a href="#" class="read-more">Read More</a>
-      </div>
-    </div>
-  </section>
+    <section class="featured blog-featured">
+    <h2>Featured Article</h2>
+    <div class="blog-featured-card" id="featured-blog-card">
+          </div>
+  </section>
 
-  <!-- Post a Blog -->
-  <section class="post-blog-toggle">
-    <button id="togglePostForm">➕ Post a Blog</button>
-  </section>
+    <section class="post-blog-toggle">
+    <button id="togglePostForm">➕ Post a Blog</button>
+  </section>
 
-  <section class="post-blog-section" id="postBlogSection"">
-    <h2>✍️ Write a Blog</h2>
-    <form id="blogForm">
-      <input type="text" id="title" placeholder="Blog Title" required />
-      <textarea id="content" placeholder="Write your blog content here..." required></textarea>
-      <input type="text" id="tag" placeholder="Tag (e.g., Safety, Tips)" />
-      <input type="text" id="image" placeholder="Image URL (optional)" />
-      <button type="submit">Post Blog</button>
-    </form>
-  </section>
+  <section class="post-blog-section" id="postBlogSection">
+    <h2>✍️ Write a Blog</h2>
+    <form id="blogForm">
+      <input type="text" id="title" name="title" placeholder="Blog Title" required />
+      <textarea id="content" name="content" placeholder="Write your blog content here..." required></textarea>
+      <button type="submit">Post Blog</button>
+      <div id="formMessage"></div>
+    </form>
+  </section>
 
-  <!-- Blog Grid -->
-  <section class="recent-section">
-    <div class="recent-header">
-      <h2>Latest Articles</h2>
-      <p>Stay informed with our newest blog posts.</p>
-    </div>
-    <div class="blog-grid">
-      <!--card 1-->
-      <div class="blog-card">
-        <img src="/images/article.jpg" alt="Room">
-        <div class="blog-card-body">
-          <h4>Affordable Hostels in Uttara</h4>
-          <div class="blog-card-meta">
-            <span>🏷️ Hostel</span> <span>🕓 2 min read</span>
-          </div>
-          <p>Hostel hunting made easier with this list of budget-friendly options in Uttara.</p>
-          <a href="#" class="read-more">Read More</a>
-        </div>
-      </div>
-      <!--card 2-->
-      <div class="blog-card">
-        <img src="/images/article.jpg" alt="Room">
-        <div class="blog-card-body">
-          <h4>Affordable Hostels in Uttara</h4>
-          <div class="blog-card-meta">
-            <span>🏷️ Hostel</span> <span>🕓 2 min read</span>
-          </div>
-          <p>Hostel hunting made easier with this list of budget-friendly options in Uttara.</p>
-          <a href="#" class="read-more">Read More</a>
-        </div>
-      </div>
-      <!--card 3-->
-      <div class="blog-card">
-        <img src="/images/article.jpg" alt="Room">
-        <div class="blog-card-body">
-          <h4>Affordable Hostels in Uttara</h4>
-          <div class="blog-card-meta">
-            <span>🏷️ Hostel</span> <span>🕓 2 min read</span>
-          </div>
-          <p>Hostel hunting made easier with this list of budget-friendly options in Uttara.</p>
-          <a href="#" class="read-more">Read More</a>
-        </div>
-      </div>
-    </div>
-  </section>
+    <section class="recent-section">
+    <div class="recent-header">
+      <h2>Latest Articles</h2>
+      <p>Stay informed with our newest blog posts.</p>
+    </div>
+    <div id="blogGrid" class="blog-grid">
+          </div>
+  </section>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <!-- footer content -->
-  </footer>
+    <footer class="footer">
+      </footer>
 
-  <script>
+  <script>
+    const API_BASE_URL = "http://localhost:5000/api";
+
     const toggleButton = document.getElementById('togglePostForm');
-    const postForm = document.getElementById('postBlogSection');
-  
-    toggleButton.addEventListener('click', () => {
-      const isShown = postForm.classList.toggle('show');
-      toggleButton.textContent = isShown ? '➖ Hide Form' : '➕ Post a Blog';
-    });
-  
-    const form = document.getElementById('blogForm');
-    const grid = document.querySelector('.blog-grid');
-  
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-  
-      const title = document.getElementById('title').value;
-      const content = document.getElementById('content').value;
-      const tag = document.getElementById('tag').value || "General";
-      const image = document.getElementById('image').value || "https://source.unsplash.com/260x160/?apartment";
-  
-      const newCard = document.createElement('div');
-      newCard.classList.add('blog-card');
-      newCard.innerHTML = `
-        <img src="${image}" alt="User Blog">
-        <div class="blog-card-body">
-          <h4>${title}</h4>
-          <div class="blog-card-meta">
-            <span>🏷️ ${tag}</span> <span>🕓 Just now</span>
-          </div>
-          <p>${content}</p>
-          <a href="#" class="read-more">Read More</a>
-        </div>
-      `;
-  
-      grid.prepend(newCard);
-      form.reset();
-      postForm.classList.remove('show');
-      toggleButton.textContent = '➕ Post a Blog';
-      alert("✅ Blog posted (temporary demo)");
-    });
-  </script>
+    const postFormSection = document.getElementById('postBlogSection');
+    const blogForm = document.getElementById('blogForm');
+    const blogGrid = document.getElementById('blogGrid');
+    const formMessage = document.getElementById('formMessage');
+    
+    // Function to check session and show/hide post form
+    async function checkSessionAndLoadPage() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/user/session`, {
+                credentials: 'include'
+            });
+            const result = await response.json();
 
-  <!--spark animation-->
-  <script>
-    document.addEventListener('click', function (e) {
-      const count = 10;
-      const sparkColor = '#6366f2'; // Matches your theme
-      const size = 6;
-      const radius = 40;
-      const duration = 600;
-  
-      for (let i = 0; i < count; i++) {
-        const spark = document.createElement('div');
-        spark.style.position = 'absolute';
-        spark.style.width = 4 + 'px';
-        spark.style.height = 4 + 'px';
-        spark.style.borderRadius = '50%';
-        spark.style.backgroundColor = sparkColor;
-        spark.style.pointerEvents = 'none';
-        spark.style.zIndex = '9999';
-  
-        // Correct position on the full page
-        const pageX = e.pageX;
-        const pageY = e.pageY;
-  
-        const angle = (2 * Math.PI * i) / count;
-        const x = Math.cos(angle) * radius;
-        const y = Math.sin(angle) * radius;
-  
-        spark.style.left = pageX + 'px';
-        spark.style.top = pageY + 'px';
-  
-        document.body.appendChild(spark);
-  
-        spark.animate(
-          [
-            { transform: 'translate(0, 0)', opacity: 1 },
-            { transform: `translate(${x}px, ${y}px)`, opacity: 0 }
-          ],
-          {
-            duration: duration,
-            easing: 'ease-out'
-          }
-        );
-  
-        setTimeout(() => spark.remove(), duration);
-      }
+            if (result.loggedIn) {
+                toggleButton.style.display = 'block';
+                blogForm.addEventListener('submit', handleBlogSubmission);
+            } else {
+                toggleButton.style.display = 'none';
+            }
+        } catch (error) {
+            console.error("Session check failed:", error);
+            toggleButton.style.display = 'none';
+        }
+        fetchBlogs();
+    }
+
+    // Function to fetch and render blog posts
+    async function fetchBlogs() {
+        blogGrid.innerHTML = '<p>Loading latest articles...</p>';
+        try {
+            const response = await fetch(`${API_BASE_URL}/blogs`, {
+                credentials: 'include'
+            });
+            const result = await response.json();
+
+            if (result.success) {
+                blogGrid.innerHTML = '';
+                if (result.data.length > 0) {
+                    const featuredBlog = result.data[0];
+                    renderFeaturedBlog(featuredBlog);
+
+                    for (let i = 1; i < result.data.length; i++) {
+                        renderBlogCard(result.data[i]);
+                    }
+                } else {
+                    blogGrid.innerHTML = '<p>No blog posts found.</p>';
+                    document.getElementById('featured-blog-card').innerHTML = '<p>No featured article available.</p>';
+                }
+            } else {
+                blogGrid.innerHTML = `<p>Error: ${result.message}</p>`;
+            }
+        } catch (error) {
+            console.error("Error fetching blogs:", error);
+            blogGrid.innerHTML = '<p>Failed to load articles. Network error.</p>';
+        }
+    }
+
+    // Function to render a single blog card
+    function renderBlogCard(blog) {
+        const card = document.createElement('div');
+        card.classList.add('blog-card');
+        card.innerHTML = `
+            <img src="/images/article.jpg" alt="${blog.TITLE}">
+            <div class="blog-card-body">
+                <h4>${blog.TITLE}</h4>
+                <div class="blog-card-meta">
+                    <span>🕓 ${new Date(blog.CREATED_AT).toLocaleDateString()}</span>
+                </div>
+                <p>${blog.CONTENT.substring(0, 100)}...</p>
+                <a href="#" class="read-more">Read More</a>
+            </div>
+        `;
+        blogGrid.appendChild(card);
+    }
+
+    // Function to render the featured blog
+    function renderFeaturedBlog(blog) {
+        const featuredCard = document.getElementById('featured-blog-card');
+        featuredCard.innerHTML = `
+            <img src="/images/article.jpg" alt="${blog.TITLE}">
+            <div class="blog-featured-content">
+                <h3>${blog.TITLE}</h3>
+                <p>${blog.CONTENT.substring(0, 200)}...</p>
+                <div class="blog-meta">
+                    <span>🕓 ${new Date(blog.CREATED_AT).toLocaleDateString()}</span>
+                </div>
+                <a href="#" class="read-more">Read More</a>
+            </div>
+        `;
+    }
+
+    // Function to handle blog form submission
+    async function handleBlogSubmission(e) {
+        e.preventDefault();
+
+        const formData = new FormData(blogForm);
+        const data = Object.fromEntries(formData.entries());
+        
+        formMessage.textContent = '';
+        formMessage.style.color = 'initial';
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/blogs`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+                credentials: 'include'
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                formMessage.textContent = '✅ Blog posted successfully!';
+                formMessage.style.color = '#28a745';
+                blogForm.reset();
+                postFormSection.classList.remove('show');
+                toggleButton.textContent = '➕ Post a Blog';
+                fetchBlogs();
+            } else {
+                formMessage.textContent = `❌ Error: ${result.message}`;
+                formMessage.style.color = '#dc3545';
+            }
+        } catch (error) {
+            console.error('Blog submission failed:', error);
+            formMessage.textContent = '❌ Failed to connect to the server. Please try again.';
+            formMessage.style.color = '#dc3545';
+        }
+    }
+
+    toggleButton.addEventListener('click', () => {
+        const isShown = postFormSection.classList.toggle('show');
+        toggleButton.textContent = isShown ? '➖ Hide Form' : '➕ Post a Blog';
     });
-  </script>
-  
+
+    document.addEventListener("DOMContentLoaded", checkSessionAndLoadPage);
+</script>
+
+    <script src="js/sparkeffect.js"></script>
+
+
+  
 
 </body>
 </html>

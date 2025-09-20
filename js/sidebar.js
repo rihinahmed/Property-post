@@ -1,29 +1,17 @@
-// Sidebar Toggle
-function toggleSideMenu() {
-    const sidebar = document.getElementById("sidebar");
-    sidebar.classList.toggle("active");
-  }
+document.addEventListener('DOMContentLoaded', () => {
+  const menu = document.querySelector('.side-menu');
+  const toggleBtn = document.querySelector('.menu-icon');
 
-  // Setup listeners after DOM loads
-  document.addEventListener("DOMContentLoaded", () => {
-    const mobileMenuBtn = document.getElementById("mobileMenuBtn");
-    const sidebarClose = document.getElementById("sidebarClose");
-    const sidebar = document.getElementById("sidebar");
+  document.addEventListener('click', (e) => {
+    const isClickInsideMenu = menu.contains(e.target);
+    const isToggleClick = toggleBtn.contains(e.target);
 
-    // Open
-    mobileMenuBtn.addEventListener("click", toggleSideMenu);
-
-    // Close
-    sidebarClose.addEventListener("click", toggleSideMenu);
-
-    // Close sidebar when clicking outside
-    document.addEventListener("click", (e) => {
-      if (
-        sidebar.classList.contains("active") &&
-        !sidebar.contains(e.target) &&
-        !mobileMenuBtn.contains(e.target)
-      ) {
-        sidebar.classList.remove("active");
-      }
-    });
+    if (!isClickInsideMenu && !isToggleClick) {
+      menu.classList.remove('active'); // close the sidebar
+    }
   });
+});
+  function toggleSideMenu() {
+  const sideMenu = document.getElementById('sideMenu');
+  sideMenu.classList.toggle('active');
+}

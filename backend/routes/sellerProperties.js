@@ -44,7 +44,13 @@ router.get("/properties", async (req, res) => {
       const properties = result.rows.map(row => ({
         property_id: row.ID,
         title: row.TITLE,
-        location: row.LOCATION,
+        location: row.LOCATION ? {
+            area: row.LOCATION.AREA,
+            district: row.LOCATION.DISTRICT
+        } : {
+            area: '',
+            district: ''
+        },
         rent: row.RENT,
         description: row.DESCRIPTION,
         amenities: (row.AMENITIES || '').split(","),
@@ -89,7 +95,7 @@ router.put("/properties/:id/status", async (req, res) => {
       console.error("❌ [PUT /api/seller/properties/:id/status] Invalid request data.");
       return res.status(400).json({ success: false, message: "Invalid request data" });
     }
-  
+    
     let conn;
     try {
       conn = await oracledb.getConnection(dbConfig);
@@ -120,7 +126,7 @@ router.put("/properties/:id/status", async (req, res) => {
       }
     }
 });
-  
+    
 // 3. Route to Delete a Property
 router.delete("/properties/:id", async (req, res) => {
     console.log("🔍 [DELETE /api/seller/properties/:id] Request received.");
@@ -132,7 +138,7 @@ router.delete("/properties/:id", async (req, res) => {
       console.error("❌ [DELETE /api/seller/properties/:id] Invalid property ID.");
       return res.status(400).json({ success: false, message: "Invalid property ID" });
     }
-  
+    
     let conn;
     try {
       conn = await oracledb.getConnection(dbConfig);
@@ -142,7 +148,7 @@ router.delete("/properties/:id", async (req, res) => {
         [propertyId],
         { autoCommit: true }
       );
-  
+    
       if (result.rowsAffected === 1) {
         console.log("🟢 [DELETE /api/seller/properties/:id] Property deleted successfully.");
         res.json({ success: true, message: "Property deleted successfully" });
@@ -163,5 +169,5 @@ router.delete("/properties/:id", async (req, res) => {
       }
     }
 });
-  
+    
 module.exports = router;

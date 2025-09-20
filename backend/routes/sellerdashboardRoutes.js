@@ -1,59 +1,111 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const oracledb = require("oracledb");
-const dbConfig = require("../config/db");
+const oracledb = require('oracledb');
+const dbConfig = require('../config/db');
 
-// Middleware to check if user is logged in and is a seller
-function ensureSeller(req, res, next) {
-  if (req.session.user && req.session.user.role === "seller") {
-    return next();
-  } else {
-    return res.status(403).json({ success: false, message: "Access denied. Seller only." });
-  }
+oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
+oracledb.fetchAsString = [oracledb.CLOB];
+
+function isAuthenticatedSeller(req, res, next) {
+    if (req.session.user && req.session.user.role.toLowerCase() === 'seller') {
+        next();
+    } else {
+        res.status(401).json({ success: false, message: 'Unauthorized. Not a logged-in seller.' });
+    }
 }
 
-// Route: GET seller dashboard data
-router.get("/data", ensureSeller, async (req, res) => {
-  let connection;
-  const sellerId = req.session.user.id;
+router.use(isAuthenticatedSeller);
 
-  try {
-    connection = await oracledb.getConnection(dbConfig);
+/**
+ * GET dashboard summary data for the logged-in seller.
+ */
+router.get('/dashboard', async (req, res) => {
+    const sellerId = req.session.user.id;
+    let conn;
+    try {
+        conn = await oracledb.getConnection(dbConfig);
+        
+        const propertyResult = await conn.execute(
+            `SELECT
+                COUNT(*) AS total_properties,
+                SUM(CASE WHEN STATUS = 'active' THEN 1 ELSE 0 END) AS active_listings,
+                SUM(VIEWS) AS total_views
+             FROM PROPERTIES
+             WHERE SELLER_ID = :sellerId`,
+            [sellerId]
+        );
+        
+        const summaryData = propertyResult.rows[0];
 
-    // Example 1: Fetch all properties posted by this seller
-    const propertiesResult = await connection.execute(
-      `SELECT * FROM rooms WHERE seller_id = :sellerId`,
-      { sellerId },
-      { outFormat: oracledb.OUT_FORMAT_OBJECT }
-    );
+        const messageResult = await conn.execute(
+            `SELECT COUNT(*) AS unread_messages
+             FROM MESSAGES
+             WHERE RECIPIENT_ID = :sellerId AND READ_STATUS = 'unread'`,
+            [sellerId]
+        );
+        
+        const unreadMessages = messageResult.rows[0]?.UNREAD_MESSAGES ?? 0;
 
-    // Example 2: Count total views for seller's properties
-    const viewsResult = await connection.execute(
-      `SELECT SUM(view_count) AS total_views FROM rooms WHERE seller_id = :sellerId`,
-      { sellerId },
-      { outFormat: oracledb.OUT_FORMAT_OBJECT }
-    );
+        res.json({
+            success: true,
+            data: {
+                totalProperties: summaryData?.TOTAL_PROPERTIES ?? 0,
+                activeListings: summaryData?.ACTIVE_LISTINGS ?? 0,
+                unreadMessages,
+                totalViews: summaryData?.TOTAL_VIEWS ?? 0,
+            },
+        });
+    } catch (err) {
+        console.error("❌ Dashboard summary error:", err);
+        res.status(500).json({ success: false, message: 'Server error.', error: err.message });
+    } finally {
+        if (conn) {
+            try {
+                await conn.close();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    }
+});
 
-    // Example 3: Count saved rooms by users (optional)
-    const savedResult = await connection.execute(
-      `SELECT COUNT(*) AS total_saved FROM saved_rooms WHERE room_id IN (SELECT id FROM rooms WHERE seller_id = :sellerId)`,
-      { sellerId },
-      { outFormat: oracledb.OUT_FORMAT_OBJECT }
-    );
+/**
+ * GET recent activity for the logged-in seller.
+ */
+router.get('/activity', async (req, res) => {
+    const sellerId = req.session.user.id;
+    let conn;
+    try {
+        conn = await oracledb.getConnection(dbConfig);
+        
+        const blogResult = await conn.execute(
+            `SELECT ID, TITLE, CREATED_AT
+             FROM BLOG_POSTS
+             WHERE USER_ID = :sellerId
+             ORDER BY CREATED_AT DESC
+             FETCH FIRST 5 ROWS ONLY`,
+            [sellerId]
+        );
 
-    res.json({
-      success: true,
-      properties: propertiesResult.rows,
-      totalViews: viewsResult.rows[0]?.TOTAL_VIEWS || 0,
-      totalSaved: savedResult.rows[0]?.TOTAL_SAVED || 0
-    });
+        const activities = blogResult.rows.map(row => ({
+            title: `New Blog Post: ${row.TITLE}`,
+            message: `Your blog post "${row.TITLE}" was published.`,
+            timestamp: row.CREATED_AT,
+        }));
 
-  } catch (err) {
-    console.error("❌ Error fetching seller dashboard data:", err);
-    res.status(500).json({ success: false, message: "Server error" });
-  } finally {
-    if (connection) await connection.close();
-  }
+        res.json({ success: true, data: activities });
+    } catch (err) {
+        console.error("❌ Recent activity error:", err);
+        res.status(500).json({ success: false, message: "Server error.", error: err.message });
+    } finally {
+        if (conn) {
+            try {
+                await conn.close();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    }
 });
 
 module.exports = router;

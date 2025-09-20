@@ -4,13 +4,13 @@ const express = require('express');
 const router = express.Router();
 const oracledb = require('oracledb');
 
-
-// DB Config (import if needed, or pass via require)
 const dbConfig = {
   user: "SYSTEM",
   password: "Rihin1234",
   connectString: "localhost/XEPDB1"
 };
+
+oracledb.fetchAsString = [oracledb.CLOB]; // make CLOB fetch as string
 
 // GET all properties
 router.get("/all", async (req, res) => {
@@ -19,16 +19,27 @@ router.get("/all", async (req, res) => {
     conn = await oracledb.getConnection(dbConfig);
 
     const result = await conn.execute(
-      `SELECT id, title, rent, location, description, CREATED_AT FROM properties`
+      `SELECT 
+         id, 
+         title, 
+         rent, 
+         location, 
+         description, 
+         created_at, 
+         status,
+         REGEXP_SUBSTR(images, '[^,]+', 1, 1) AS first_image
+       FROM properties`
     );
 
     const properties = result.rows.map(row => ({
-      //id: row.ID,
+      id: row.ID,
       title: row.TITLE,
       rent: row.RENT,
       location: row.LOCATION,
       description: row.DESCRIPTION,
-      date: row.CREATED_AT
+      date: row.CREATED_AT,
+      status: row.STATUS,
+      img: row.FIRST_IMAGE // directly get first image from query
     }));
 
     res.json(properties);
