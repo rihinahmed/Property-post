@@ -1,82 +1,149 @@
-const express = require("express");
+// Updated routes/dashboardRoute.js - Removes auto-logging and sample data
+
+const express = require('express');
 const router = express.Router();
-const oracledb = require("oracledb");
-const dbConfig = require("../config/db");
+const oracledb = require('oracledb');
+const { logActivity, ACTIVITY_TYPES, STATUS_TYPES } = require('../utils/activityLogger');
 
-// ✅ GET /summary — Dashboard stats including global announcements count
-router.get("/summary", async (req, res) => {
-  const user = req.session.user;
-  if (!user) {
-    return res.status(401).json({ success: false, message: "Unauthorized" });
-  }
+const dbConfig = {
+    user: "SYSTEM",
+    password: "Rihin1234",
+    connectString: "localhost/XEPDB1"
+};
 
-  try {
-    const conn = await oracledb.getConnection(dbConfig);
-    const userId = user.id;
+oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
 
-    // Fix: rooms have no user_id column, so no user filter on rooms queries
-    const [
-      totalRooms,
-      newListings,
-      blogPosts,
-      messages,
-      announcements
-    ] = await Promise.all([
-      conn.execute(`SELECT COUNT(*) FROM rooms`),  // all rooms count
-      conn.execute(`SELECT COUNT(*) FROM rooms WHERE created_at >= SYSDATE - 7`), // recent rooms in last 7 days
-      conn.execute(`SELECT COUNT(*) FROM blog_posts WHERE user_id = :userId`, [userId]),
-      conn.execute(`SELECT COUNT(*) FROM messages WHERE user_id = :userId`, [userId]),
-      conn.execute(`SELECT COUNT(*) FROM announcements`)  // global announcements count
-    ]);
+// Middleware to check if user is authenticated
+function isAuthenticated(req, res, next) {
+    if (req.session && req.session.user) {
+        next();
+    } else {
+        res.status(401).json({ success: false, message: 'Unauthorized. Please log in.' });
+    }
+}
 
-    await conn.close();
+/**
+ * GET /api/dashboard/summary - Dashboard statistics
+ * NO automatic logging - just returns data
+ */
+router.get('/summary', isAuthenticated, async (req, res) => {
+    let conn;
+    try {
+        conn = await oracledb.getConnection(dbConfig);
+        const userId = req.session.user.id;
+        
+        // Get all dashboard statistics WITHOUT logging dashboard access
+        const [
+            totalRoomsResult,
+            newListingsResult,
+            blogPostsResult,
+            savedRoomsResult,
+            announcementResult
+        ] = await Promise.all([
+            conn.execute(`SELECT COUNT(*) AS COUNT FROM PROPERTIES`),
+            conn.execute(`SELECT COUNT(*) AS COUNT FROM PROPERTIES WHERE CREATED_AT >= SYSDATE - 7`),
+            conn.execute(`SELECT COUNT(*) AS COUNT FROM BLOG_POSTS`),
+            conn.execute(`SELECT COUNT(*) AS COUNT FROM SAVED_ROOMS WHERE USER_ID = :userId`, { userId }),
+            conn.execute(`SELECT COUNT(*) AS COUNT FROM ANNOUNCEMENTS`)
+        ]);
+        
+        const summaryData = {
+            totalRooms: totalRoomsResult.rows[0]?.COUNT || 0,
+            newListings: newListingsResult.rows[0]?.COUNT || 0,
+            blogPosts: blogPostsResult.rows[0]?.COUNT || 0,
+            savedRooms: savedRoomsResult.rows[0]?.COUNT || 0,
+            announcementCount: announcementResult.rows[0]?.COUNT || 0
+        };
+        
+        console.log(`📊 Dashboard summary for user ${userId}:`, summaryData);
+        
+        res.json({
+            success: true,
+            data: summaryData
+        });
 
-    res.json({
-      success: true,
-      data: {
-        totalRooms: totalRooms.rows[0][0],
-        newListings: newListings.rows[0][0],
-        blogPosts: blogPosts.rows[0][0],
-        messages: messages.rows[0][0],
-        announcementCount: announcements.rows[0][0]
-      }
-    });
-  } catch (err) {
-    console.error("❌ Dashboard summary error:", err);
-    res.status(500).json({ success: false, message: "Server error" });
-  }
+    } catch (err) {
+        console.error("❌ Dashboard summary error:", err);
+        
+        // Return safe defaults if there's an error
+        res.json({ 
+            success: false,
+            message: 'Error loading dashboard data',
+            data: {
+                totalRooms: 0,
+                newListings: 0,
+                blogPosts: 0,
+                savedRooms: 0,
+                announcementCount: 0
+            }
+        });
+    } finally {
+        if (conn) {
+            try { await conn.close(); } catch (err) { console.error(err); }
+        }
+    }
 });
 
-// ✅ GET /activity — Recent activity logs
-router.get("/activity", async (req, res) => {
-  const user = req.session.user;
-  if (!user) {
-    return res.status(401).json({ success: false, message: "Unauthorized" });
-  }
+/**
+ * GET /api/dashboard/activity - Recent activity log
+ * Only shows actual trigger-fired activities, NO sample data creation
+ */
+router.get('/activity', isAuthenticated, async (req, res) => {
+    let conn;
+    try {
+        conn = await oracledb.getConnection(dbConfig);
+        
+        // Get recent activities - only real ones from triggers
+        const result = await conn.execute(`
+            SELECT 
+                ACTIVITY_DATE, 
+                ACTIVITY_TYPE, 
+                STATUS, 
+                DETAILS,
+                USER_ID
+            FROM ACTIVITY_LOG 
+            ORDER BY ACTIVITY_DATE DESC 
+            FETCH FIRST 15 ROWS ONLY
+        `);
+        
+        const activities = result.rows || [];
+        
+        console.log(`📋 Loaded ${activities.length} real activities from triggers`);
+        
+        res.json({ 
+            success: true, 
+            data: activities 
+        });
 
-  try {
-    const conn = await oracledb.getConnection(dbConfig);
-    const userId = user.id;
+    } catch (err) {
+        console.error("❌ Dashboard activity error:", err);
+        
+        // Return empty array if there's an error - no fallback sample data
+        res.json({ 
+            success: false,
+            message: 'Error loading activities',
+            data: []
+        });
+    } finally {
+        if (conn) {
+            try { await conn.close(); } catch (err) { console.error(err); }
+        }
+    }
+});
 
-    const result = await conn.execute(
-      `SELECT activity_date, activity_type, status, details
-       FROM activities
-       WHERE user_id = :userId
-       ORDER BY activity_date DESC FETCH FIRST 10 ROWS ONLY`,
-      [userId],
-      { outFormat: oracledb.OUT_FORMAT_OBJECT }
-    );
-
-    await conn.close();
-
-    res.json({
-      success: true,
-      data: result.rows
-    });
-  } catch (err) {
-    console.error("❌ Dashboard activity fetch error:", err);
-    res.status(500).json({ success: false, message: "Server error" });
-  }
+/**
+ * POST /api/dashboard/test-activity - Create a test activity (for testing only)
+ * This is the ONLY manual way to create activities now
+ */
+router.post('/test-activity', isAuthenticated, async (req, res) => {
+    try {
+        const userId = req.session.user.id;
+        await logActivity(userId, 'Manual Test', 'Success', 'Test activity created manually from dashboard');
+        res.json({ success: true, message: 'Test activity created' });
+    } catch (err) {
+        console.error('Error creating test activity:', err);
+        res.status(500).json({ success: false, message: 'Error creating test activity' });
+    }
 });
 
 module.exports = router;

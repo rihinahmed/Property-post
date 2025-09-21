@@ -72,6 +72,12 @@ create table announcements (
    posted_at timestamp default current_timestamp
 );
 
+INSERT INTO announcements (title, content, posted_by)
+VALUES ('New Feature: Saved Rooms', 'You can now save your favorite rooms to a personalized list for easy access. Visit your dashboard to try it out!', 'Admin');
+
+INSERT INTO announcements (title, content, posted_by)
+VALUES ('New Privacy Policy', 'We have updated our privacy policy to better protect your data. Please review the new policy on our website.', 'Admin');
+
 
 -- Seller table from users
 create table sellers (
@@ -111,6 +117,20 @@ create table properties (
          on delete cascade
 );
 
+create table saved_rooms (
+   user_id  number not null,
+   room_id  number not null,
+   saved_at date default sysdate,
+   primary key ( user_id,
+                 room_id ),
+   constraint fk_savedrooms_user foreign key ( user_id )
+      references users ( id )
+         on delete cascade,
+   constraint fk_savedrooms_room foreign key ( room_id )
+      references properties ( id )
+         on delete cascade
+);
+
 select table_name
   from user_tables;
 
@@ -124,6 +144,9 @@ create or replace type locationn as object (
       district    varchar2(100),
       postal_code varchar2(20)
 );
+
+CREATE SEQUENCE BLOG_POSTS_SEQ START WITH 1 INCREMENT BY 1;
+
 
 select *
   from users;
@@ -180,8 +203,113 @@ create or replace view property_view as
        FROM property_view
        WHERE propert_id = '3';
 
+       
+
 
 
 SELECT * from PROPERTIES;
+select * from users;
+select * from BLOG_POSTS;
+DESCRIBE blog_posts;
+SELECT * from BLOG_POSTS;
+SELECT * FROM saved_rooms;
 
 
+DESCRIBE BLOG_POSTS;
+
+
+
+CREATE TABLE ACTIVITY_LOG (
+    ID NUMBER GENERATED ALWAYS AS IDENTITY,
+    USER_ID NUMBER NOT NULL,
+    ACTIVITY_TYPE VARCHAR2(100) NOT NULL,
+    STATUS VARCHAR2(50) NOT NULL,
+    DETAILS VARCHAR2(500),  -- Increased size for more details
+    ACTIVITY_DATE DATE DEFAULT SYSDATE NOT NULL,
+    CONSTRAINT pk_activity_log PRIMARY KEY (ID),
+    CONSTRAINT fk_activity_user FOREIGN KEY (USER_ID) REFERENCES USERS(ID) ON DELETE CASCADE
+);
+
+CREATE INDEX idx_activity_date ON ACTIVITY_LOG(ACTIVITY_DATE DESC);
+CREATE INDEX idx_activity_user ON ACTIVITY_LOG(USER_ID);
+
+CREATE OR REPLACE VIEW DASHBOARD_SUMMARY AS
+SELECT 
+    (SELECT COUNT(*) FROM PROPERTIES) AS TOTAL_ROOMS,
+    (SELECT COUNT(*) FROM PROPERTIES WHERE CREATED_AT >= SYSDATE - 7) AS NEW_LISTINGS,
+    (SELECT COUNT(*) FROM BLOG_POSTS) AS BLOG_POSTS,
+    (SELECT COUNT(*) FROM ANNOUNCEMENTS) AS ANNOUNCEMENTS,
+    (SELECT COUNT(*) FROM ACTIVITY_LOG) AS TOTAL_ACTIVITIES
+FROM DUAL;
+
+
+SELECT * FROM ACTIVITY_LOG;
+DESCRIBE ACTIVITY_LOG;
+
+
+-- Trigger for Blog Post activities
+CREATE OR REPLACE TRIGGER trg_blog_activity
+    AFTER INSERT ON BLOG_POSTS
+    FOR EACH ROW
+BEGIN
+    INSERT INTO ACTIVITY_LOG (USER_ID, ACTIVITY_TYPE, STATUS, DETAILS)
+    VALUES (:NEW.USER_ID, 'Blog Post Created', 'Published', 'New blog post: ' || :NEW.TITLE);
+EXCEPTION
+    WHEN OTHERS THEN
+        NULL;
+END;
+/
+
+
+-- Trigger for Saved Room activities
+CREATE OR REPLACE TRIGGER trg_saved_room_activity
+    AFTER INSERT ON SAVED_ROOMS
+    FOR EACH ROW
+BEGIN
+    INSERT INTO ACTIVITY_LOG (USER_ID, ACTIVITY_TYPE, STATUS, DETAILS)
+    VALUES (:NEW.USER_ID, 'Room Saved', 'Success', 'Room bookmarked (ID: ' || :NEW.ROOM_ID || ')');
+EXCEPTION
+    WHEN OTHERS THEN
+        NULL;
+END;
+/
+
+-- Trigger for User Registration
+CREATE OR REPLACE TRIGGER trg_user_simple_activity
+    AFTER INSERT OR UPDATE ON USERS
+    FOR EACH ROW
+BEGIN
+    -- For new user registration
+    IF INSERTING THEN
+        INSERT INTO ACTIVITY_LOG (USER_ID, ACTIVITY_TYPE, STATUS, DETAILS)
+        VALUES (:NEW.ID, 'User Registration', 'Completed', 
+                'New ' || :NEW.ROLE || ' registered: ' || :NEW.NAME);
+    END IF;
+    
+    -- For profile updates (only if it's not a password change)
+    IF UPDATING AND (:OLD.FULL_NAME != :NEW.FULL_NAME OR 
+                     :OLD.PHONE != :NEW.PHONE OR 
+                     :OLD.ADDRESS != :NEW.ADDRESS OR 
+                     :OLD.OCCUPATION != :NEW.OCCUPATION OR
+                     :OLD.BIO != :NEW.BIO) THEN
+        INSERT INTO ACTIVITY_LOG (USER_ID, ACTIVITY_TYPE, STATUS, DETAILS)
+        VALUES (:NEW.ID, 'Profile Update', 'Completed', 
+                'Profile updated for: ' || :NEW.NAME);
+    END IF;
+EXCEPTION
+    WHEN OTHERS THEN
+        NULL; -- Don't fail the main operation
+END trg_user_simple_activity;
+/
+
+
+
+
+
+-- Verify all triggers were created
+
+select * from ACTIVITY_LOG;
+
+select * from users;
+DESCRIBE users;
+SELECT * from PROPERTIES;

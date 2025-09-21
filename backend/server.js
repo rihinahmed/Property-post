@@ -240,6 +240,9 @@ const authRoutes = require('./routes/authRoute');
 const settingsRoute = require('./routes/settingsRoute');
 const searchProperties = require('./routes/searchProperties');
 const blogRoute = require('./routes/blogRoute');
+const roomDetails = require('./routes/roomDetails');
+const savedroom = require('./routes/savedroom');
+const userSavedProperties = require('./routes/userSavedProperties');
 
 app.use('/api/properties', addproperties);
 app.use("/api/user/profile", profileRoute);
@@ -256,6 +259,9 @@ app.use('/api/settings', settingsRoute);
 app.use('/api/search', searchProperties);
 app.use('/selleruploads', express.static(sellerUploadDir));
 app.use('/api/blogs', blogRoute);
+app.use('/api/room', roomDetails);
+app.use('/api/savedroom', savedroom);
+app.use('/api/user-saved-properties', userSavedProperties);
 
 // Allow CORS and cross-origin resource policy for images
 app.use('/selleruploads', (req, res, next) => {

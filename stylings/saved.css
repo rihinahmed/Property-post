@@ -174,4 +174,105 @@
       color: black;
     }
   }
+
+  .saved-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .view-btn {
+    flex: 1;
+    padding: 8px 12px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+  }
+  
+  .view-btn:hover {
+    background: #0056b3;
+  }
+  
+  .unsave-btn {
+    flex: 1;
+    padding: 8px 12px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+  }
+  
+  .unsave-btn:hover {
+    background: #c82333;
+  }
+  
+  .no-saved-rooms, .no-user-message, .error-message {
+    text-align: center;
+    padding: 60px 20px;
+    grid-column: 1 / -1;
+  }
+  
+  .no-saved-rooms h2, .no-user-message h2, .error-message h2 {
+    font-size: 2rem;
+    color: #666;
+    margin-bottom: 15px;
+  }
+  
+  .no-saved-rooms p, .no-user-message p, .error-message p {
+    font-size: 1.1rem;
+    color: #888;
+    margin-bottom: 25px;
+  }
+  
+  .explore-btn, .login-btn, .retry-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: 600;
+    transition: background-color 0.3s;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .explore-btn:hover, .login-btn:hover, .retry-btn:hover {
+    background: #0056b3;
+  }
+  
+  .saved-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px 8px 0 0;
+  }
+  
+  /* Dark mode styles /
+  .dark .no-saved-rooms h2, .dark .no-user-message h2, .dark .error-message h2 {
+    color: #ccc;
+  }
+  
+  .dark .no-saved-rooms p, .dark .no-user-message p, .dark .error-message p {
+    color: #aaa;
+  }
+  
+  / Responsive design for saved actions */
+  @media (max-width: 768px) {
+    .saved-actions {
+      flex-direction: column;
+    }
+  
+    .view-btn, .unsave-btn {
+      width: 100%;
+    }
+  }
   

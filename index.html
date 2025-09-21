@@ -16,8 +16,6 @@
     <div class="logo">RoomFinder</div>
     <nav class="nav-links">
       <a href="#">Home</a>
-      <a href="#">Browse</a>
-      <a href="/post_room.html">Post Room</a>
       <a href="/blog.html">Blog</a>
       <a id="authNav" href="/login.html">Login / Sign Up</a>
 
@@ -100,33 +98,39 @@
     
       <!-- Cards Full Width Outside Container -->
       <div class="recent-list" data-user-cards-container>
-        
-        
-        
-        
-        
-        
-        
-        <!-- More cards... -->
-      </div>  
+        <!-- Cards will be dynamically inserted here -->
+      </div>
         
 
-        <template data-user-template>
-          <div class="recent-card">
-
-            <a href="room-details.html" data-link>
-             <img src="" alt="Family Room" data-image/>
-              <div class="card-body">
-              <h4 class="title" data-title></h4>
-              <p class="location" data-location></p>
-              <p class="description" data-description></p>
-              <p class="status" data-status></p>
-              <p class="rent" data-rent></p>
-              <p class="propertiyID" data-propertyID></p>
+      <template data-user-template>
+        <div class="recent-card">
+          <a href="room-details.html" class="room_details_a" data-link>
+            
+            <!-- Image Container with Status Badge -->
+            <div class="image-container">
+              <img src="" alt="Room Image" data-image />
+              <div class="status-badge" data-status-badge>
+                <span data-status>Active</span>
+              </div>
             </div>
-            </a>
-          </div>
-        </template>
+            
+            <!-- Card Content -->
+            <div class="card-body">
+              <h4 class="title" data-title>Beautiful Family Room</h4>
+              <p class="location" data-location>Dhaka, Bangladesh</p>
+              <p class="description" data-description>Spacious room with modern amenities and great location...</p>
+              <div class="rent" data-rent>15000</div>
+              <div class="propertiyID" data-propertyID style="display: none;">1</div>
+            </div>
+            
+            <!-- Optional Card Footer -->
+            <div class="card-footer">
+              <span class="view-details">View Details →</span>
+            </div>
+            
+          </a>
+        </div>
+      </template>
         
      </section>   
       

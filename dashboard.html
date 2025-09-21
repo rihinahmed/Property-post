@@ -8,6 +8,194 @@
   <link rel="stylesheet" href="/stylings/dashboard.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <style>
+    /* Enhanced Dashboard Styles */
+    .card {
+      background: white;
+      padding: 2rem 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: relative;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: 1px solid #e0e0e0;
+      margin-bottom: 1.5rem;
+    }
+    
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #2c5aa0, #1a4480);
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    
+    .card h3 {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .card p {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: #2c5aa0;
+      margin: 0;
+    }
+    
+    .summary-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .status {
+      padding: 0.375rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .status.success {
+      background: rgba(40, 167, 69, 0.1);
+      color: #28a745;
+    }
+    
+    .status.failed, .status.error {
+      background: rgba(220, 53, 69, 0.1);
+      color: #dc3545;
+    }
+    
+    .status.warning, .status.pending {
+      background: rgba(255, 193, 7, 0.1);
+      color: #ffc107;
+    }
+    
+    .status.info, .status.active {
+      background: rgba(23, 162, 184, 0.1);
+      color: #17a2b8;
+    }
+    
+    .status.completed {
+      background: rgba(40, 167, 69, 0.1);
+      color: #28a745;
+    }
+    
+    .recent-section {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      border: 1px solid #e0e0e0;
+    }
+    
+    .recent-section h2 {
+      color: #333;
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+    
+    thead {
+      background: linear-gradient(135deg, #2c5aa0, #1a4480);
+      color: white;
+    }
+    
+    th, td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    th {
+      font-weight: 600;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    tbody tr:hover {
+      background: rgba(44, 90, 160, 0.05);
+    }
+    
+    .test-button {
+      background: #28a745;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      margin: 1rem 0;
+      transition: all 0.3s ease;
+    }
+    
+    .test-button:hover {
+      background: #218838;
+      transform: translateY(-2px);
+    }
+    
+    .refresh-button {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      margin: 1rem 0;
+      transition: all 0.3s ease;
+    }
+    
+    .refresh-button:hover {
+      background: #0056b3;
+      transform: translateY(-2px);
+    }
+    
+    .loading {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+    
+    .error-message {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 1rem;
+      border-radius: 8px;
+      margin: 1rem 0;
+      display: none;
+      border: 1px solid #f5c6cb;
+    }
+    
+    .success-message {
+      background: #d4edda;
+      color: #155724;
+      padding: 1rem;
+      border-radius: 8px;
+      margin: 1rem 0;
+      display: none;
+      border: 1px solid #c3e6cb;
+    }
+  </style>
 </head>
 <body>
 
@@ -39,27 +227,61 @@
       </header>
 
       <section class="content">
+        <!-- Messages -->
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="successMessage"></div>
+        
+        <!-- Action Buttons -->
+        <div style="margin-bottom: 1rem;">
+          <button class="refresh-button" onclick="refreshDashboard()">
+            <i class="fas fa-sync-alt"></i> Refresh Data
+          </button>
+        </div>
+        
+        <!-- Dashboard Cards -->
         <div class="summary-cards">
-          <div class="card"><h3>Total Rooms</h3><p>0</p></div>
-          <div class="card"><h3>New Listings</h3><p>0</p></div>
-          <div class="card"><h3>Blog Posts</h3><p>0</p></div>
-          <div class="card"><h3>Messages</h3><p>0</p></div>
+          <div class="card">
+            <h3>Total Rooms</h3>
+            <p id="totalRooms">Loading...</p>
+          </div>
+          <div class="card">
+            <h3>New Listings</h3>
+            <p id="newListings">Loading...</p>
+          </div>
+          <div class="card">
+            <h3>Blog Posts</h3>
+            <p id="blogPosts">Loading...</p>
+          </div>
+          <div class="card">
+            <h3>Saved Rooms</h3>
+            <p id="savedRooms">Loading...</p>
+          </div>
         </div>
 
+        <!-- Recent Activity -->
         <section class="recent-section">
           <h2>Recent Activity</h2>
-          <table>
+          <table id="activityTable">
             <thead>
-              <tr><th>Date</th><th>Activity</th><th>Status</th><th>Details</th></tr>
+              <tr>
+                <th>Date & Time</th>
+                <th>Activity Type</th>
+                <th>Status</th>
+                <th>Details</th>
+              </tr>
             </thead>
-            <tbody></tbody> <!-- Dynamic -->
+            <tbody id="activityTableBody">
+              <tr>
+                <td colspan="4" style="text-align: center; padding: 20px;">Loading activities...</td>
+              </tr>
+            </tbody>
           </table>
         </section>
       </section>
     </main>
   </div>
 
-  <!-- ✅ Profile Upload Modal -->
+  <!-- Profile Modal (keeping your existing modal) -->
   <div class="user-modal" id="userModal">
     <div class="modal-content">
       <span class="close-modal" onclick="closeModal()">&times;</span>
@@ -93,9 +315,30 @@
     </div>
   </div>
 
-  <!-- ✅ Session Check & Avatar Setup -->
+  <!-- JavaScript -->
   <script>
+    let currentUser = null;
+
+    // Initialize Dashboard
     document.addEventListener("DOMContentLoaded", async () => {
+      console.log('🚀 Initializing dashboard...');
+      await initializeDashboard();
+    });
+
+    async function initializeDashboard() {
+      try {
+        await checkSession();
+        await loadDashboardData();
+        startPeriodicRefresh();
+        console.log('✅ Dashboard initialized successfully');
+      } catch (error) {
+        console.error("❌ Dashboard initialization failed:", error);
+        showError("Failed to initialize dashboard: " + error.message);
+      }
+    }
+
+    // Session Management
+    async function checkSession() {
       try {
         const res = await fetch("http://localhost:5000/api/user/session", {
           credentials: "include"
@@ -103,23 +346,264 @@
         const data = await res.json();
 
         if (data.loggedIn && data.user) {
+          currentUser = data.user;
           document.getElementById("welcomeMsg").textContent = `Welcome, ${data.user.name}!`;
           document.getElementById("userRole").textContent = `Role: ${data.user.role}`;
+          
           if (data.user.profile_img) {
-            document.getElementById("userAvatar").src = `http://localhost:5000/uploads/${data.user.profile_img}?t=${Date.now()}`;
+            document.getElementById("userAvatar").src = `http://localhost:5500/uploads/${data.user.profile_img}?t=${Date.now()}`;
           }
+          
+          console.log(`👤 User session: ${data.user.name} (${data.user.role})`);
         } else {
+          console.log('❌ No valid session found, redirecting to login');
           window.location.href = "login.html";
         }
       } catch (err) {
         console.error("❌ Session check error:", err);
         window.location.href = "login.html";
       }
-    });
-  </script>
+    }
 
-  <!-- ✅ Avatar Click - Show Modal or Alert -->
-  <script>
+    // Load Dashboard Data
+    async function loadDashboardData() {
+      try {
+        showLoading(true);
+        hideMessages();
+        
+        console.log('📊 Loading dashboard data...');
+        
+        const [summaryData, activityData] = await Promise.all([
+          loadDashboardStats(),
+          loadRecentActivity()
+        ]);
+        
+        console.log('✅ Dashboard data loaded successfully');
+        
+      } catch (error) {
+        console.error("❌ Error loading dashboard data:", error);
+        showError("Failed to load dashboard data. Please try refreshing.");
+      } finally {
+        showLoading(false);
+      }
+    }
+
+    // Load Dashboard Statistics
+    async function loadDashboardStats() {
+      try {
+        console.log('📈 Fetching dashboard statistics...');
+        
+        const res = await fetch("http://localhost:5000/api/dashboard/summary", {
+          credentials: "include"
+        });
+        
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+        }
+        
+        const result = await res.json();
+        console.log('📊 Dashboard stats result:', result);
+
+        if (result.success && result.data) {
+          updateCardValue('totalRooms', result.data.totalRooms);
+          updateCardValue('newListings', result.data.newListings);
+          updateCardValue('blogPosts', result.data.blogPosts);
+          updateCardValue('savedRooms', result.data.savedRooms);
+          
+          console.log(`✅ Stats updated: Rooms=${result.data.totalRooms}, New=${result.data.newListings}, Blogs=${result.data.blogPosts}, Saved=${result.data.savedRooms}`);
+        } else {
+          throw new Error(result.message || 'Failed to load dashboard statistics');
+        }
+      } catch (err) {
+        console.error("❌ Error loading dashboard stats:", err);
+        
+        // Set error values
+        updateCardValue('totalRooms', '?');
+        updateCardValue('newListings', '?');
+        updateCardValue('blogPosts', '?');
+        updateCardValue('savedRooms', '?');
+        
+        throw err;
+      }
+    }
+
+    // Load Recent Activity
+    async function loadRecentActivity() {
+      try {
+        console.log('📋 Fetching recent activities...');
+        
+        const res = await fetch("http://localhost:5000/api/dashboard/activity", {
+          credentials: "include"
+        });
+        
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+        }
+        
+        const result = await res.json();
+        console.log('📋 Activity result:', result);
+
+        const tbody = document.getElementById("activityTableBody");
+        tbody.innerHTML = "";
+
+        if (result.success && result.data && result.data.length > 0) {
+          result.data.forEach((activity, index) => {
+            const tr = document.createElement("tr");
+            const date = new Date(activity.ACTIVITY_DATE);
+            const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+            const statusClass = getStatusClass(activity.STATUS);
+
+            tr.innerHTML = `
+              <td>${formattedDate}</td>
+              <td>${activity.ACTIVITY_TYPE || 'N/A'}</td>
+              <td><span class="status ${statusClass}">${activity.STATUS || 'N/A'}</span></td>
+              <td>${activity.DETAILS || 'No details available'}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+          
+          console.log(`✅ Loaded ${result.data.length} activities`);
+        } else {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="4" style="text-align: center; padding: 20px; color: #666;">
+                ${result.message || 'No activities found'}
+              </td>
+            </tr>
+          `;
+          console.log('ℹ️ No activities to display');
+        }
+      } catch (err) {
+        console.error("❌ Error loading activities:", err);
+        
+        const tbody = document.getElementById("activityTableBody");
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="4" style="text-align: center; padding: 20px; color: #dc3545;">
+              Error loading activities: ${err.message}
+            </td>
+          </tr>
+        `;
+        throw err;
+      }
+    }
+
+    // Utility Functions
+    function updateCardValue(elementId, newValue) {
+      const element = document.getElementById(elementId);
+      const currentValue = element.textContent;
+      
+      if (currentValue !== newValue.toString()) {
+        element.style.transform = 'scale(1.1)';
+        setTimeout(() => {
+          element.textContent = newValue;
+          element.style.transform = 'scale(1)';
+        }, 150);
+      } else {
+        element.textContent = newValue;
+      }
+    }
+
+    function getStatusClass(status) {
+      if (!status) return 'info';
+      const statusLower = status.toLowerCase();
+      
+      if (['success', 'completed', 'active'].includes(statusLower)) {
+        return 'success';
+      } else if (['pending', 'warning'].includes(statusLower)) {
+        return 'warning';
+      } else if (['failed', 'error'].includes(statusLower)) {
+        return 'failed';
+      } else {
+        return 'info';
+      }
+    }
+
+    function showLoading(show) {
+      const cards = document.querySelector(".summary-cards");
+      const table = document.getElementById("activityTable");
+      
+      if (show) {
+        cards.classList.add('loading');
+        table.classList.add('loading');
+      } else {
+        cards.classList.remove('loading');
+        table.classList.remove('loading');
+      }
+    }
+
+    function showError(message) {
+      const errorDiv = document.getElementById("errorMessage");
+      errorDiv.textContent = message;
+      errorDiv.style.display = 'block';
+      console.error('🚨 Error displayed:', message);
+    }
+
+    function showSuccess(message) {
+      const successDiv = document.getElementById("successMessage");
+      successDiv.textContent = message;
+      successDiv.style.display = 'block';
+      setTimeout(() => {
+        successDiv.style.display = 'none';
+      }, 3000);
+      console.log('✅ Success displayed:', message);
+    }
+
+    function hideMessages() {
+      document.getElementById("errorMessage").style.display = 'none';
+      document.getElementById("successMessage").style.display = 'none';
+    }
+
+    // Action Functions
+    async function refreshDashboard() {
+      console.log('🔄 Manual refresh triggered');
+      await loadDashboardData();
+      showSuccess('Dashboard refreshed successfully!');
+    }
+
+    async function createTestActivity() {
+      try {
+        console.log('🧪 Creating test activity...');
+        
+        const res = await fetch("http://localhost:5000/api/dashboard/test-activity", {
+          method: 'POST',
+          credentials: "include",
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        const result = await res.json();
+        
+        if (result.success) {
+          showSuccess('Test activity created successfully!');
+          // Refresh activities to show the new one
+          await loadRecentActivity();
+          console.log('✅ Test activity created and activities refreshed');
+        } else {
+          throw new Error(result.message || 'Failed to create test activity');
+        }
+      } catch (err) {
+        console.error('❌ Error creating test activity:', err);
+        showError('Failed to create test activity: ' + err.message);
+      }
+    }
+
+    function startPeriodicRefresh() {
+      // Refresh activities every 2 minutes
+      setInterval(async () => {
+        if (document.visibilityState === 'visible') {
+          try {
+            console.log('⏰ Periodic refresh triggered');
+            await loadRecentActivity();
+          } catch (error) {
+            console.error("❌ Periodic refresh failed:", error);
+          }
+        }
+      }, 120000); // 2 minutes
+    }
+
+    // Profile Modal Functions (keeping your existing functionality)
     document.getElementById("userAvatar").addEventListener("click", async () => {
       try {
         const res = await fetch("http://localhost:5000/api/user/profile", {
@@ -185,10 +669,8 @@
 
     showPreview("nidPhoto", "nidPreview");
     showPreview("profileImg", "profilePreview");
-  </script>
 
-  <!-- ✅ Form Submit -->
-  <script>
+    // Form submission
     document.getElementById("userDetailsForm").addEventListener("submit", async function (e) {
       e.preventDefault();
       const formData = new FormData(this);
@@ -217,73 +699,5 @@
       }
     });
   </script>
-
-  <!-- ✅ Dashboard Summary -->
-  <script>
-    async function loadDashboardStats() {
-      try {
-        const res = await fetch("http://localhost:5000/api/dashboard/summary", {
-          credentials: "include"
-        });
-        const result = await res.json();
-  
-        if (result.success && result.data) {
-          document.querySelector(".card:nth-child(1) p").textContent = result.data.totalRooms;
-          document.querySelector(".card:nth-child(2) p").textContent = result.data.newListings;
-          document.querySelector(".card:nth-child(3) p").textContent = result.data.blogPosts;
-  
-          // Use announcement count for Messages card
-          document.querySelector(".card:nth-child(4) p").textContent = result.data.announcementCount || 0;
-        }
-      } catch (err) {
-        console.error("❌ Error loading dashboard stats:", err);
-      }
-    }
-  
-    loadDashboardStats();
-  </script>
-  
-
-  <!-- ✅ Recent Activity (Dynamic with colored status) -->
-  <script>
-    async function loadRecentActivity() {
-      try {
-        const res = await fetch("http://localhost:5000/api/dashboard/activity", {
-          credentials: "include"
-        });
-        const result = await res.json();
-
-        if (result.success && result.data) {
-          const tbody = document.querySelector(".recent-section tbody");
-          tbody.innerHTML = "";
-
-          result.data.forEach((activity) => {
-            const status = activity.STATUS.toLowerCase();
-            const statusClass =
-              status === "approved" || status === "live"
-                ? "success"
-                : status === "pending"
-                ? "warning"
-                : "error";
-
-            const tr = document.createElement("tr");
-            tr.innerHTML = `
-              <td>${new Date(activity.ACTIVITY_DATE).toISOString().split("T")[0]}</td>
-              <td>${activity.ACTIVITY_TYPE}</td>
-              <td><span class="status ${statusClass}">${activity.STATUS}</span></td>
-              <td>${activity.DETAILS}</td>
-            `;
-            tbody.appendChild(tr);
-          });
-        }
-      } catch (err) {
-        console.error("❌ Error loading recent activity:", err);
-      }
-    }
-
-    loadRecentActivity();
-    setInterval(loadRecentActivity, 10000);
-  </script>
-
 </body>
 </html>

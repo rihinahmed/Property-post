@@ -51,4 +51,52 @@ router.get("/all", async (req, res) => {
   }
 });
 
+
+router.post("/view/:propertyId", async (req, res) => {
+  const propertyId = Number(req.params.propertyId);
+  let conn;
+
+  try {
+    conn = await oracledb.getConnection(dbConfig);
+
+    // Update view count
+    const result = await conn.execute(
+      `UPDATE properties 
+       SET views = (select views FROM properties where id = :propertyId) + 1
+       WHERE id = :propertyId`,
+      { propertyId },
+      { autoCommit: true, outFormat: oracledb.OUT_FORMAT_OBJECT }
+    );
+
+    if (result.rowsAffected === 0) {
+      return res.status(404).json({ error: "Property not found" });
+    }
+
+    // Get the updated view count
+    const viewResult = await conn.execute(
+      `SELECT views FROM properties WHERE id = :propertyId`,
+      { propertyId },
+      { outFormat: oracledb.OUT_FORMAT_OBJECT }
+    );
+
+    const newViewCount = viewResult.rows[0]?.VIEW_COUNT || 0;
+
+    res.json({
+      success: true,
+      message: "View count updated",
+      propertyId,
+      viewCount: newViewCount
+    });
+
+  } catch (err) {
+    console.error("Update view count error:", err);
+    res.status(500).json({ error: "Failed to update view count" });
+  } finally {
+    if (conn) await conn.close();
+  }
+});
+
+
+
+
 module.exports = router;
